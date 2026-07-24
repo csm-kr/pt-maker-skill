@@ -1,0 +1,28 @@
+<template id="scene-2-template">
+  <div data-composition-id="scene-2" data-width="1920" data-height="1080">
+    <div class="scene-content metric-layout">
+      <div>
+        <p class="eyebrow" id="s2-eyebrow">02 · 근거</p>
+        <h2 id="s2-title">한 장에는<br><span class="accent">하나의 주장</span>만</h2>
+        <p class="lede" id="s2-copy">제목은 결론을 말하고, 화면은 그 결론을 증명합니다.</p>
+      </div>
+      <div class="metric" id="s2-metric">
+        <div>
+          <div class="metric-number">1</div>
+          <div class="metric-label">scene · claim · focal point</div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const scene2Tl = gsap.timeline({ paused: true });
+      scene2Tl.from("#s2-eyebrow", { y: 24, opacity: 0, duration: .45, ease: "power2.out" }, .2);
+      scene2Tl.from("#s2-title", { x: -56, opacity: 0, duration: .72, ease: "power3.out" }, .45);
+      scene2Tl.from("#s2-copy", { y: 30, opacity: 0, duration: .52, ease: "power2.out" }, 1.05);
+      scene2Tl.from("#s2-metric", { x: 80, opacity: 0, rotate: 2, duration: .78, ease: "power3.out" }, .75);
+      scene2Tl.from(".metric-number", { scale: .72, opacity: 0, duration: .65, ease: "back.out(1.35)" }, 1.25);
+      scene2Tl.to("#s2-metric", { boxShadow: "24px 24px 0 #c73463", duration: .7, ease: "power2.inOut" }, 3.05);
+      scene2Tl.set("#s2-metric", { opacity: 1 }, 4);
+      window.__timelines["scene-2"] = scene2Tl;
+    </script>
+  </div>
+</template>

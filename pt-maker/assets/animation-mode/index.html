@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>__PROJECT_SLUG__ animation</title>
+  <style>
+    @font-face {
+      font-family: "Pretendard Local";
+      src: local("Pretendard"), local("Apple SD Gothic Neo"), local("Noto Sans KR");
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: block;
+    }
+
+    :root {
+      --paper: #faf3de;
+      --card: #fffaf0;
+      --ink: #20174a;
+      --accent: #c73463;
+      --signal: #1c8b78;
+      --line: #e7dcb6;
+      --muted: #6d658a;
+      --safe-x: 96px;
+      --safe-y: 84px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    body {
+      background: #111;
+      color: var(--ink);
+      font-family: "Pretendard Local", system-ui, sans-serif;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background:
+        linear-gradient(rgba(32, 23, 74, .045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(32, 23, 74, .045) 1px, transparent 1px),
+        var(--paper);
+      background-size: 40px 40px;
+    }
+
+    .scene {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .scene-content {
+      position: absolute;
+      inset: var(--safe-y) var(--safe-x);
+      display: grid;
+      align-content: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 28px;
+      color: var(--accent);
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, p { margin: 0; }
+    h1, h2 {
+      max-width: 1500px;
+      font-weight: 850;
+      letter-spacing: -.055em;
+      line-height: 1.02;
+      text-wrap: balance;
+      word-break: keep-all;
+    }
+    h1 { font-size: 126px; }
+    h2 { font-size: 92px; }
+    .lede {
+      max-width: 1120px;
+      margin-top: 38px;
+      color: var(--muted);
+      font-size: 38px;
+      font-weight: 600;
+      line-height: 1.48;
+      word-break: keep-all;
+    }
+
+    .accent { color: var(--accent); }
+    .signal { color: var(--signal); }
+    .rule {
+      width: 270px;
+      height: 12px;
+      margin-top: 46px;
+      border-radius: 99px;
+      background: var(--accent);
+      transform-origin: left center;
+    }
+
+    .metric-layout {
+      grid-template-columns: 1.08fr .92fr;
+      gap: 88px;
+      align-items: center;
+    }
+    .metric {
+      display: grid;
+      place-items: center;
+      min-height: 560px;
+      border: 3px solid var(--ink);
+      border-radius: 42px;
+      background: var(--card);
+      box-shadow: 18px 18px 0 var(--accent);
+    }
+    .metric-number {
+      font-size: 196px;
+      font-weight: 900;
+      letter-spacing: -.08em;
+      line-height: .9;
+    }
+    .metric-label {
+      margin-top: 26px;
+      font-size: 34px;
+      font-weight: 750;
+    }
+
+    .process {
+      grid-template-rows: auto 1fr;
+      gap: 54px;
+    }
+    .process-row {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 46px;
+      align-items: center;
+    }
+    .process-line {
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      top: 50%;
+      height: 12px;
+      border-radius: 99px;
+      background: var(--line);
+      transform: translateY(-50%);
+    }
+    .process-line-fill {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--signal);
+      transform-origin: left center;
+    }
+    .node {
+      position: relative;
+      z-index: 1;
+      min-height: 270px;
+      padding: 54px;
+      border: 3px solid var(--ink);
+      border-radius: 34px;
+      background: var(--card);
+    }
+    .node strong {
+      display: block;
+      margin-bottom: 22px;
+      color: var(--accent);
+      font-size: 28px;
+    }
+    .node span {
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1.25;
+      word-break: keep-all;
+    }
+
+    .outcome {
+      grid-template-columns: .82fr 1.18fr;
+      gap: 54px;
+      align-items: stretch;
+    }
+    .before-card, .after-card {
+      display: grid;
+      align-content: center;
+      min-height: 650px;
+      padding: 74px;
+      border-radius: 46px;
+    }
+    .before-card {
+      color: #fff;
+      background: var(--ink);
+    }
+    .after-card {
+      border: 4px solid var(--signal);
+      background: var(--card);
+      box-shadow: inset 0 0 0 12px rgba(28, 139, 120, .08);
+    }
+    .state-label {
+      margin-bottom: 34px;
+      font-size: 26px;
+      font-weight: 850;
+      letter-spacing: .12em;
+    }
+    .state-copy {
+      font-size: 62px;
+      font-weight: 850;
+      line-height: 1.18;
+      letter-spacing: -.04em;
+      word-break: keep-all;
+    }
+    .after-card .state-label { color: var(--signal); }
+    .after-card .signal {
+      background: linear-gradient(rgba(28, 139, 120, .22), rgba(28, 139, 120, .22)) no-repeat 0 100%;
+      background-size: 100% 18%;
+    }
+
+    .resolve {
+      place-items: center;
+      text-align: center;
+    }
+    .resolve h2 { max-width: 1320px; font-size: 112px; }
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 20px;
+      margin-top: 56px;
+      padding: 24px 38px;
+      border: 3px solid var(--ink);
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 34px;
+      font-weight: 850;
+      box-shadow: 10px 10px 0 var(--ink);
+    }
+
+    #continuity-carrier-clip,
+    #progress-clip {
+      position: absolute;
+      inset: 0;
+    }
+    #carrier {
+      position: absolute;
+      left: 88px;
+      top: 64px;
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      border: 6px solid var(--paper);
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px var(--ink);
+    }
+    #progress-track {
+      position: absolute;
+      left: 96px;
+      right: 96px;
+      bottom: 48px;
+      height: 8px;
+      border-radius: 99px;
+      background: rgba(32, 23, 74, .14);
+      overflow: hidden;
+    }
+    #progress-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--signal));
+      transform-origin: left center;
+    }
+  </style>
+</head>
+<body>
+  <!-- Derived from the HyperFrames 0.7.70 blank composition contract (Apache-2.0). -->
+  <div id="root" data-composition-id="main" data-start="0" data-duration="20" data-width="1920" data-height="1080" data-fps="30" aria-label="pt-maker animation mode sample">
+    <div id="scene-1" class="scene clip" data-composition-id="scene-1" data-composition-src="compositions/scene-1.html" data-start="0" data-duration="4" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080"></div>
+    <div id="scene-2" class="scene clip" data-composition-id="scene-2" data-composition-src="compositions/scene-2.html" data-start="4" data-duration="4" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080"></div>
+    <div id="scene-3" class="scene clip" data-composition-id="scene-3" data-composition-src="compositions/scene-3.html" data-start="8" data-duration="4" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080"></div>
+    <div id="scene-4" class="scene clip" data-composition-id="scene-4" data-composition-src="compositions/scene-4.html" data-start="12" data-duration="4" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080"></div>
+    <div id="scene-5" class="scene clip" data-composition-id="scene-5" data-composition-src="compositions/scene-5.html" data-start="16" data-duration="4" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080"></div>
+
+    <div id="continuity-carrier-clip" class="clip" data-start="0" data-duration="20" data-track-index="1" data-layout-ignore aria-hidden="true"><div id="carrier"></div></div>
+
+    <div id="progress-clip" class="clip" data-start="0" data-duration="20" data-track-index="2" data-layout-ignore aria-hidden="true"><div id="progress-track"><div id="progress-fill"></div></div></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+
+    // A persistent carrier and progress rail create continuity without wall-clock state.
+    tl.fromTo("#carrier", { x: 0 }, { x: 1690, duration: 20, ease: "none" }, 0);
+    tl.fromTo("#progress-fill", { scaleX: 0 }, { scaleX: 1, duration: 20, ease: "none" }, 0);
+
+    // The parent owns persistent continuity. Each scene owns its local timeline.
+    tl.to("#carrier", { scale: 1.4, backgroundColor: "#1c8b78", duration: .7, ease: "power2.out" }, 19.3);
+
+    window.__timelines = window.__timelines || {};
+    window.__timelines["main"] = tl;
+  </script>
+</body>
+</html>

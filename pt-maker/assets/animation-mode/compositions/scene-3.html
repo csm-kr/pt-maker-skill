@@ -1,0 +1,32 @@
+<template id="scene-3-template">
+  <div data-composition-id="scene-3" data-width="1920" data-height="1080">
+    <div class="scene-content process">
+      <div>
+        <p class="eyebrow" id="s3-eyebrow">03 · 메커니즘</p>
+        <h2 id="s3-title">설계 → 움직임 → 검수</h2>
+      </div>
+      <div class="process-row">
+        <div class="process-line" aria-hidden="true"><div class="process-line-fill" id="s3-line"></div></div>
+        <div class="node" id="s3-node-1"><strong>FRAME</strong><span>정지 화면부터<br>완성합니다</span></div>
+        <div class="node" id="s3-node-2"><strong>MOTION</strong><span>의미 있는 순서로<br>움직입니다</span></div>
+        <div class="node" id="s3-node-3"><strong>QA</strong><span>타임라인 전체를<br>검증합니다</span></div>
+      </div>
+    </div>
+    <script>
+      const scene3Tl = gsap.timeline({ paused: true });
+      scene3Tl.from("#s3-eyebrow", { y: 24, opacity: 0, duration: .42, ease: "power2.out" }, .2);
+      scene3Tl.from("#s3-title", { y: 46, opacity: 0, duration: .68, ease: "power3.out" }, .4);
+      scene3Tl.from("#s3-line", { scaleX: 0, duration: 1.85, ease: "power2.inOut" }, .85);
+      scene3Tl.from(["#s3-node-1", "#s3-node-2", "#s3-node-3"], {
+        y: 74,
+        opacity: 0,
+        duration: .65,
+        stagger: .42,
+        ease: "power3.out"
+      }, .95);
+      scene3Tl.to("#s3-node-3", { borderColor: "#1c8b78", duration: .6, ease: "power2.out" }, 3.1);
+      scene3Tl.set("#s3-node-3", { opacity: 1 }, 4);
+      window.__timelines["scene-3"] = scene3Tl;
+    </script>
+  </div>
+</template>

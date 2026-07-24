@@ -1,0 +1,19 @@
+<template id="scene-1-template">
+  <div data-composition-id="scene-1" data-width="1920" data-height="1080">
+    <div class="scene-content">
+      <p class="eyebrow" id="s1-eyebrow">01 · 문제 선언</p>
+      <h1 id="s1-title">발표는 장수가 아니라<br><span class="accent">장면의 흐름</span>으로 기억됩니다</h1>
+      <p class="lede" id="s1-subtitle">한 장씩 잘 만든 화면을, 끊기지 않는 하나의 이야기로 연결합니다.</p>
+      <div class="rule" id="s1-rule" aria-hidden="true"></div>
+    </div>
+    <script>
+      const scene1Tl = gsap.timeline({ paused: true });
+      scene1Tl.from("#s1-eyebrow", { y: 28, opacity: 0, duration: .55, ease: "power2.out" }, .2);
+      scene1Tl.from("#s1-title", { y: 70, opacity: 0, duration: .82, ease: "power3.out" }, .45);
+      scene1Tl.from("#s1-subtitle", { y: 34, opacity: 0, duration: .62, ease: "power2.out" }, 1.05);
+      scene1Tl.from("#s1-rule", { scaleX: 0, duration: 2.1, ease: "power2.out" }, 1.35);
+      scene1Tl.set("#s1-rule", { opacity: 1 }, 4);
+      window.__timelines["scene-1"] = scene1Tl;
+    </script>
+  </div>
+</template>

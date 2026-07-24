@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "duration": 20,
+  "assertions": [
+    {
+      "kind": "appearsBy",
+      "selector": "#s1-title",
+      "bySec": 1
+    },
+    {
+      "kind": "before",
+      "a": "#s1-title",
+      "b": "#s1-subtitle"
+    },
+    {
+      "kind": "staysInFrame",
+      "selector": "#scene-1 .scene-content"
+    },
+    {
+      "kind": "keepsMoving",
+      "withinSelector": "#root",
+      "maxStaticSec": 1.5
+    }
+  ]
+}

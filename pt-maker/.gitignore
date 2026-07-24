@@ -1,0 +1,4 @@
+# 실제 API 키가 든 .env 는 절대 커밋/게시 금지 (공개 repo csm-kr/sm-skills 사고 방지)
+.env
+.runtime/
+__pycache__/

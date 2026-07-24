@@ -1,0 +1,24 @@
+<template id="scene-4-template">
+  <div data-composition-id="scene-4" data-width="1920" data-height="1080">
+    <div class="scene-content outcome">
+      <div class="before-card" id="s4-before">
+        <p class="state-label">BEFORE</p>
+        <p class="state-copy">페이지가<br>따로 노는<br>자료</p>
+      </div>
+      <div class="after-card" id="s4-after">
+        <p class="state-label">AFTER</p>
+        <p class="state-copy">메시지와 모션이<br><span class="signal">하나의 방향</span>으로<br>흐르는 발표</p>
+      </div>
+    </div>
+    <script>
+      const scene4Tl = gsap.timeline({ paused: true });
+      scene4Tl.from("#s4-before", { x: -60, opacity: 0, duration: .64, ease: "power3.out" }, .2);
+      scene4Tl.from("#s4-after", { x: 86, opacity: 0, duration: .82, ease: "power3.out" }, .48);
+      scene4Tl.to("#s4-before", { scale: .94, opacity: .78, duration: .65, ease: "power2.inOut" }, 1.45);
+      scene4Tl.from("#s4-after .signal", { backgroundSize: "0% 18%", duration: 1.25, ease: "power2.out" }, 1.65);
+      scene4Tl.to("#s4-after", { boxShadow: "inset 0 0 0 18px rgba(28,139,120,.08)", duration: .7, ease: "power2.out" }, 3.05);
+      scene4Tl.set("#s4-after", { opacity: 1 }, 4);
+      window.__timelines["scene-4"] = scene4Tl;
+    </script>
+  </div>
+</template>

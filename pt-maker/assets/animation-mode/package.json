@@ -1,0 +1,12 @@
+{
+  "name": "__PROJECT_SLUG__-animation",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx --yes hyperframes@0.7.70 preview",
+    "lint": "npx --yes hyperframes@0.7.70 lint",
+    "check": "npx --yes hyperframes@0.7.70 check --snapshots",
+    "snapshot": "npx --yes hyperframes@0.7.70 snapshot",
+    "render": "npx --yes hyperframes@0.7.70 render"
+  }
+}

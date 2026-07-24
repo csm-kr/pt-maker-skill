@@ -1,0 +1,19 @@
+<template id="scene-5-template">
+  <div data-composition-id="scene-5" data-width="1920" data-height="1080">
+    <div class="scene-content resolve">
+      <p class="eyebrow" id="s5-eyebrow">05 · RESOLVE</p>
+      <h2 id="s5-title">이제 PT를<br><span class="accent">보는 자료</span>에서<br><span class="signal">경험하는 장면</span>으로</h2>
+      <div class="cta" id="s5-cta">한 메시지로 시작하기 <span aria-hidden="true">→</span></div>
+    </div>
+    <script>
+      const scene5Tl = gsap.timeline({ paused: true });
+      scene5Tl.from("#s5-eyebrow", { y: 22, opacity: 0, duration: .45, ease: "power2.out" }, .2);
+      scene5Tl.from("#s5-title", { y: 72, opacity: 0, duration: .86, ease: "power3.out" }, .42);
+      scene5Tl.from("#s5-cta", { y: 38, opacity: 0, scale: .94, duration: .66, ease: "back.out(1.25)" }, 1.28);
+      scene5Tl.to("#s5-cta", { boxShadow: "16px 16px 0 #20174a", duration: .7, ease: "power2.inOut" }, 2.25);
+      scene5Tl.to("#s5-cta", { backgroundColor: "#1c8b78", duration: .6, ease: "power2.inOut" }, 3.15);
+      scene5Tl.set("#s5-cta", { opacity: 1 }, 4);
+      window.__timelines["scene-5"] = scene5Tl;
+    </script>
+  </div>
+</template>
