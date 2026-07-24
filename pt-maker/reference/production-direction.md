@@ -26,11 +26,20 @@
 - HyperFrames로만 제작한다. Reveal 전환 효과로 대체하지 않는다.
 - `animation/index.html`, 로컬 `compositions/`, 로컬 `assets/`를 하나의
   완성 HTML 프로젝트로 만든다.
-- `qa_animation_guard → lint → check --snapshots → preview → 사용자 승인 →
-  render export`를 끝까지 수행한다.
-- 완성 HTML 프로젝트와 렌더 export 파일을 함께 납품한다. 임시 경로나
-  누락된 composition/asset을 참조하는 HTML은 완료본으로 인정하지 않는다.
-- `check`, `preview`, `render`는 관리형 `--background`로 실행한다.
+- 같은 composition에서 좌우 키·스페이스·터치로 넘기는 발표용 HTML을
+  생성한다. 슬라이드에 들어올 때마다 해당 장면 애니메이션을 처음부터
+  재생하고, 이전 방향으로 돌아와도 동일하게 재생해야 한다.
+- `qa_animation_guard → lint → check --snapshots → preview → 발표용 HTML 생성
+  → 발표용 HTML 양방향 검수`를 끝까지 수행한다.
+- 완성 HTML 프로젝트와 발표용 HTML을 기본 완성본으로 납품한다.
+- MP4/WebM/GIF는 사용자가 영상 파일을 명시 요청한 경우에만
+  `사용자 preview 승인 → render export → 영상 QA`를 추가한다.
+  임시 경로나 누락된 composition/asset을 참조하는 HTML은 완료본으로
+  인정하지 않는다.
+- `check`, `preview`, 그리고 명시 요청된 `render`는 관리형
+  `--background`로 실행한다.
+- 최종 검수 뒤 `stop --target all`을 실행하고 모든 managed job이
+  `alive:false`인지 확인한다. HyperFrames Studio/preview를 남겨 두지 않는다.
 
 ## 2. 줄글 위주
 

@@ -69,7 +69,7 @@ def build_command(args: argparse.Namespace, project: Path) -> list[str]:
     if args.action == "snapshot":
         command.append("snapshot")
         if args.samples:
-            command.extend(["--samples", str(args.samples)])
+            command.extend(["--frames", str(args.samples)])
         return command
     if args.action == "preview":
         return command + ["preview", "--port", str(args.port)]

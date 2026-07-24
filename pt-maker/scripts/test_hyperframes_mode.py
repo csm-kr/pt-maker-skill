@@ -39,6 +39,24 @@ class HyperFramesModeTests(unittest.TestCase):
         self.assertIn("60", command)
         self.assertIn("webm", command)
 
+    def test_snapshot_samples_map_to_hyperframes_frames_option(self):
+        args = argparse.Namespace(
+            action="snapshot",
+            samples=61,
+        )
+        command = hyperframes_mode.build_command(args, ANIMATION)
+        self.assertEqual(
+            command,
+            [
+                "npx",
+                "--yes",
+                "hyperframes@0.7.70",
+                "snapshot",
+                "--frames",
+                "61",
+            ],
+        )
+
     def test_background_worker_keeps_render_gate_arguments(self):
         with tempfile.TemporaryDirectory() as folder:
             state = Path(folder) / "render.json"

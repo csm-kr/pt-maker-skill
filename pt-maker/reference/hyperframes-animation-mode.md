@@ -1,21 +1,28 @@
 # HyperFrames animation mode
 
 This reference applies when the user confirms `애니메이션 위주` and `pt-maker`
-produces a timed HyperFrames HTML project plus a rendered export rather than a
-navigable Reveal deck. The runtime is pinned to `hyperframes@0.7.70`.
+produces a timed HyperFrames HTML project plus a horizontally navigable
+animated presentation HTML as the primary final artifact. Rendered
+MP4/WebM/GIF is optional and is produced only when the user explicitly asks
+for a video export. The runtime is pinned to `hyperframes@0.7.70`.
 
 ## Mode boundary
 
 | mode | authoring runtime | primary output | interaction | render model |
 |---|---|---|---|---|
 | `presentation` | Reveal.js | `.html` + PDF | keyboard, fragments, branches | one slide at a time |
-| `animation` | HyperFrames + paused GSAP | complete `.html` project + MP4/WebM/GIF export | timeline preview | deterministic full timeline |
-| `both` | both projects | live deck + linear film | separate outputs | separate QA gates |
+| `animation` | HyperFrames + paused GSAP | live animated presentation HTML + complete project; optional MP4/WebM/GIF on explicit request | horizontal navigation + timeline preview | shared scenes, separate playback shells |
+| `both` | both projects | Reveal live deck + animated presentation HTML; optional video on explicit request | separate outputs | separate QA gates |
 
 Do not use HyperFrames slideshow mode for a deliverable that must become one
 continuous MP4. A slideshow contains multiple top-level compositions and the
 renderer will not concatenate them into a film. Animation mode therefore uses
 one root composition with end-to-end scene clips on track 0.
+
+The live deck is not a second hand-authored scene set. Generate it from the
+same root clip order and external compositions with
+`build_animated_presentation.py`. The generated shell moves horizontally and
+restarts the registered scene timeline whenever that slide is entered.
 
 ## Composition contract
 
@@ -196,7 +203,9 @@ python3 scripts/qa_animation_score_gate.py \
   animation/index.html --print-template > animation/animation_qa_ledger.json
 ```
 
-Fill the ledger only with observed evidence. After the user approves the preview:
+Fill the ledger only with observed evidence. The animation HTML does not require
+a video render. Only when the user explicitly asks for MP4/WebM/GIF, obtain
+preview approval and run:
 
 ```bash
 python3 scripts/hyperframes_mode.py render animation \
@@ -208,10 +217,54 @@ python3 scripts/hyperframes_mode.py render animation \
 
 The render wrapper reruns `check --snapshots` after both gates pass.
 
-The final animation delivery must include the complete `animation/` HTML project
-(`index.html`, local `compositions/`, local `assets/`, motion assertions, and
-HyperFrames config) as well as the rendered export. Reject any final HTML project
-that points to a temporary path or is missing a required local composition/asset.
+## Live animated presentation HTML
+
+After scene authoring is stable, build the presenter-facing deck:
+
+```bash
+python3 scripts/build_animated_presentation.py animation \
+  -o animation/<topic>-발표용-v1.html
+```
+
+The generated HTML must:
+
+- use the root clip order as the horizontal slide order;
+- reuse the exact local composition markup, assets, and registered GSAP timeline;
+- support left/right arrows, space, Page Up/Down, Home/End, touch swipe, replay,
+  and fullscreen;
+- restart the current scene timeline on forward entry, backward entry, hash
+  jump, and replay;
+- expose `window.__ptMakerPresenter` for background browser QA;
+- respect `prefers-reduced-motion` by resolving to the final pose;
+- show the current slide count and a deck progress rail.
+
+Use `qa_animated_presentation.py` with isolated background browser-harness to
+verify start→end, end→start, an arbitrary jump, replay, and at least one
+keyboard and touch path. Confirm that every slide has a timeline and that the
+live deck's count/order matches the HyperFrames root.
+
+```bash
+python3 scripts/qa_animated_presentation.py \
+  animation/<topic>-발표용-v1.html \
+  --screenshots-dir animation/renders/qa/presentation-html
+```
+
+The default final animation delivery must include the complete `animation/`
+HTML project (`index.html`, live presentation HTML, local `compositions/`,
+local `assets/`, motion assertions, and HyperFrames config). Include a rendered
+export only when the user explicitly requested it.
+Reject any final HTML project that points to a temporary path or is missing a
+required local composition/asset.
+
+After live-deck QA and any explicitly requested render, always close managed
+Studio/preview resources:
+
+```bash
+python3 scripts/hyperframes_mode.py stop animation --target all
+python3 scripts/hyperframes_mode.py status animation
+```
+
+Do not finish while any managed job reports `alive:true`.
 
 ## Source
 

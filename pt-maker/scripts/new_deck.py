@@ -8,7 +8,9 @@
 
 output/ 의 기존 최대 순번 +1 을 계산해
   presentation: deck.html + assets/
-  animation:    animation/ HyperFrames project
+  animation:    animation/ HyperFrames project; live presentation HTML is
+                generated from final compositions as the primary artifact
+                (rendered video is optional on explicit request)
   both:         both outputs
 와 build-notes.md, motion-ledger.json을 만든다.
 생성된 덱 폴더 경로를 마지막 줄에 출력한다.
@@ -153,7 +155,12 @@ def main():
         "--mode",
         choices=MODES,
         default=None,
-        help="presentation=Reveal HTML, animation=HyperFrames MP4 project, both=both outputs",
+        help=(
+            "presentation=Reveal HTML, "
+            "animation=HyperFrames project + primary live animated HTML "
+            "(video export only on explicit request), "
+            "both=both outputs"
+        ),
     )
     ap.add_argument(
         "--production-direction",

@@ -6,11 +6,13 @@ description: >-
   user to choose one production format: HyperFrames animation, text-led, or
   image-led; use image-led when the user explicitly skips the choice. Support
   presentation mode (interactive Reveal HTML + PDF), animation mode
-  (deterministic HyperFrames composition + rendered export), and both mode.
+  (deterministic HyperFrames composition + horizontally navigable animated
+  presentation HTML as the primary final artifact, with rendered video only
+  when explicitly requested), and both mode.
   Require an isolated background browser-harness for preview, screenshot, and
   export QA, and bootstrap it automatically when missing. Use claim-led
   storytelling, purposeful finite motion, continuity contracts, speaker notes,
-  and rubric-gated rendered QA. For raster generation, editing, or sequential
+  and rubric-gated HTML/video QA. For raster generation, editing, or sequential
   frames in Codex, invoke imagegen and its built-in image_gen tool; use direct
   API/CLI only when explicitly requested or approved as fallback.
 ---
@@ -216,15 +218,16 @@ Apply this guardrail according to the selected production direction.
 - During QA, reject two consecutive text-only content slides only in `image`. In every format, reject a slide whose title promises a visual but the body does not show one.
 
 ## Overview
-사용자와 **같이 만드는** HTML-native 발표자료 스킬. `presentation`은 Reveal.js 라이브 덱과 PDF, `animation`은 HyperFrames 단일 타임라인과 영상, `both`는 두 결과물을 별도 프로젝트·QA로 만든다. 이미지 기반 `.pptx`는 사용자가 명시 요청한 경우에만 옵션으로 생성한다.
+사용자와 **같이 만드는** HTML-native 발표자료 스킬. `presentation`은 Reveal.js 라이브 덱과 PDF, `animation`은 HyperFrames 단일 타임라인과 가로 탐색 발표용 HTML을 기본 완성본으로 만들고, MP4/WebM/GIF는 사용자가 명시 요청한 경우에만 파생 산출물로 만든다. `both`는 정적/인터랙티브 덱과 애니메이션 HTML을 별도 QA로 만든다. 이미지 기반 `.pptx`도 사용자가 명시 요청한 경우에만 옵션으로 생성한다.
 
-핵심 흐름은 **.html을 장면 시스템으로 구성**하는 것이다. presentation은 고정 1280×720, print/reduced-motion 정지 포즈를 쓴다. animation은 고정 1920×1080, CSS 최종 포즈, composition별 paused GSAP timeline, 직접 자식 clip host, 절대 시간값과 deterministic seek를 계약으로 삼는다. 이미지 생성은 보조 기능이며 Codex에서는 생성·편집·연속 프레임이 필요할 때 `$imagegen` 스킬의 built-in `image_gen` 도구를 기본 경로로 사용한다.
+핵심 흐름은 **.html을 장면 시스템으로 구성**하는 것이다. presentation은 고정 1280×720, print/reduced-motion 정지 포즈를 쓴다. animation은 고정 1920×1080, CSS 최종 포즈, composition별 paused GSAP timeline, 직접 자식 clip host, 절대 시간값과 deterministic seek를 계약으로 삼고, 같은 composition에서 발표용 HTML을 생성한다. 이미지 생성은 보조 기능이며 Codex에서는 생성·편집·연속 프레임이 필요할 때 `$imagegen` 스킬의 built-in `image_gen` 도구를 기본 경로로 사용한다.
 
 ### Mode selection
 - Runtime mode를 정하기 전에 [reference/production-direction.md](reference/production-direction.md)의 필수 포맷 질문을 완료한다.
 - 사용자가 일반 PT·발표자료·슬라이드를 요청하면 `presentation`이 기본이다.
-- 자동 재생 영상·MP4·애니메이션 PT를 요청하면 `animation`을 쓴다.
-- 라이브 발표와 공유 영상이 모두 필요하면 `both`를 쓴다.
+- 애니메이션 PT·넘길 때 장면 모션이 재생되는 발표 HTML을 요청하면 `animation`을 쓴다. 이 모드의 기본 최종 파일은 HTML이다.
+- 자동 재생 영상·MP4·WebM·GIF를 사용자가 명시 요청하면 `animation`의 선택적 render export를 추가한다.
+- Reveal 라이브 덱과 애니메이션 HTML이 모두 필요하면 `both`를 쓴다. 공유 영상은 별도 명시 요청이 있을 때만 추가한다.
 - animation은 여러 composition의 HyperFrames slideshow가 아니라 **한 개의 선형 master composition**이다. slideshow를 MP4 연결본으로 오해하지 않는다.
 - 생성은 `new_deck.py "<slug>" --production-direction animation|text|image [--mode presentation|animation|both]`로 시작한다. `--production-direction`은 필수다.
 - animation을 만들거나 검수할 때 [reference/hyperframes-animation-mode.md](reference/hyperframes-animation-mode.md)와 [reference/animation-quality-rubric.md](reference/animation-quality-rubric.md)를 반드시 읽는다.
@@ -253,7 +256,8 @@ Apply this guardrail according to the selected production direction.
 input/                          ← 사용자 참고자료 드롭 (이미지·PDF·문서)
 output/NN_<slug>_<YYYYMMDD>/    ← 덱마다 폴더 (순번_주제_날짜)
   ├── deck.html · deck.pdf · assets/         ← presentation/both
-  ├── animation/index.html + assets/         ← animation/both
+  ├── animation/index.html + presentation.html + assets/  ← animation/both 기본
+  ├── animation/renders/                                  ← 영상 명시 요청 시만
   ├── build-notes.md · motion-ledger.json
   └── animation/index.motion.json            ← HyperFrames assertions
 archive/                        ← 작업 스크래치 격리
@@ -282,7 +286,7 @@ archive/                        ← 작업 스크래치 격리
 2. **소스 확보** → `taste-profile.md`를 읽고 [reference/intake.md](reference/intake.md)를 따른다. 참고자료, 목적, 타겟 독자/청중, 한줄메시지, 발표 상황, 근거/데이터, CTA, 기획 방향, 분위기/톤, 색상 팔레트를 **한 번에 하나씩** 묻는다. 받은 자료는 목적별로 분류하고, 손글씨·스케치·이미지는 활용 방식((a) 내용 재구성 vs (b) 원본 임베드)을 물어본 뒤 진행한다. → 산출물: 포맷이 기록된 인테이크 노트 + 자료 맵 + 비주얼 방향.
 3. **웹 리서치** → [reference/research.md](reference/research.md). 근거가 빈 항목·최신 데이터를 웹으로 보강하고, 사용자가 웹에서 찾아서 만들라고 한 경우에는 이 단계를 생략하지 않는다. 리서치 결과는 `claim / source / date / slide-use` 형태로 소스 맵에 남긴다.
 4. **기획** → 스토리 짜기 전에 먼저 [reference/product-judgment.md](reference/product-judgment.md)로 **제품 판단 블록**(타겟 순간·king action·AI 특이점·신뢰 장치·반복 루프·뺄 것)을 한 번 잡는다 — 제품/AI 기능을 파는 덱이면 필수, 단순 정보 전달 덱이면 생략 가능. 그 위에서 **타겟 청중을 확정**하고 그들에게 꽂히는 한줄메시지·스토리라인·Chapter 구조를 잡는다. 슬라이드 개요를 사용자와 합의한다. `image`는 슬라이드별 제목+요점+`visual plan`, `text`는 제목+카피+레이아웃 계획, `animation`은 제목+장면+모션/컴포지션 계획을 적는다. **One idea per slide** — 제목에 "그리고/및"이 들어가면 두 장으로.
-5. **구성/빌드** → 적합한 mode로 `new_deck.py`를 실행한다. presentation은 `deck.html` section을, animation은 `animation/STORYBOARD.md`와 `animation/index.html`의 timed scene clip을 수정한다. 사용자가 참고자료 덱(PPT/PDF)을 주면 [reference/reference-ingest.md](reference/reference-ingest.md)로 콘텐츠+스타일을 흡수(스타일은 확인 후 취향 반영). `image`는 `visual plan`의 모든 슬롯을 관련 자산으로 채우고, `text`는 제목·카피·본문 계층을 주인공으로, `animation`은 HyperFrames 장면과 모션 계획을 중심으로 빌드한다. **빌드 내내 craft.md의 [★ 심미성 체크리스트](reference/presentation-craft.md)(가독성·통일성·균형·여백·시각자료·다양성·디테일)를 기준으로 만든다.**
+5. **구성/빌드** → 적합한 mode로 `new_deck.py`를 실행한다. presentation은 `deck.html` section을, animation은 `animation/STORYBOARD.md`와 `animation/index.html`의 timed scene clip을 수정한다. animation 장면이 확정되면 `build_animated_presentation.py`로 같은 composition을 사용하는 가로 탐색 발표 HTML을 생성하고 이를 기본 최종 파일로 삼는다. MP4/WebM/GIF render는 사용자가 영상 파일을 명시 요청한 경우에만 추가한다. 사용자가 참고자료 덱(PPT/PDF)을 주면 [reference/reference-ingest.md](reference/reference-ingest.md)로 콘텐츠+스타일을 흡수(스타일은 확인 후 취향 반영). `image`는 `visual plan`의 모든 슬롯을 관련 자산으로 채우고, `text`는 제목·카피·본문 계층을 주인공으로, `animation`은 HyperFrames 장면과 모션 계획을 중심으로 빌드한다. **빌드 내내 craft.md의 [★ 심미성 체크리스트](reference/presentation-craft.md)(가독성·통일성·균형·여백·시각자료·다양성·디테일)를 기준으로 만든다.**
 6. **이미지/시각자료** → 선택한 포맷 계약을 따른다. `image` 포맷은 모든 주요 텍스트에 대응 이미지가 있고 덱 전체에 이미지가 여러 장 있어야 한다. 사용자 자산과 웹·공식·공개 자료를 먼저 찾고, 적합한 이미지가 부족하면 예상 생성 장수와 슬라이드별 목적을 알린 뒤 별도 승인 질문 없이 `$imagegen`의 built-in `image_gen`을 적극 사용한다. `text` 포맷은 제목·문장을 주인공으로 두고 이미지는 보조적으로만 쓴다. 데이터·흐름·비교는 인라인 SVG/차트/다이어그램을 우선한다. 생성 결과를 검수한 뒤 해당 덱의 `assets/`로 복사·이동한다. built-in 경로에는 API 키가 필요하지 않으며 고정 장당 비용을 안내하지 않는다. 사용자 원본 이미지는 생성하지 말고 그대로 임베드한다. 로컬 이미지 편집은 먼저 `view_image`로 대상을 확인한 뒤 `$imagegen` 편집 흐름을 따른다.
 7. **필수 QA iteration + 사용자 검수 단계** → PDF/contact sheet를 렌더링하고 [reference/general-pt-making-checklist.md](reference/general-pt-making-checklist.md)와 [alignment-eval-rubric.md](reference/alignment-eval-rubric.md)로 채점한다. agent/subagent 도구가 있으면 **반드시 dedicated QA reviewer agent**를 실행해 P0/P2/100점 점수/수정 목록을 받는다(없으면 `qa-agent: unavailable` 기록 후 수동으로 동일 체크). P0가 하나라도 있거나 점수 < 90이면 source HTML/CSS/assets를 수정 → PDF/contact sheet 재렌더 → agent/manual QA를 다시 반복한다. 통과하면 먼저 QA 결과(score, P0=0, 남은 P2)와 HTML/PDF 후보를 사용자에게 보고하고, 그 다음 수정 요청 단계로 들어간다. 사용자가 수정 요청을 주면 새 버전으로 처리해 수정 → 재렌더 → QA 반복 → 재보고한다. **변경마다 덱 버전을 올린다.** 최종 마감 시 이번 덱에서 배운 취향을 **diff로 제안**하고 사용자가 확인한 것만 `taste-profile.md`에 기록(version +1). 조용히 바꾸지 않는다. 생성 이미지 개수, 최종 저장 경로, 사용 모드(`imagegen built-in` 또는 명시적으로 승인된 `fallback`)를 요약한다.
 
@@ -299,9 +303,11 @@ archive/                        ← 작업 스크래치 격리
 - static end state를 CSS로 먼저 완성하고 scene을 `compositions/scene-*.html` 외부 sub-composition으로 분리한다. parent는 persistent carrier/progress만, child는 자기 nested element만 `gsap.timeline({paused:true})`에서 절대 시간으로 tween한다. 각 timeline key는 composition id와 같아야 하며 child timeline을 parent에 수동으로 붙이지 않는다.
 - `Date.now`, `performance.now`, `Math.random`, timer, render-time fetch, interaction-dependent state, imperative `.play()`, infinite repeat를 금지한다.
 - `index.motion.json`에 `appearsBy`, `before`, `staysInFrame`, `keepsMoving` 중 의미 있는 assertion을 둔다.
-- 먼저 `qa_animation_guard.py`, 그다음 `hyperframes_mode.py lint`, `check --snapshots`, browser preview를 실행한다. [reference/animation-quality-rubric.md](reference/animation-quality-rubric.md) 90점/P0=0과 사용자 preview 승인 전에는 render하지 않는다.
-- render는 `hyperframes_mode.py render ... --approved --qa-ledger ...`만 사용한다. 이 wrapper가 최종 `check --snapshots`를 재실행한다.
+- 먼저 `qa_animation_guard.py`, 그다음 `hyperframes_mode.py lint`, `check --snapshots`, browser preview를 실행한다. 장면 확정 후 `build_animated_presentation.py animation -o animation/<주제>-발표용-vN.html`을 실행하며, 이 HTML이 animation의 기본 최종 산출물이다. 발표용 HTML은 좌우 키·스페이스·터치로 넘길 수 있고, 어떤 방향으로 재진입해도 해당 장면 타임라인을 처음부터 다시 재생해야 한다. 전체화면과 현재 장면 재생 기능도 제공한다.
+- 발표용 HTML은 `qa_animated_presentation.py`의 격리 background browser-harness로 처음→끝, 끝→처음, 임의 점프, 재생 버튼, 키보드, 터치 스와이프를 검수한다. 장면 수·순서·텍스트·이미지가 렌더 master와 일치해야 한다.
+- MP4/WebM/GIF는 사용자가 영상 export를 명시 요청한 경우에만 만든다. 그때만 [reference/animation-quality-rubric.md](reference/animation-quality-rubric.md) 90점/P0=0과 사용자 전체 preview 승인을 render 전 게이트로 적용하고, `hyperframes_mode.py render ... --approved --qa-ledger ...`만 사용한다. 이 wrapper가 최종 `check --snapshots`를 재실행한다.
 - Codex에서는 preview/check/render에 `--background`가 필수다. wrapper가 foreground 실행을 차단한다. `status`로 PID·완료·로그를 보고, `stop --target preview|check|render|all`로 wrapper가 만든 process group만 종료한다. shell `&`/`nohup`을 임의로 쓰지 않는다. background render도 승인·QA gate를 우회하지 않는다.
+- 최종 산출물과 발표용 HTML 검수가 끝나면 반드시 `hyperframes_mode.py stop animation --target all`을 실행하고 `status`에서 모든 managed job의 `alive:false`를 확인한다. HyperFrames Studio/preview 서버를 최종 납품 뒤 계속 띄워 두지 않는다.
 
 ## 취향 학습 루프
 `taste-profile.md`가 취향 정본(구조·스토리 / 비주얼·브랜드 프리셋 / 어투·톤 / 안티-취향, 각 항목 `[conf:]`). 3지점에서 동작:
@@ -398,6 +404,9 @@ Codex의 `$imagegen` built-in 경로에는 API 키가 필요하지 않다. API �
 | 사용자 그림 넣기 | `input/`→덱 `assets/` 복사 후 `s-image` polaroid `<img src>`에 임베드 |
 | 일러스트 생성·편집 | `image` 포맷이면 예상 장수·용도를 알린 뒤 `$imagegen` built-in을 적극 호출하고 선택본을 덱 `assets/`에 저장 |
 | 연속 장면 애니메이션 | continuity contract → `$imagegen` 3~6장 → `.image-sequence` |
+| 애니메이션 발표 HTML | `build_animated_presentation.py output/NN_.../animation -o output/NN_.../animation/<주제>-발표용-vN.html` |
+| 발표 HTML 검수 | `qa_animated_presentation.py output/NN_.../animation/<주제>-발표용-vN.html --screenshots-dir output/NN_.../animation/renders/qa/presentation-html` |
+| 애니메이션 영상 export(명시 요청 시만) | preview 승인·animation QA 90점/P0=0 뒤 `hyperframes_mode.py render ... --approved --qa-ledger ... --background` |
 | HTML guard | `qa_html_guard.py output/NN_.../<주제>v<N>.html` |
 | media guard | `qa_media_guard.py output/NN_.../<주제>v<N>.html` |
 | PDF | `export_pdf.py output/NN_.../deck.html` |
@@ -431,6 +440,8 @@ Codex의 `$imagegen` built-in 경로에는 API 키가 필요하지 않다. API �
 - `.env`를 cat/Read로 열기 → ❌. Codex built-in 경로에는 필요도 없고 키가 대화에 노출될 수 있음.
 - `browser-harness`가 없다고 `browse`/Playwright/DeckTape/Codex Browser로 우회하거나 사용자의 보이는 Chrome에 붙기 → ❌. bootstrap으로 설치·등록하고 격리 background만 사용.
 - `$pt-maker ... 만들어줘` 요청에서 포맷 3지선다를 첫 질문으로 묻지 않거나, 여러 Grill Me 질문을 한 메시지에 묶거나, 포맷 확정 전에 참고자료·리서치·개요·스캐폴딩을 시작하기 → ❌. 사용자가 선택을 건너뛰면 `image`로 기록한 뒤 다음 질문 하나만 한다.
+- 애니메이션 모드의 기본 결과물을 MP4로 간주하거나, 선형 HyperFrames `index.html`만 납품하고 좌우 탐색 발표용 HTML을 만들지 않거나, 슬라이드 재진입 시 모션이 재생되지 않음 → ❌. 기본은 같은 composition으로 생성한 발표 HTML이며, 영상은 사용자의 명시 요청이 있을 때만 추가한다.
+- HyperFrames preview/Studio를 최종 QA 뒤 계속 실행해 둠 → ❌. `stop --target all` 후 `status`의 `alive:false`를 확인한다.
 - 레거시 direct API에서 vip 모델에 `quality` 전송 → ❌. official 전용.
 - deck.html을 작업공간 밖에 두고 브라우저 호출 → 열리지 않을 수 있음.
 - 세로로 긴 스샷을 폴라로이드(가로)에 → 빈 공간. `object-fit:cover` 썸네일 카드로.

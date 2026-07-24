@@ -1,0 +1,185 @@
+#!/usr/bin/env python3
+"""Browser QA for pt-maker's horizontally navigable animated HTML deck."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+from browser_harness_runtime import BrowserHarnessError, IsolatedBrowserHarness
+
+
+def qa_code(html_path: Path, screenshots_dir: Path | None) -> str:
+    output = str(screenshots_dir) if screenshots_dir is not None else ""
+    return f"""
+new_tab("about:blank")
+cdp("Emulation.setDeviceMetricsOverride", width=1920, height=1080, deviceScaleFactor=1, mobile=False)
+goto_url({html_path.as_uri()!r})
+if not wait_for_load(30):
+    raise RuntimeError("Animated presentation did not finish loading")
+if not wait_for_element("#animated-presentation .animated-slide", timeout=20, visible=True):
+    raise RuntimeError("Animated presentation slides were not rendered")
+ready = False
+for _ in range(80):
+    ready = bool(js("Boolean(window.__ptMakerPresenter?.ready)"))
+    if ready:
+        break
+    wait(.1)
+if not ready:
+    raise RuntimeError("Presenter runtime did not become ready")
+
+expected = int(js("document.querySelectorAll('.animated-slide').length"))
+timeline_count = int(js("Object.keys(window.__timelines || {{}}).filter(key => key !== 'main').length"))
+if expected < 1:
+    raise RuntimeError("No animated slides found")
+if timeline_count != expected:
+    raise RuntimeError(f"Timeline count mismatch: {{timeline_count}} / {{expected}}")
+if not bool(js("Array.from(document.images).every(img => img.complete && img.naturalWidth > 0)")):
+    raise RuntimeError("One or more presentation images failed to load")
+
+out = Path({output!r}) if {bool(output)!r} else None
+if out:
+    out.mkdir(parents=True, exist_ok=True)
+
+def capture(name):
+    if not out:
+        return
+    payload = cdp("Page.captureScreenshot", format="png", fromSurface=True, captureBeyondViewport=False)
+    (out / name).write_bytes(base64.b64decode(payload["data"]))
+
+wait(2.3)
+initial = js("window.__ptMakerPresenter.state()")
+if initial["index"] != 0 or initial["runtimeError"]:
+    raise RuntimeError(f"Initial slide state failed: {{initial}}")
+capture("slide-01-resolved.png")
+
+forward = []
+for index in range(1, expected):
+    js(f"window.__ptMakerPresenter.go({{index}})")
+    wait(.56)
+    state = js("window.__ptMakerPresenter.state()")
+    if state["index"] != index or state["runtimeError"]:
+        raise RuntimeError(f"Forward navigation failed at {{index + 1}}: {{state}}")
+    forward.append(state["sceneId"])
+wait(2.3)
+capture(f"slide-{{expected:02d}}-resolved.png")
+
+reverse = []
+for index in range(expected - 2, -1, -1):
+    js(f"window.__ptMakerPresenter.go({{index}})")
+    wait(.56)
+    state = js("window.__ptMakerPresenter.state()")
+    if state["index"] != index or state["runtimeError"]:
+        raise RuntimeError(f"Reverse navigation failed at {{index + 1}}: {{state}}")
+    reverse.append(state["sceneId"])
+
+jump_index = min(12, expected - 1)
+js(f"window.__ptMakerPresenter.go({{jump_index}})")
+wait(.7)
+wait(2.0)
+jump_before = js("window.__ptMakerPresenter.state()")
+js("window.__ptMakerPresenter.replay()")
+wait(.12)
+jump_after = js("window.__ptMakerPresenter.state()")
+if jump_after["index"] != jump_index or jump_after["runtimeError"]:
+    raise RuntimeError(f"Replay failed: {{jump_after}}")
+if jump_after["timelineProgress"] is None or jump_after["timelineProgress"] >= jump_before["timelineProgress"]:
+    raise RuntimeError(f"Replay did not restart the timeline: {{jump_before}} -> {{jump_after}}")
+wait(2.1)
+capture(f"slide-{{jump_index + 1:02d}}-resolved.png")
+
+keyboard_start = int(js("window.__ptMakerPresenter.index"))
+if keyboard_start < expected - 1:
+    cdp("Input.dispatchKeyEvent", type="keyDown", key="ArrowRight", code="ArrowRight")
+    cdp("Input.dispatchKeyEvent", type="keyUp", key="ArrowRight", code="ArrowRight")
+    wait(.62)
+    keyboard_end = int(js("window.__ptMakerPresenter.index"))
+    if keyboard_end != keyboard_start + 1:
+        raise RuntimeError(f"Keyboard navigation failed: {{keyboard_start}} -> {{keyboard_end}}")
+else:
+    keyboard_end = keyboard_start
+
+touch_start = int(js("window.__ptMakerPresenter.index"))
+if touch_start < expected - 1:
+    js('''(() => {{
+      const deck = document.getElementById("animated-presentation");
+      deck.dispatchEvent(new PointerEvent("pointerdown", {{
+        bubbles: true, pointerType: "touch", clientX: 1450
+      }}));
+      deck.dispatchEvent(new PointerEvent("pointerup", {{
+        bubbles: true, pointerType: "touch", clientX: 350
+      }}));
+      return true;
+    }})()''')
+    wait(.62)
+    touch_end = int(js("window.__ptMakerPresenter.index"))
+    if touch_end != touch_start + 1:
+        raise RuntimeError(f"Touch navigation failed: {{touch_start}} -> {{touch_end}}")
+else:
+    touch_end = touch_start
+
+final_state = js("window.__ptMakerPresenter.state()")
+print(json.dumps({{
+    "animated_presentation_qa": "pass",
+    "slides": expected,
+    "timelines": timeline_count,
+    "forward_checked": len(forward),
+    "reverse_checked": len(reverse),
+    "jump_replay_checked": jump_index + 1,
+    "keyboard_from_to": [keyboard_start + 1, keyboard_end + 1],
+    "touch_from_to": [touch_start + 1, touch_end + 1],
+    "runtime_error": final_state["runtimeError"],
+    "screenshots": str(out) if out else None,
+}}, ensure_ascii=False))
+"""
+
+
+def run_qa(
+    html_value: Path,
+    screenshots_dir: Path | None = None,
+) -> dict[str, object]:
+    html_path = html_value.resolve()
+    if not html_path.is_file():
+        raise FileNotFoundError(f"Animated presentation not found: {html_path}")
+    output = screenshots_dir.resolve() if screenshots_dir else None
+    with IsolatedBrowserHarness() as browser:
+        result = browser.run_code(
+            qa_code(html_path, output),
+            timeout=240,
+        )
+    lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+    for line in reversed(lines):
+        if line.startswith("{") and line.endswith("}"):
+            payload = json.loads(line)
+            if payload.get("animated_presentation_qa") == "pass":
+                return payload
+    raise BrowserHarnessError(
+        "browser-harness did not return an animated presentation QA result\n"
+        + result.stdout[-4000:]
+        + result.stderr[-4000:]
+    )
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("html", type=Path)
+    parser.add_argument("--screenshots-dir", type=Path)
+    args = parser.parse_args()
+    try:
+        result = run_qa(args.html, args.screenshots_dir)
+    except (
+        BrowserHarnessError,
+        FileNotFoundError,
+        json.JSONDecodeError,
+        OSError,
+    ) as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -2,7 +2,8 @@
 
 Codex에서 발표자료를 기획·제작·검수하는 `pt-maker` 스킬입니다.
 
-- `애니메이션 위주`: HyperFrames 기반 완성 HTML 프로젝트와 렌더 export
+- `애니메이션 위주`: HyperFrames 기반 가로 탐색 애니메이션 HTML이 기본 완성본
+  (MP4/WebM/GIF는 명시 요청 시만 추가)
 - `줄글 위주`: 제목·카피·본문 중심의 Reveal.js HTML 덱과 PDF
 - `이미지 위주`: 주요 텍스트마다 관련 이미지가 들어가는 Reveal.js HTML 덱과 PDF
 - 렌더링·미리보기·스크린샷은 격리된 background `browser-harness` 사용
@@ -65,7 +66,8 @@ python3 .codex/skills/pt-maker/scripts/new_deck.py \
 python3 .codex/skills/pt-maker/scripts/new_deck.py \
   "topic-slug" --production-direction image
 
-# HyperFrames animation HTML project + render export
+# HyperFrames project + 가로 탐색 애니메이션 HTML
+# 영상 export는 사용자가 명시 요청한 경우에만 추가
 python3 .codex/skills/pt-maker/scripts/new_deck.py \
   "topic-slug" --production-direction animation
 
@@ -80,7 +82,9 @@ python3 .codex/skills/pt-maker/scripts/new_deck.py \
 별도 CDP 포트를 가진 headless Chrome을 사용하고, 작업이 끝나면 daemon,
 브라우저 프로세스와 임시 프로필을 정리합니다.
 
-HyperFrames의 `preview`, `check`, `render`는 `--background`가 필수입니다.
+HyperFrames의 `preview`, `check`, 그리고 명시 요청된 `render`는
+`--background`가 필수입니다. 최종 QA 뒤에는 `stop --target all`로
+Studio/preview를 종료합니다.
 
 ```bash
 python3 .codex/skills/pt-maker/scripts/hyperframes_mode.py \

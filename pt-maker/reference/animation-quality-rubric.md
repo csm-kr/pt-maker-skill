@@ -27,7 +27,12 @@ P0 exists. A score without snapshot and complete timeline evidence is invalid.
 - Scene order, claim, evidence, or CTA is missing.
 - Seam causes a key subject to teleport, reverse inexplicably, or change identity.
 - HyperFrames `check --snapshots` fails.
-- User has not reviewed and approved the full preview before render.
+- A video render was requested, but the user has not reviewed and approved the
+  full preview before render.
+- The final animation package has no horizontally navigable animated
+  presentation HTML, or a slide does not replay its scene timeline on re-entry.
+- Keyboard/touch navigation changes the visible slide without updating the
+  scene animation, slide count, or progress state.
 
 ## Review sampling
 
@@ -38,6 +43,9 @@ At minimum inspect:
 - first and last frame
 - every frame where generated-image identity changes
 - the full timeline once at normal speed and once at `0.25×`
+- the live presentation HTML from first→last and last→first
+- one arbitrary jump plus replay on the same slide
+- one keyboard path and one touch-swipe path
 
 Do not award a perfect category score without a written observation. The ledger
 template starts at zero and `pending` so missing review cannot appear as a pass.
