@@ -2,7 +2,8 @@
 """pt-maker: 다음 순번의 덱 폴더를 모드별로 스캐폴딩한다.
 
 사용:
-  python new_deck.py "<slug>" [--mode presentation|animation|both]
+  python new_deck.py "<slug>" --production-direction animation|text|image
+                     [--mode presentation|animation|both]
                      [--date YYYYMMDD] [--root <작업공간>]
 
 output/ 의 기존 최대 순번 +1 을 계산해
@@ -28,6 +29,7 @@ from browser_harness_runtime import (
 
 SEQ_RE = re.compile(r"^(\d{2,})_")
 MODES = ("presentation", "animation", "both")
+PRODUCTION_DIRECTIONS = ("animation", "text", "image")
 
 
 def next_seq(output_dir: Path) -> int:
@@ -87,10 +89,15 @@ def scaffold_animation(
     )
 
 
-def write_build_notes(deck_dir: Path, mode: str) -> None:
+def write_build_notes(
+    deck_dir: Path,
+    mode: str,
+    production_direction: str,
+) -> None:
     (deck_dir / "build-notes.md").write_text(
         "# Build notes\n\n"
         f"- mode: `{mode}`\n\n"
+        f"- production-direction: `{production_direction}`\n\n"
         "## Intake\n\n"
         "- audience:\n- context:\n- one-line message:\n- evidence:\n- CTA:\n\n"
         "## Scene plan\n\n"
@@ -103,11 +110,16 @@ def write_build_notes(deck_dir: Path, mode: str) -> None:
     )
 
 
-def write_motion_ledger(deck_dir: Path, mode: str) -> None:
+def write_motion_ledger(
+    deck_dir: Path,
+    mode: str,
+    production_direction: str,
+) -> None:
     (deck_dir / "motion-ledger.json").write_text(
         json.dumps(
             {
                 "mode": mode,
+                "production_direction": production_direction,
                 "dominant_current": "left-to-right",
                 "transition_vocabulary": [
                     "rise",
@@ -140,10 +152,25 @@ def main():
     ap.add_argument(
         "--mode",
         choices=MODES,
-        default="presentation",
+        default=None,
         help="presentation=Reveal HTML, animation=HyperFrames MP4 project, both=both outputs",
     )
+    ap.add_argument(
+        "--production-direction",
+        choices=PRODUCTION_DIRECTIONS,
+        required=True,
+        help="Required user-confirmed format: animation, text, or image",
+    )
     args = ap.parse_args()
+    mode = args.mode or (
+        "animation"
+        if args.production_direction == "animation"
+        else "presentation"
+    )
+    if args.production_direction == "animation" and mode == "presentation":
+        ap.error("animation production direction requires --mode animation or both")
+    if args.production_direction in {"text", "image"} and mode == "animation":
+        ap.error("text/image production direction requires --mode presentation or both")
 
     try:
         ensure_background_runtime()
@@ -155,9 +182,9 @@ def main():
     assets_dir = Path(__file__).resolve().parent.parent / "assets"
     presentation_template = assets_dir / "template.html"
     animation_template = assets_dir / "animation-mode"
-    if args.mode in {"presentation", "both"} and not presentation_template.is_file():
+    if mode in {"presentation", "both"} and not presentation_template.is_file():
         sys.exit(f"ERROR: 프레젠테이션 템플릿을 찾을 수 없음: {presentation_template}")
-    if args.mode in {"animation", "both"} and not animation_template.is_dir():
+    if mode in {"animation", "both"} and not animation_template.is_dir():
         sys.exit(f"ERROR: 애니메이션 템플릿을 찾을 수 없음: {animation_template}")
 
     seq = next_seq(output_dir)
@@ -167,16 +194,17 @@ def main():
     deck_dir.mkdir(parents=True)
     created_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
-    if args.mode in {"presentation", "both"}:
+    if mode in {"presentation", "both"}:
         scaffold_presentation(deck_dir, presentation_template)
-    if args.mode in {"animation", "both"}:
+    if mode in {"animation", "both"}:
         scaffold_animation(deck_dir, animation_template, args.slug, created_at)
-    write_build_notes(deck_dir, args.mode)
-    write_motion_ledger(deck_dir, args.mode)
+    write_build_notes(deck_dir, mode, args.production_direction)
+    write_motion_ledger(deck_dir, mode, args.production_direction)
 
     print(
         f"OK: 덱 폴더 생성 "
-        f"(seq={seq:02d}, date={args.date}, mode={args.mode})"
+        f"(seq={seq:02d}, date={args.date}, mode={mode}, "
+        f"production-direction={args.production_direction})"
     )
     print(deck_dir)
 

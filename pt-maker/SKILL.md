@@ -1,6 +1,18 @@
 ---
 name: pt-maker
-description: Create polished 발표자료 from discussions, notes, sketches, web pages, documents, reference decks, URLs, or research. Support presentation mode (interactive Reveal HTML + PDF), animation mode (deterministic HyperFrames composition + video), and both mode. Require an isolated background browser-harness for preview, screenshot, and export QA, and bootstrap it automatically when missing. Use claim-led storytelling, purposeful finite motion, continuity contracts, speaker notes, and rubric-gated rendered QA. For raster generation, editing, or sequential frames in Codex, invoke imagegen and its built-in image_gen tool; use direct API/CLI only when explicitly requested or approved as fallback.
+description: >-
+  Create polished 발표자료 from discussions, notes, sketches, web pages,
+  documents, reference decks, URLs, or research. Always begin by asking the
+  user to choose one production format: HyperFrames animation, text-led, or
+  image-led; use image-led when the user explicitly skips the choice. Support
+  presentation mode (interactive Reveal HTML + PDF), animation mode
+  (deterministic HyperFrames composition + rendered export), and both mode.
+  Require an isolated background browser-harness for preview, screenshot, and
+  export QA, and bootstrap it automatically when missing. Use claim-led
+  storytelling, purposeful finite motion, continuity contracts, speaker notes,
+  and rubric-gated rendered QA. For raster generation, editing, or sequential
+  frames in Codex, invoke imagegen and its built-in image_gen tool; use direct
+  API/CLI only when explicitly requested or approved as fallback.
 ---
 
 # pt-maker
@@ -193,13 +205,15 @@ Treat image subject integrity as a hard QA gate. A visually stylish crop still f
 - During QA, inspect all person-photo, product-photo, landmark, screenshot, and map slides at full size. Cropped faces/subjects, inaccurate homemade maps, misplaced pins, or unreadable map labels are P0 failures until fixed.
 
 ### Visual material requirement guardrail
-Treat concrete visual material as mandatory for major slides, not optional decoration.
+Apply this guardrail according to the selected production direction.
 
-- Do not ship text-only major slides. Cover, chapter opener, key concept, evidence/example, comparison, process/timeline, product, place, and closing slides must each have a planned visual asset.
+- In `image`, concrete visual material is mandatory: cover, chapter opener, key concept, evidence/example, comparison, process/timeline, product, place, and closing slides must each have a planned visual asset. Every major text slide needs at least one directly relevant image, and the deck must contain multiple image assets.
+- In `text`, title and copy may be the visual focus. Do not force an image count or reject a slide merely because it is text-only; use typography, hierarchy, whitespace, and pacing as the composition.
+- In `animation`, kinetic typography may be a scene's primary visual, but every scene still needs an explicit motion/composition plan and a stable readable pose.
 - Acceptable visual assets: user/original image, official/public photo, screenshot, chart/data visualization, SVG diagram/timeline/map/card grid, or approved AI-generated illustration.
-- Before building, write a `visual plan` for every slide in the outline: asset type, source/generation path, crop/layout role, subject/focal-point safety, map-base source if relevant, and fallback.
-- If no suitable external image exists, build a self-made SVG/chart/diagram first for explanatory content. Use AI generation for conceptual or atmospheric scenes only after a placeholder, planned image count/purpose, and user approval. In Codex, route approved raster generation through the `imagegen` skill's built-in `image_gen` tool.
-- During QA, reject any deck with two consecutive content slides that are text-only, or any slide whose title promises a visual but the body does not show one.
+- Before building an `image` deck, write a `visual plan` for every slide in the outline: asset type, source/generation path, crop/layout role, subject/focal-point safety, map-base source if relevant, and fallback. For `text`, write a layout/copy plan; for `animation`, write a motion/composition plan.
+- If no suitable external image exists, build a self-made SVG/chart/diagram first for explanatory content. In `image`, announce the planned image count/purpose and actively use the `imagegen` skill's built-in `image_gen` tool without pausing for a separate approval question.
+- During QA, reject two consecutive text-only content slides only in `image`. In every format, reject a slide whose title promises a visual but the body does not show one.
 
 ## Overview
 사용자와 **같이 만드는** HTML-native 발표자료 스킬. `presentation`은 Reveal.js 라이브 덱과 PDF, `animation`은 HyperFrames 단일 타임라인과 영상, `both`는 두 결과물을 별도 프로젝트·QA로 만든다. 이미지 기반 `.pptx`는 사용자가 명시 요청한 경우에만 옵션으로 생성한다.
@@ -207,28 +221,30 @@ Treat concrete visual material as mandatory for major slides, not optional decor
 핵심 흐름은 **.html을 장면 시스템으로 구성**하는 것이다. presentation은 고정 1280×720, print/reduced-motion 정지 포즈를 쓴다. animation은 고정 1920×1080, CSS 최종 포즈, composition별 paused GSAP timeline, 직접 자식 clip host, 절대 시간값과 deterministic seek를 계약으로 삼는다. 이미지 생성은 보조 기능이며 Codex에서는 생성·편집·연속 프레임이 필요할 때 `$imagegen` 스킬의 built-in `image_gen` 도구를 기본 경로로 사용한다.
 
 ### Mode selection
+- Runtime mode를 정하기 전에 [reference/production-direction.md](reference/production-direction.md)의 필수 포맷 질문을 완료한다.
 - 사용자가 일반 PT·발표자료·슬라이드를 요청하면 `presentation`이 기본이다.
 - 자동 재생 영상·MP4·애니메이션 PT를 요청하면 `animation`을 쓴다.
 - 라이브 발표와 공유 영상이 모두 필요하면 `both`를 쓴다.
 - animation은 여러 composition의 HyperFrames slideshow가 아니라 **한 개의 선형 master composition**이다. slideshow를 MP4 연결본으로 오해하지 않는다.
-- 생성은 `new_deck.py "<slug>" --mode presentation|animation|both`로 시작한다.
+- 생성은 `new_deck.py "<slug>" --production-direction animation|text|image [--mode presentation|animation|both]`로 시작한다. `--production-direction`은 필수다.
 - animation을 만들거나 검수할 때 [reference/hyperframes-animation-mode.md](reference/hyperframes-animation-mode.md)와 [reference/animation-quality-rubric.md](reference/animation-quality-rubric.md)를 반드시 읽는다.
 
 ## 시작 프로토콜: Grill Me + 자료 인테이크
-사용자가 주제, 아이디어, 발표 목적만 던지거나 "grill me", "캐물어줘", "질문부터 해줘"처럼 말하면 **바로 슬라이드 개요나 HTML을 만들지 않는다**. 먼저 `taste-profile.md`를 읽고 [reference/intake.md](reference/intake.md)의 Grill Me 모드로 들어간다.
+사용자가 `$pt-maker ... 만들어줘`라고 요청하면 **도구 실행, 파일 읽기, 참고자료 질문, 리서치, 개요, 폴더 생성이나 HTML 빌드보다 먼저** [reference/production-direction.md](reference/production-direction.md)의 포맷 선택 질문을 정확히 하나만 묻는다. 포맷이 확정된 뒤 `taste-profile.md`를 읽고 [reference/intake.md](reference/intake.md)의 Grill Me 모드로 들어가며 이후 질문도 한 번에 하나씩만 한다.
 
 시작 게이트:
 
-1. **참고자료 여부 확인** — "추가로 참고할 PPT/PDF/문서/스크린샷/URL/데이터가 있나요?"를 먼저 묻는다. 여기서 reference/참고자료는 사용자가 주는 원자료를 뜻한다. 없으면 바로 인터뷰로 들어간다.
-2. **목적별 분류** — 받은 자료를 `content`, `evidence`, `style`, `visual-asset`, `constraint` 중 하나 이상으로 분류하고, 어떤 용도로 쓸지 사용자에게 확인한다.
-3. **한 번에 하나씩 인터뷰** — 목적, 기획 방향, 타겟 독자/청중, 발표 상황, 한줄메시지, 근거/데이터, CTA를 순서대로 좁힌다.
-4. **비주얼 방향 확인** — 의도와 청중이 정리된 뒤 분위기/톤, 색상 팔레트, 사진·스크린샷·AI 이미지 추가 레벨을 묻는다.
-5. **인테이크 노트 확정** — 자료 맵과 필수 4항목, 발표 상황, 분위기/이미지 레벨, 미해결 질문을 짧게 정리한 뒤에야 리서치/기획/빌드로 넘어간다.
+1. **제작 포맷 선택** — `애니메이션 위주 / 줄글 위주 / 이미지 위주` 세 가지만 제시하고 하나를 고르게 한다. 사용자가 `그냥 진행`, `알아서`, `넘어가`, `상관없음`처럼 건너뛰면 `이미지 위주`를 기본값으로 확정한다.
+2. **참고자료 여부 확인** — 포맷이 정해진 뒤 "추가로 참고할 PPT/PDF/문서/스크린샷/URL/데이터가 있나요?"를 묻는다. 여기서 reference/참고자료는 사용자가 주는 원자료를 뜻한다.
+3. **목적별 분류** — 받은 자료를 `content`, `evidence`, `style`, `visual-asset`, `constraint` 중 하나 이상으로 분류하고, 어떤 용도로 쓸지 사용자에게 확인한다.
+4. **한 번에 하나씩 인터뷰** — 목적, 기획 방향, 타겟 독자/청중, 발표 상황, 한줄메시지, 근거/데이터, CTA를 순서대로 하나씩 좁힌다.
+5. **비주얼 방향 확인** — 의도와 청중이 정리된 뒤 분위기/톤과 색상 팔레트를 묻는다. 이미지 사용량은 선택된 포맷 계약을 우선한다.
+6. **인테이크 노트 확정** — `production-direction`과 자료 맵, 필수 4항목, 발표 상황, 분위기/이미지 레벨, 미해결 질문을 짧게 정리한 뒤에야 리서치/기획/빌드로 넘어간다.
 
 사용자가 참고자료가 없다고 하면 그 사실을 인테이크 노트에 남기고 진행한다. 참고자료가 있을 것 같지만 아직 안 줬다면 `input/`에 넣거나 URL/파일명을 알려 달라고 요청한다. Color Hunt 같은 컬러 팔레트 사이트는 참고자료가 아니라 **palette source**로 별도 취급한다.
 
 ### 웹에서 찾아서 PT 만들기 모드
-사용자가 "웹에서 찾아서", "리서치해서", "요즘 자료로", "최신 근거로"처럼 말하면 [reference/research.md](reference/research.md)를 먼저 따른다. 목적·청중·한줄메시지는 짧게 확인하되, 리서치가 필요한 사실/수치/사례를 명시적으로 소스 맵에 기록한다. 슬라이드에는 출처를 과하게 노출하지 말고, 작업 노트 또는 `assets/CREDITS.txt`에 URL·접속일·사용 사실을 남긴다. 최신성이 중요한 주장은 반드시 웹으로 확인하고, 근거가 약하면 슬라이드 문장을 낮은 확신 표현으로 바꾸거나 제외한다.
+사용자가 "웹에서 찾아서", "리서치해서", "요즘 자료로", "최신 근거로"처럼 말해도 제작 포맷 질문을 먼저 완료한다. 그다음 [reference/research.md](reference/research.md)를 따른다. 목적·청중·한줄메시지는 짧게 확인하되, 리서치가 필요한 사실/수치/사례를 명시적으로 소스 맵에 기록한다. 슬라이드에는 출처를 과하게 노출하지 말고, 작업 노트 또는 `assets/CREDITS.txt`에 URL·접속일·사용 사실을 남긴다. 최신성이 중요한 주장은 반드시 웹으로 확인하고, 근거가 약하면 슬라이드 문장을 낮은 확신 표현으로 바꾸거나 제외한다.
 
 ## 파일 구조
 스킬이 동작하는 작업 공간 레이아웃(프로젝트 루트 기준):
@@ -243,12 +259,12 @@ output/NN_<slug>_<YYYYMMDD>/    ← 덱마다 폴더 (순번_주제_날짜)
 archive/                        ← 작업 스크래치 격리
 ```
 
-- 새 덱은 `python3 .codex/skills/pt-maker/scripts/new_deck.py "<slug>" --mode <mode>`로 만든다(기본 `presentation`, 순번=기존 최대+1, 날짜=오늘 자동).
+- 새 덱은 `python3 .codex/skills/pt-maker/scripts/new_deck.py "<slug>" --production-direction <animation|text|image> [--mode <mode>]`로 만든다(포맷 선택 필수, 순번=기존 최대+1, 날짜=오늘 자동).
 - 덱 산출물은 **항상 그 덱 폴더 안**에 둔다. 루트에 흩뿌리지 않는다.
 - 이미지는 각 runtime project의 `assets/...` 상대경로를 쓴다. `both`에서 asset을 공유하려고 project root 바깥을 참조하지 않는다.
 
 ## 입력 (Codex가 이해하는 무엇이든)
-손글씨·스케치·이미지 같은 참고자료가 있을 법하면 **먼저 "인풋을 넣어 달라"고 요청**한다. 받은 뒤에는 **그걸 어떻게 쓸지를 사용자에게 물어본 다음** 진행한다 — 단정하고 바로 쓰지 않는다.
+제작 포맷이 확정된 뒤 손글씨·스케치·이미지 같은 참고자료가 있을 법하면 **"인풋을 넣어 달라"고 요청**한다. 받은 뒤에는 **그걸 어떻게 쓸지를 사용자에게 물어본 다음** 진행한다 — 단정하고 바로 쓰지 않는다.
 
 - **자유 텍스트 토론**: 주제만 주면 같이 구조를 잡아간다.
 - **이미지/스케치/필기**: 첨부 이미지나 `input/` 파일을 Codex가 직접 읽는다. 받은 이미지를 **어떻게 쓸지 반드시 확인**한다:
@@ -261,13 +277,14 @@ archive/                        ← 작업 스크래치 격리
 ## Workflow
 덱을 만들기 전에 **`taste-profile.md`를 읽어** 톤·구조·브랜드 프리셋 기본값을 적용한다(없으면 빈 템플릿 생성). 슬라이드 품질 기준은 [reference/presentation-craft.md](reference/presentation-craft.md). 단계 순서는 상황에 맞게 바뀔 수 있다(예: 참고자료를 먼저 받으면 4가 앞당겨짐).
 
-0. **브라우저 런타임 게이트** → `python3 .codex/skills/pt-maker/scripts/browser_harness_runtime.py --ensure`를 실행한다. 실패하면 browser-harness/Chrome 의존성을 복구하기 전까지 작업을 시작하지 않는다.
-1. **소스 확보 (Grill Me + 자료 인테이크)** → [reference/intake.md](reference/intake.md)를 따른다. 먼저 참고자료 여부를 확인하고, 없으면 바로 인터뷰로 들어간다. 질문은 **한 번에 하나씩** 하며 목적, 타겟 독자/청중, 한줄메시지, 발표 상황, 근거/데이터, CTA, 기획 방향을 좁힌 뒤 분위기/톤, 색상 팔레트, 사진·스크린샷·AI 이미지 추가 레벨을 확인한다. 받은 자료는 목적별로 분류하고, 손글씨·스케치·이미지는 활용 방식((a) 내용 재구성 vs (b) 원본 임베드)을 물어본 뒤 진행한다. → 산출물: 인테이크 노트 + 자료 맵 + 비주얼 방향.
-2. **웹 리서치** → [reference/research.md](reference/research.md). 근거가 빈 항목·최신 데이터를 웹으로 보강하고, 사용자가 웹에서 찾아서 만들라고 한 경우에는 이 단계를 생략하지 않는다. 리서치 결과는 `claim / source / date / slide-use` 형태로 소스 맵에 남긴다.
-3. **기획** → 스토리 짜기 전에 먼저 [reference/product-judgment.md](reference/product-judgment.md)로 **제품 판단 블록**(타겟 순간·king action·AI 특이점·신뢰 장치·반복 루프·뺄 것)을 한 번 잡는다 — 제품/AI 기능을 파는 덱이면 필수, 단순 정보 전달 덱이면 생략 가능. 그 위에서 **타겟 청중을 확정**하고 그들에게 꽂히는 한줄메시지·스토리라인·Chapter 구조를 잡는다. 슬라이드 개요(슬라이드별 제목+요점+`visual plan`)를 사용자와 합의. `visual plan`에는 사진/스샷/차트/SVG/생성 후보, 출처·경로, 레이아웃 역할, subject/focal-point 안전성, 지도라면 map-base 출처, fallback을 적는다. **One idea per slide** — 제목에 "그리고/및"이 들어가면 두 장으로.
-4. **구성/빌드** → 적합한 mode로 `new_deck.py`를 실행한다. presentation은 `deck.html` section을, animation은 `animation/STORYBOARD.md`와 `animation/index.html`의 timed scene clip을 수정한다. 사용자가 참고자료 덱(PPT/PDF)을 주면 [reference/reference-ingest.md](reference/reference-ingest.md)로 콘텐츠+스타일을 흡수(스타일은 확인 후 취향 반영). 주요 장면은 텍스트만으로 빌드하지 않고, `visual plan`의 시각자료 슬롯을 실제 사진·스샷·차트·SVG·승인된 생성 이미지 중 하나로 채운다. **빌드 내내 craft.md의 [★ 심미성 체크리스트](reference/presentation-craft.md)(가독성·통일성·균형·여백·시각자료·다양성·디테일)를 기준으로 만든다.**
-5. **이미지/시각자료** → 모든 주요 슬라이드는 시각자료 슬롯을 가진다. 웹·공식·공개 자료에서 먼저 찾고(스샷/실물 우선), 데이터·흐름·비교는 인라인 SVG/차트/다이어그램을 우선한다. 생성이 필요하면 **묻지 말고 바로 생성하지 않는다**: 먼저 해당 슬라이드에 `🖼 AI로 그릴 그림입니다` 플레이스홀더로 1차 초안을 만들고, **예상 장수와 슬라이드별 생성 목적을 알려 사용자에게 생성 여부를 확인**한다. 승인 후 Codex에서는 `$imagegen` 스킬을 적용해 built-in `image_gen` 도구로 자산마다 한 번씩 생성하고, 결과를 검수한 뒤 해당 덱의 `assets/`로 복사·이동해 플레이스홀더를 교체한다. built-in 경로에는 API 키가 필요하지 않으며 고정 장당 비용을 안내하지 않는다. 사용자 원본 이미지는 생성하지 말고 그대로 임베드한다. 로컬 이미지 편집은 먼저 `view_image`로 대상을 확인한 뒤 `$imagegen` 편집 흐름을 따른다. 생성·임베드 이미지는 모두 그 덱의 `assets/`에 둔다(사용자 원본은 `input/`→`assets/` 복사).
-6. **필수 QA iteration + 사용자 검수 단계** → PDF/contact sheet를 렌더링하고 [reference/general-pt-making-checklist.md](reference/general-pt-making-checklist.md)와 [alignment-eval-rubric.md](reference/alignment-eval-rubric.md)로 채점한다. agent/subagent 도구가 있으면 **반드시 dedicated QA reviewer agent**를 실행해 P0/P2/100점 점수/수정 목록을 받는다(없으면 `qa-agent: unavailable` 기록 후 수동으로 동일 체크). P0가 하나라도 있거나 점수 < 90이면 source HTML/CSS/assets를 수정 → PDF/contact sheet 재렌더 → agent/manual QA를 다시 반복한다. 통과하면 먼저 QA 결과(score, P0=0, 남은 P2)와 HTML/PDF 후보를 사용자에게 보고하고, 그 다음 수정 요청 단계로 들어간다. 사용자가 수정 요청을 주면 새 버전으로 처리해 수정 → 재렌더 → QA 반복 → 재보고한다. **변경마다 덱 버전을 올린다.** 최종 마감 시 이번 덱에서 배운 취향을 **diff로 제안**하고 사용자가 확인한 것만 `taste-profile.md`에 기록(version +1). 조용히 바꾸지 않는다. 생성 이미지 개수, 최종 저장 경로, 사용 모드(`imagegen built-in` 또는 명시적으로 승인된 fallback)를 요약한다.
+0. **제작 포맷 첫 질문** → 어떤 파일이나 도구도 열기 전에 [reference/production-direction.md](reference/production-direction.md)의 세 가지 포맷만 묻는다. 사용자가 건너뛰면 `image`를 적용한다.
+1. **브라우저 런타임 게이트** → 포맷 확정 뒤 `python3 .codex/skills/pt-maker/scripts/browser_harness_runtime.py --ensure`를 실행한다. 실패하면 browser-harness/Chrome 의존성을 복구하기 전까지 인테이크 이후 작업을 시작하지 않는다.
+2. **소스 확보** → `taste-profile.md`를 읽고 [reference/intake.md](reference/intake.md)를 따른다. 참고자료, 목적, 타겟 독자/청중, 한줄메시지, 발표 상황, 근거/데이터, CTA, 기획 방향, 분위기/톤, 색상 팔레트를 **한 번에 하나씩** 묻는다. 받은 자료는 목적별로 분류하고, 손글씨·스케치·이미지는 활용 방식((a) 내용 재구성 vs (b) 원본 임베드)을 물어본 뒤 진행한다. → 산출물: 포맷이 기록된 인테이크 노트 + 자료 맵 + 비주얼 방향.
+3. **웹 리서치** → [reference/research.md](reference/research.md). 근거가 빈 항목·최신 데이터를 웹으로 보강하고, 사용자가 웹에서 찾아서 만들라고 한 경우에는 이 단계를 생략하지 않는다. 리서치 결과는 `claim / source / date / slide-use` 형태로 소스 맵에 남긴다.
+4. **기획** → 스토리 짜기 전에 먼저 [reference/product-judgment.md](reference/product-judgment.md)로 **제품 판단 블록**(타겟 순간·king action·AI 특이점·신뢰 장치·반복 루프·뺄 것)을 한 번 잡는다 — 제품/AI 기능을 파는 덱이면 필수, 단순 정보 전달 덱이면 생략 가능. 그 위에서 **타겟 청중을 확정**하고 그들에게 꽂히는 한줄메시지·스토리라인·Chapter 구조를 잡는다. 슬라이드 개요를 사용자와 합의한다. `image`는 슬라이드별 제목+요점+`visual plan`, `text`는 제목+카피+레이아웃 계획, `animation`은 제목+장면+모션/컴포지션 계획을 적는다. **One idea per slide** — 제목에 "그리고/및"이 들어가면 두 장으로.
+5. **구성/빌드** → 적합한 mode로 `new_deck.py`를 실행한다. presentation은 `deck.html` section을, animation은 `animation/STORYBOARD.md`와 `animation/index.html`의 timed scene clip을 수정한다. 사용자가 참고자료 덱(PPT/PDF)을 주면 [reference/reference-ingest.md](reference/reference-ingest.md)로 콘텐츠+스타일을 흡수(스타일은 확인 후 취향 반영). `image`는 `visual plan`의 모든 슬롯을 관련 자산으로 채우고, `text`는 제목·카피·본문 계층을 주인공으로, `animation`은 HyperFrames 장면과 모션 계획을 중심으로 빌드한다. **빌드 내내 craft.md의 [★ 심미성 체크리스트](reference/presentation-craft.md)(가독성·통일성·균형·여백·시각자료·다양성·디테일)를 기준으로 만든다.**
+6. **이미지/시각자료** → 선택한 포맷 계약을 따른다. `image` 포맷은 모든 주요 텍스트에 대응 이미지가 있고 덱 전체에 이미지가 여러 장 있어야 한다. 사용자 자산과 웹·공식·공개 자료를 먼저 찾고, 적합한 이미지가 부족하면 예상 생성 장수와 슬라이드별 목적을 알린 뒤 별도 승인 질문 없이 `$imagegen`의 built-in `image_gen`을 적극 사용한다. `text` 포맷은 제목·문장을 주인공으로 두고 이미지는 보조적으로만 쓴다. 데이터·흐름·비교는 인라인 SVG/차트/다이어그램을 우선한다. 생성 결과를 검수한 뒤 해당 덱의 `assets/`로 복사·이동한다. built-in 경로에는 API 키가 필요하지 않으며 고정 장당 비용을 안내하지 않는다. 사용자 원본 이미지는 생성하지 말고 그대로 임베드한다. 로컬 이미지 편집은 먼저 `view_image`로 대상을 확인한 뒤 `$imagegen` 편집 흐름을 따른다.
+7. **필수 QA iteration + 사용자 검수 단계** → PDF/contact sheet를 렌더링하고 [reference/general-pt-making-checklist.md](reference/general-pt-making-checklist.md)와 [alignment-eval-rubric.md](reference/alignment-eval-rubric.md)로 채점한다. agent/subagent 도구가 있으면 **반드시 dedicated QA reviewer agent**를 실행해 P0/P2/100점 점수/수정 목록을 받는다(없으면 `qa-agent: unavailable` 기록 후 수동으로 동일 체크). P0가 하나라도 있거나 점수 < 90이면 source HTML/CSS/assets를 수정 → PDF/contact sheet 재렌더 → agent/manual QA를 다시 반복한다. 통과하면 먼저 QA 결과(score, P0=0, 남은 P2)와 HTML/PDF 후보를 사용자에게 보고하고, 그 다음 수정 요청 단계로 들어간다. 사용자가 수정 요청을 주면 새 버전으로 처리해 수정 → 재렌더 → QA 반복 → 재보고한다. **변경마다 덱 버전을 올린다.** 최종 마감 시 이번 덱에서 배운 취향을 **diff로 제안**하고 사용자가 확인한 것만 `taste-profile.md`에 기록(version +1). 조용히 바꾸지 않는다. 생성 이미지 개수, 최종 저장 경로, 사용 모드(`imagegen built-in` 또는 명시적으로 승인된 `fallback`)를 요약한다.
 
 ### HTML-native 완성도 확장
 - 기획표에는 슬라이드별 `claim / evidence / visual plan / motion purpose / speaker note`를 추가한다. 연속 장면에는 subject·camera·environment invariants와 예상 프레임 수를 적는다.
@@ -370,15 +387,16 @@ python scripts/export_pptx.py "output/NN_slug_date/<주제>v<N>.html" "output/NN
 ## 보안 — built-in 우선, `.env` 절대 읽지 말 것
 Codex의 `$imagegen` built-in 경로에는 API 키가 필요하지 않다. API 키를 요청하거나 `.env`를 만들거나 읽지 않는다.
 - 사용자가 direct API/CLI fallback을 명시적으로 선택한 경우에도 키를 채팅에 붙여 넣게 하지 말고 로컬 환경 변수로 설정하도록 안내한다. 실제 `.env`는 **읽거나 출력하지 않는다**.
-- 스킬 폴더에 실제 키 `.env`를 두더라도 **공개 repo(csm-kr/sm-skills)에는 절대 올리지 않는다**. 게시본에는 빈 `env.example` 템플릿만 포함한다.
+- 스킬 폴더에 실제 키 `.env`를 두더라도 **공개 repo(csm-kr/pt-maker-skill)에는 절대 올리지 않는다**. 게시본에는 빈 `env.example` 템플릿만 포함한다.
 
 ## 빠른 사용법
 | 하고 싶은 것 | 방법 |
 |---|---|
-| 새 덱 | `new_deck.py "<slug>"` → 출력된 deck.html 채우기 |
-| 웹에서 찾아 PT | `reference/research.md`로 소스 맵 작성 → 개요 합의 → `new_deck.py` |
+| 제작 시작 | 첫 질문으로 `애니메이션 위주 / 줄글 위주 / 이미지 위주` 중 하나를 묻는다. 사용자가 선택을 넘기면 `image` |
+| 새 덱 | `new_deck.py "<slug>" --production-direction <animation\|text\|image>` → 포맷별 산출물 채우기 |
+| 웹에서 찾아 PT | 포맷 확정 → `reference/research.md`로 소스 맵 작성 → 개요 합의 → 해당 `--production-direction`으로 `new_deck.py` |
 | 사용자 그림 넣기 | `input/`→덱 `assets/` 복사 후 `s-image` polaroid `<img src>`에 임베드 |
-| 일러스트 생성·편집 | 승인 후 `$imagegen` built-in 호출 → 선택본을 덱 `assets/`에 저장 |
+| 일러스트 생성·편집 | `image` 포맷이면 예상 장수·용도를 알린 뒤 `$imagegen` built-in을 적극 호출하고 선택본을 덱 `assets/`에 저장 |
 | 연속 장면 애니메이션 | continuity contract → `$imagegen` 3~6장 → `.image-sequence` |
 | HTML guard | `qa_html_guard.py output/NN_.../<주제>v<N>.html` |
 | media guard | `qa_media_guard.py output/NN_.../<주제>v<N>.html` |
@@ -389,12 +407,12 @@ Codex의 `$imagegen` built-in 경로에는 API 키가 필요하지 않다. API �
 ## Common mistakes
 - 받은 이미지(손글씨·스케치)를 **어떻게 쓸지 안 묻고** 임의로 임베드/재구성 → ❌. 먼저 인풋을 넣어 달라고 요청하고, 받으면 (a) 내용 재구성 vs (b) 원본 임베드를 **물어본 뒤** 진행.
 - 사용자 원본 이미지를 생성/변형 → ❌. 원본 그대로 임베드.
-- 이미지를 사용자 확인 없이 바로 생성 → ❌. 1차는 `AI로 그릴 그림입니다` 플레이스홀더 + 예상 장수·슬라이드별 목적 안내 → **승인 후** 생성·교체.
+- `image` 포맷이 아닌데 이미지 생성을 사용자에게 알리지 않고 시작하거나, `image` 포맷에서 적합한 자산이 부족한데도 웹 탐색·`imagegen` 보강 없이 텍스트만 남기기 → ❌. `image` 선택/기본 적용은 생성 보강의 원칙적 동의이며 예상 장수·용도는 실행 전에 알린다.
 - Codex에서 `gen_image.py`나 direct API를 기본 이미지 생성 경로로 사용 → ❌. `$imagegen` 스킬의 built-in `image_gen`을 우선하고, 선택본을 덱 `assets/`에 저장한다. API/CLI fallback은 사용자가 명시적으로 요청하거나 built-in 실패 후 승인한 경우에만 사용한다.
 - 연속 프레임을 각각 독립적인 새 그림으로 생성 → ❌. 첫 프레임 이후에는 직전 승인 프레임을 reference로 쓰고 subject/camera/environment invariants를 고정한다.
 - 의미 없는 무한 wobble/pulse/float, transition을 4종 이상 혼용, reduced-motion/print 정지 포즈 누락 → ❌. 유한 모션과 2~3개 전환 어휘만 쓴다.
-- 표지·챕터 오프너·핵심 개념·사례·마감 슬라이드가 텍스트만 있음 → ❌. 각 주요 슬라이드에 사진/스샷/차트/SVG/승인된 AI 일러스트 중 하나를 배치하고, 개요 단계부터 `visual plan`을 적는다.
-- 콘텐츠 슬라이드가 두 장 이상 연속 텍스트만 있음 → ❌. 설명형이면 SVG/차트/타임라인으로, 무드형이면 승인받은 생성 이미지나 실사진으로 보강한다.
+- `image` 포맷의 표지·챕터 오프너·핵심 개념·사례·마감 슬라이드가 텍스트만 있음 → ❌. 각 주요 슬라이드에 관련 사진/스샷/차트/SVG/AI 일러스트 중 하나를 배치하고, 개요 단계부터 `visual plan`을 적는다.
+- `image` 포맷에서 콘텐츠 슬라이드가 두 장 이상 연속 텍스트만 있음 → ❌. 설명형이면 SVG/차트/타임라인으로, 무드형이면 생성 이미지나 실사진으로 보강한다. `text` 포맷에는 이 이미지 수량 규칙을 적용하지 않는다.
 - 모든 콘텐츠 슬라이드가 같은 레이아웃(불릿 좌·비주얼 우) → ❌ 단조롭다. 한 덱에서 카드 그리드·미러(비주얼 좌)·허브·가로 타임라인·중앙 statement·이미지 주연 등 3~4종 이상 섞는다(craft.md §2-11).
 - 줄간격이 좁아 빽빽 / 한글 라벨(SVG·kicker)을 모노폰트로 / 정확한 연도·숫자·고유명사를 손글씨 폰트(Nanum Pen)로 → ❌ 가독성. 본문 `line-height ≥ 1.5`, 한글은 Pretendard, 손글씨는 가벼운 메모·감탄에만(사실 정보는 정자체).
 - 본문·불릿을 무조건 32px 이상으로 키워 둔탁하게 만들기 → ❌. 일반 HTML 덱은 Pretendard 기준 본문 28-30px, hard floor 26px가 기본. 라벨은 20-22px, 출처/fine-print는 15-16px까지 허용하되, 작아 보이면 문장을 줄이거나 슬라이드를 나눈다. 큰 발표장/프로젝터용이면 32px로 올린다.
@@ -412,6 +430,7 @@ Codex의 `$imagegen` built-in 경로에는 API 키가 필요하지 않다. API �
 - 브랜드 색·폰트 변경 → ❌. 토큰 고정.
 - `.env`를 cat/Read로 열기 → ❌. Codex built-in 경로에는 필요도 없고 키가 대화에 노출될 수 있음.
 - `browser-harness`가 없다고 `browse`/Playwright/DeckTape/Codex Browser로 우회하거나 사용자의 보이는 Chrome에 붙기 → ❌. bootstrap으로 설치·등록하고 격리 background만 사용.
+- `$pt-maker ... 만들어줘` 요청에서 포맷 3지선다를 첫 질문으로 묻지 않거나, 여러 Grill Me 질문을 한 메시지에 묶거나, 포맷 확정 전에 참고자료·리서치·개요·스캐폴딩을 시작하기 → ❌. 사용자가 선택을 건너뛰면 `image`로 기록한 뒤 다음 질문 하나만 한다.
 - 레거시 direct API에서 vip 모델에 `quality` 전송 → ❌. official 전용.
 - deck.html을 작업공간 밖에 두고 브라우저 호출 → 열리지 않을 수 있음.
 - 세로로 긴 스샷을 폴라로이드(가로)에 → 빈 공간. `object-fit:cover` 썸네일 카드로.
@@ -419,7 +438,7 @@ Codex의 `$imagegen` built-in 경로에는 API 키가 필요하지 않다. API �
 - 한 슬라이드에 여러 주장(제목에 "그리고") → 두 장으로. One idea per slide.
 - 제목이 시각물(곡선·그래프·그림)을 약속했는데 본문에 안 그림 → ❌. 약속한 비주얼은 실제로 그린다(추상 막대·플레이스홀더 금지). statement 슬라이드는 미니 비주얼로 여백을 채움. 자세히는 [presentation-craft.md](reference/presentation-craft.md) §2-9·§4.
 - PDF 각 페이지에 인접 슬라이드가 비침/잘림 → ❌. `Reveal.initialize`에 `center:false` + `pdfPageHeightOffset:0` 필수, `verify_pdf.py`로 캡처 검증. 장수 늘리면 누적되어 심해지니 매번 재검증.
-- 인테이크에서 참고자료 여부를 확인하지 않거나, 질문을 여러 개 한꺼번에 던지거나, 필수 4항목(메시지·청중·근거·CTA)과 발표 상황·분위기·이미지 레벨을 안 채우고 슬라이드부터 만들기 → ❌. intake.md 순서대로 먼저.
+- 포맷 확정 뒤 인테이크에서 참고자료 여부를 확인하지 않거나, 질문을 여러 개 한꺼번에 던지거나, 필수 4항목(메시지·청중·근거·CTA)과 발표 상황·분위기·이미지 레벨을 안 채우고 슬라이드부터 만들기 → ❌. intake.md 순서대로 하나씩 먼저.
 - 취향을 사용자 확인 없이 조용히 taste-profile에 기록 → ❌. 항상 diff 제안 후 확인.
 - 사용자 최종 리뷰에서 나온 취향 학습을 `taste-profile.md`/`dark-taste-profile.md`에 반영할지 묻지 않거나, 반영/미반영 결정을 `user_review_ledger.json`에 남기지 않음 → ❌.
 - 덱 산출물(html·pdf·이미지)을 루트나 공용 `out/`에 흩뿌리기 → ❌. `output/NN_slug_date/`(이미지는 그 안 `assets/`)로.

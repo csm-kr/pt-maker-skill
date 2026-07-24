@@ -1,14 +1,15 @@
 # HyperFrames animation mode
 
-This reference applies when `pt-maker` produces a timed presentation film rather
-than a navigable Reveal deck. The runtime is pinned to `hyperframes@0.7.70`.
+This reference applies when the user confirms `애니메이션 위주` and `pt-maker`
+produces a timed HyperFrames HTML project plus a rendered export rather than a
+navigable Reveal deck. The runtime is pinned to `hyperframes@0.7.70`.
 
 ## Mode boundary
 
 | mode | authoring runtime | primary output | interaction | render model |
 |---|---|---|---|---|
 | `presentation` | Reveal.js | `.html` + PDF | keyboard, fragments, branches | one slide at a time |
-| `animation` | HyperFrames + paused GSAP | `.html` composition + MP4/WebM/GIF | timeline preview | deterministic full timeline |
+| `animation` | HyperFrames + paused GSAP | complete `.html` project + MP4/WebM/GIF export | timeline preview | deterministic full timeline |
 | `both` | both projects | live deck + linear film | separate outputs | separate QA gates |
 
 Do not use HyperFrames slideshow mode for a deliverable that must become one
@@ -206,6 +207,11 @@ python3 scripts/hyperframes_mode.py render animation \
 ```
 
 The render wrapper reruns `check --snapshots` after both gates pass.
+
+The final animation delivery must include the complete `animation/` HTML project
+(`index.html`, local `compositions/`, local `assets/`, motion assertions, and
+HyperFrames config) as well as the rendered export. Reject any final HTML project
+that points to a temporary path or is missing a required local composition/asset.
 
 ## Source
 

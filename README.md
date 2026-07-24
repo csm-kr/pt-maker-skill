@@ -2,9 +2,9 @@
 
 Codex에서 발표자료를 기획·제작·검수하는 `pt-maker` 스킬입니다.
 
-- `presentation`: Reveal.js 기반 1280×720 HTML 덱과 PDF
-- `animation`: HyperFrames 기반 deterministic animation과 영상
-- `both`: 발표용 덱과 애니메이션을 각각 생성
+- `애니메이션 위주`: HyperFrames 기반 완성 HTML 프로젝트와 렌더 export
+- `줄글 위주`: 제목·카피·본문 중심의 Reveal.js HTML 덱과 PDF
+- `이미지 위주`: 주요 텍스트마다 관련 이미지가 들어가는 Reveal.js HTML 덱과 PDF
 - 렌더링·미리보기·스크린샷은 격리된 background `browser-harness` 사용
 - HTML·미디어·PDF·애니메이션·사용자 리뷰 QA gate 포함
 
@@ -40,20 +40,38 @@ $pt-maker 제품 소개 발표자료를 15장으로 만들어줘.
 $pt-maker 이 기획안을 발표용 HTML과 애니메이션 영상으로 만들어줘.
 ```
 
+호출 직후에는 작업을 시작하기 전에 다음 질문을 반드시 하나만 합니다.
+
+```text
+어떤 포맷으로 만들까요?
+1. 애니메이션 위주
+2. 줄글 위주
+3. 이미지 위주
+```
+
+사용자가 `그냥 진행`, `알아서`, `넘어가`처럼 선택을 건너뛰면
+`이미지 위주`를 기본값으로 적용합니다. 이후 Grill Me 인테이크도 한 번에
+질문 하나씩 진행합니다. 이미지 위주에서는 웹·공식·공개 자산을 먼저 찾고,
+부족하면 built-in `imagegen`을 적극 사용해 여러 장의 관련 이미지를 채웁니다.
+
 새 프로젝트를 직접 만들 때:
 
 ```bash
-# Reveal HTML + PDF
+# 줄글 위주 Reveal HTML + PDF
 python3 .codex/skills/pt-maker/scripts/new_deck.py \
-  "topic-slug" --mode presentation
+  "topic-slug" --production-direction text
 
-# HyperFrames animation
+# 이미지 위주 Reveal HTML + PDF
 python3 .codex/skills/pt-maker/scripts/new_deck.py \
-  "topic-slug" --mode animation
+  "topic-slug" --production-direction image
 
-# 두 형식 모두
+# HyperFrames animation HTML project + render export
 python3 .codex/skills/pt-maker/scripts/new_deck.py \
-  "topic-slug" --mode both
+  "topic-slug" --production-direction animation
+
+# 고급 옵션: 이미지 위주 발표 덱과 애니메이션 프로젝트를 함께 스캐폴딩
+python3 .codex/skills/pt-maker/scripts/new_deck.py \
+  "topic-slug" --production-direction image --mode both
 ```
 
 ## Background 실행
