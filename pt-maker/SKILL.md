@@ -293,7 +293,7 @@ archive/                        ← 작업 스크래치 격리
 ### HTML-native 완성도 확장
 - 기획표에는 슬라이드별 `claim / evidence / visual plan / motion purpose / speaker note`를 추가한다. 연속 장면에는 subject·camera·environment invariants와 예상 프레임 수를 적는다.
 - 빌드 전에 [reference/html-presentation-craft.md](reference/html-presentation-craft.md)를 읽고 고정 1280×720 무대, scene layers, safe zone, finite motion, print/reduced-motion 정지 포즈를 적용한다.
-- 모션은 `rise|fade|scale|wipe` 중 덱 전체 2~3종만 사용한다. 장식용 무한 반복을 금지하고 슬라이드 이탈 시 media/sequence를 멈춘다.
+- presentation 모드의 fragment 모션과 animation 모드의 **슬라이드 간 전환**은 `rise|fade|scale|wipe` 중 덱 전체 2~3종으로 제한한다. animation 모드의 **슬라이드 내부 빌드**는 장면 의미에 맞춰 다양화하되, 같은 generic reveal을 3장 연속 반복하지 않는다. 장식용 무한 반복을 금지하고 슬라이드 이탈 시 media/sequence를 멈춘다.
 - 연속 이미지는 [reference/motion-continuity.md](reference/motion-continuity.md)에 따라 `$imagegen`으로 만들고, 프레임 1 이후에는 직전 승인 프레임을 reference로 사용한다.
 - 내보내기 전에 `qa_html_guard.py`와 `qa_media_guard.py`를 모두 통과한다. 렌더 후 [reference/html-quality-rubric.md](reference/html-quality-rubric.md)의 7개 영역을 채점하며 pass는 90점, 완성도 목표는 94점이다.
 
@@ -301,6 +301,9 @@ archive/                        ← 작업 스크래치 격리
 - [reference/hyperframes-animation-mode.md](reference/hyperframes-animation-mode.md)의 root/clip/timeline/determinism 계약을 그대로 지킨다. runtime은 `hyperframes@0.7.70`으로 pin한다.
 - track 0 장면은 root duration 전체를 빈틈·겹침 없이 덮는다. persistent carrier/progress/audio는 상위 track을 쓸 수 있다.
 - static end state를 CSS로 먼저 완성하고 scene을 `compositions/scene-*.html` 외부 sub-composition으로 분리한다. parent는 persistent carrier/progress만, child는 자기 nested element만 `gsap.timeline({paused:true})`에서 절대 시간으로 tween한다. 각 timeline key는 composition id와 같아야 하며 child timeline을 parent에 수동으로 붙이지 않는다.
+- 각 장면에 의미 있는 signature build를 하나 정한다. `text-write`, `line-draw`, `image-reveal`, `card-assembly`, `metric-stamp`, `diagram-build`, `photo-zoom` 중 내용을 가장 잘 설명하는 방식을 쓰고, 덱 전체에는 최소 4개 build family를 배치한다. 제목/짧은 라벨은 실제 텍스트를 유지한 채 clip/mask로 써지는 듯 보이게 하고, 선·화살표·차트·점선 도식은 SVG path 또는 transform-origin이 고정된 선으로 그려지게 한다. 타자 효과를 위해 DOM 텍스트를 시간마다 바꾸거나 `letter-spacing`을 tween하지 않는다.
+- 실선 SVG는 `pathLength="1"`과 stroke dash reveal을 쓴다. 점선 경로는 점선 자체의 dash offset만 움직이지 말고, 별도의 solid stroke mask를 `stroke-dasharray="1"`/`stroke-dashoffset` attribute로 그려 점선이 점진적으로 나타나게 한다. 원/타원 위 라벨은 full-size 브라우저 좌표로 중심이 경로 위에 놓이는지 수치와 화면을 모두 확인한다.
+- 한 장의 시작·빌드 중간·resolved pose를 캡처해 모션이 실제 제작 과정처럼 보이는지 확인한다. 사용자 지적 페이지와 모든 custom diagram은 이 3포즈 검수를 필수로 하고, 전체 resolved contact sheet로 회귀를 확인한다.
 - `Date.now`, `performance.now`, `Math.random`, timer, render-time fetch, interaction-dependent state, imperative `.play()`, infinite repeat를 금지한다.
 - `index.motion.json`에 `appearsBy`, `before`, `staysInFrame`, `keepsMoving` 중 의미 있는 assertion을 둔다.
 - 먼저 `qa_animation_guard.py`, 그다음 `hyperframes_mode.py lint`, `check --snapshots`, browser preview를 실행한다. 장면 확정 후 `build_animated_presentation.py animation -o animation/<주제>-발표용-vN.html`을 실행하며, 이 HTML이 animation의 기본 최종 산출물이다. 발표용 HTML은 좌우 키·스페이스·터치로 넘길 수 있고, 어떤 방향으로 재진입해도 해당 장면 타임라인을 처음부터 다시 재생해야 한다. 전체화면과 현재 장면 재생 기능도 제공한다.

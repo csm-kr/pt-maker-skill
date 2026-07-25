@@ -90,6 +90,53 @@ Use a build–breathe–resolve rhythm:
 2. **Breathe** — let the audience read without gratuitous movement.
 3. **Resolve** — complete the idea and hand a vector or carrier to the next scene.
 
+## Authored motion and scene variety
+
+Keep slide-to-slide transition grammar to two or three families, but vary the
+inside-scene build so the deck feels authored rather than templated.
+
+1. Assign every scene one semantic `signature build` in `STORYBOARD.md` and
+   `motion-ledger.json`: `text-write`, `line-draw`, `image-reveal`,
+   `card-assembly`, `metric-stamp`, `diagram-build`, or `photo-zoom`.
+2. Use at least four signature-build families across a deck. Never repeat the
+   same generic title/subtitle/visual entrance for three consecutive scenes.
+3. Reveal in meaning order. A comparison may assemble from opposite sides, a
+   process should draw connectors in sequence, a metric may stamp after its
+   evidence, and a photo-led scene may uncover the subject before its caption.
+4. Preserve a stable reading beat. Variety does not authorize continuous
+   motion, random directions, or more slide-transition families.
+
+Create a writing illusion without mutating accessible text:
+
+- Keep the complete text in the DOM and animate a local clip/mask across the
+  heading or short label.
+- Use transforms and opacity for supporting copy.
+- Do not tween `letter-spacing`, width, or other reflow properties. If true
+  per-character writing is essential, wrap characters once at authoring time
+  and animate glyph transforms on the paused timeline.
+- Do not animate a full-slide clip-path; limit masks to the local text or image
+  element so live navigation remains compositor-friendly.
+
+Create a drawing illusion from geometry:
+
+- For a solid SVG path, set `pathLength="1"` and reveal it with normalized
+  stroke-dash attributes.
+- For a dotted or dashed path, keep the visible dotted stroke static and reveal
+  it through a second solid-stroke SVG mask whose
+  `stroke-dasharray="1"`/`stroke-dashoffset` attributes animate from `1` to `0`.
+  Shifting the dotted stroke's own dash offset only moves the pattern; it does
+  not look drawn.
+- For a simple CSS connector, animate `scaleX`/`scaleY` from a documented
+  `transform-origin`. Use SVG when endpoints or curves must land precisely.
+- Place repeated node labels by geometry, not visual guesswork. For a label
+  centered at `(x,y)` on an ellipse `(cx,cy,rx,ry)`, verify
+  `((x-cx)/rx)^2 + ((y-cy)/ry)^2 ≈ 1` in the final 1920×1080 browser render.
+
+Capture start, active-build, and resolved full-size frames for every
+user-flagged scene and custom diagram. Also inspect a contact sheet made from
+all resolved scenes. A resolved-only screenshot cannot prove writing/drawing
+motion or catch a broken intermediate pose.
+
 ## Continuity
 
 Every important seam is one of:

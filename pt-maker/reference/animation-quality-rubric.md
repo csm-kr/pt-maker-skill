@@ -9,7 +9,7 @@ P0 exists. A score without snapshot and complete timeline evidence is invalid.
 |---|---:|---|
 | Narrative and claims | 16 | Each scene has one claim; titles alone form a coherent arc; evidence supports the exact claim. |
 | Frame design | 14 | Hierarchy, safe area, contrast, typography, composition variety, and one dominant visual per scene. |
-| Motion craft | 20 | Motion reveals meaning, has a build–breathe–resolve rhythm, uses finite easing and only 2–3 transition families. |
+| Motion craft | 20 | Motion reveals meaning, has a build–breathe–resolve rhythm, uses finite easing and only 2–3 slide-transition families, and distributes at least four semantic inside-scene signature builds without three consecutive generic repeats. |
 | Seam continuity | 14 | Exit/entry vectors, carrier identity, camera state, and image-sequence identity remain coherent. |
 | Timing and readability | 12 | Claims appear before evidence; reading beats are long enough; no rushed last scene or accidental dead time. |
 | Accessibility and safe content | 8 | No essential content depends on audio alone; captions/labels are readable; rights and attributions are recorded. |
@@ -33,6 +33,9 @@ P0 exists. A score without snapshot and complete timeline evidence is invalid.
   presentation HTML, or a slide does not replay its scene timeline on re-entry.
 - Keyboard/touch navigation changes the visible slide without updating the
   scene animation, slide count, or progress state.
+- A dotted/solid line is claimed to draw but only shifts its dash pattern, a
+  writing effect mutates accessible text, or an intermediate build pose visibly
+  disconnects labels, connectors, or diagram nodes.
 
 ## Review sampling
 
