@@ -420,6 +420,7 @@ Codex의 `$imagegen` built-in 경로에는 API 키가 필요하지 않다. API �
 - Codex에서 `gen_image.py`나 direct API를 기본 이미지 생성 경로로 사용 → ❌. `$imagegen` 스킬의 built-in `image_gen`을 우선하고, 선택본을 덱 `assets/`에 저장한다. API/CLI fallback은 사용자가 명시적으로 요청하거나 built-in 실패 후 승인한 경우에만 사용한다.
 - 연속 프레임을 각각 독립적인 새 그림으로 생성 → ❌. 첫 프레임 이후에는 직전 승인 프레임을 reference로 쓰고 subject/camera/environment invariants를 고정한다.
 - 의미 없는 무한 wobble/pulse/float, transition을 4종 이상 혼용, reduced-motion/print 정지 포즈 누락 → ❌. 유한 모션과 2~3개 전환 어휘만 쓴다.
+- 애니메이션 HTML의 모든 슬라이드에 `will-change`를 걸거나, 1920×1080 전체 화면 blur/backdrop-filter/animated clip-path를 전환 중 보간해 넘김이 버벅임 → ❌. `transform/opacity` 중심으로 만들고 현재·양옆 장면만 GPU 승격하며 `qa_animated_presentation.py`의 frame-time evidence를 확인한다.
 - `image` 포맷의 표지·챕터 오프너·핵심 개념·사례·마감 슬라이드가 텍스트만 있음 → ❌. 각 주요 슬라이드에 관련 사진/스샷/차트/SVG/AI 일러스트 중 하나를 배치하고, 개요 단계부터 `visual plan`을 적는다.
 - `image` 포맷에서 콘텐츠 슬라이드가 두 장 이상 연속 텍스트만 있음 → ❌. 설명형이면 SVG/차트/타임라인으로, 무드형이면 생성 이미지나 실사진으로 보강한다. `text` 포맷에는 이 이미지 수량 규칙을 적용하지 않는다.
 - 모든 콘텐츠 슬라이드가 같은 레이아웃(불릿 좌·비주얼 우) → ❌ 단조롭다. 한 덱에서 카드 그리드·미러(비주얼 좌)·허브·가로 타임라인·중앙 statement·이미지 주연 등 3~4종 이상 섞는다(craft.md §2-11).

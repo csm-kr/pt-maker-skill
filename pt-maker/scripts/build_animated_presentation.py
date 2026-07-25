@@ -196,13 +196,12 @@ def presenter_css(width: int, height: int) -> str:
       inset: 0;
       overflow: hidden;
       background:
-        radial-gradient(circle at 18% 16%, color-mix(in srgb, var(--show-a) 24%, transparent), transparent 36%),
-        radial-gradient(circle at 82% 78%, color-mix(in srgb, var(--show-b) 19%, transparent), transparent 38%),
+        radial-gradient(circle at 18% 16%, rgba(255,120,170,.22), transparent 36%),
+        radial-gradient(circle at 82% 78%, rgba(117,231,224,.18), transparent 38%),
         linear-gradient(135deg, #120b19 0%, var(--show-night) 48%, #101321 100%);
       touch-action: pan-y;
       user-select: none;
       isolation: isolate;
-      transition: background 700ms ease;
     }}
     .show-lightfield {{
       position: absolute;
@@ -210,7 +209,6 @@ def presenter_css(width: int, height: int) -> str:
       z-index: 0;
       overflow: hidden;
       pointer-events: none;
-      filter: saturate(1.2);
     }}
     .show-aurora {{
       position: absolute;
@@ -221,26 +219,25 @@ def presenter_css(width: int, height: int) -> str:
       filter: blur(80px);
       transform: translate3d(0,0,0);
       transition:
-        background-color 700ms ease,
         transform 900ms cubic-bezier(.2,.8,.2,1),
         opacity 700ms ease;
     }}
     .show-aurora--a {{
       left: -8%;
       top: -18%;
-      background: var(--show-a);
+      background: #ff78aa;
     }}
     .show-aurora--b {{
       right: -10%;
       bottom: -20%;
-      background: var(--show-b);
+      background: #75e7e0;
     }}
     .show-aurora--c {{
       left: 42%;
       top: 34%;
       width: 30vw;
       height: 30vw;
-      background: var(--show-c);
+      background: #ffd166;
       opacity: .12;
     }}
     #animated-presentation[data-phase="1"] .show-aurora--a,
@@ -268,7 +265,7 @@ def presenter_css(width: int, height: int) -> str:
       width: 12%;
       height: 160%;
       opacity: .14;
-      background: linear-gradient(90deg, transparent, var(--show-b), transparent);
+      background: linear-gradient(90deg, transparent, #75e7e0, transparent);
       filter: blur(18px);
       transform: rotate(24deg);
       transition: transform 900ms cubic-bezier(.2,.8,.2,1);
@@ -286,11 +283,10 @@ def presenter_css(width: int, height: int) -> str:
       transform-origin: center center;
       border: 1px solid rgba(255,255,255,.24);
       box-shadow:
-        0 0 0 1px color-mix(in srgb, var(--show-a) 20%, transparent),
+        0 0 0 1px rgba(255,120,170,.2),
         0 38px 120px rgba(0,0,0,.64),
-        0 0 90px color-mix(in srgb, var(--show-a) 17%, transparent);
+        0 0 90px rgba(255,120,170,.16);
       perspective: 2600px;
-      transition: box-shadow 700ms ease;
     }}
     .stage-atmosphere {{
       position: absolute;
@@ -304,8 +300,8 @@ def presenter_css(width: int, height: int) -> str:
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(115deg, color-mix(in srgb, var(--show-a) 10%, transparent), transparent 28%),
-        linear-gradient(295deg, color-mix(in srgb, var(--show-b) 9%, transparent), transparent 30%);
+        linear-gradient(115deg, rgba(255,120,170,.09), transparent 28%),
+        linear-gradient(295deg, rgba(117,231,224,.08), transparent 30%);
       mix-blend-mode: screen;
     }}
     .stage-atmosphere::after {{
@@ -320,7 +316,7 @@ def presenter_css(width: int, height: int) -> str:
       position: absolute;
       width: 130px;
       height: 130px;
-      border-color: color-mix(in srgb, var(--show-c) 76%, white);
+      border-color: #ffe39a;
       opacity: .72;
     }}
     .stage-corner--tl {{
@@ -340,7 +336,7 @@ def presenter_css(width: int, height: int) -> str:
       inset: 0;
       z-index: 2;
       transform-style: preserve-3d;
-      transition: transform .72s cubic-bezier(.16,.84,.24,1);
+      transition: transform .5s cubic-bezier(.2,.78,.22,1);
       will-change: transform;
     }}
     .animated-slide {{
@@ -350,31 +346,30 @@ def presenter_css(width: int, height: int) -> str:
       height: {height}px;
       overflow: hidden;
       background: var(--paper, #fff);
-      opacity: .2;
-      filter: blur(12px) brightness(.72) saturate(.78);
-      transform: translateZ(-170px) scale(.92) rotateY(-5deg);
+      opacity: 1;
+      transform: none;
       transform-origin: center center;
-      clip-path: inset(2.5% 3.5% round 28px);
       transition:
-        opacity .5s ease,
-        filter .62s ease,
-        transform .72s cubic-bezier(.16,.84,.24,1),
-        clip-path .72s cubic-bezier(.16,.84,.24,1);
+        opacity .34s ease,
+        transform .5s cubic-bezier(.2,.78,.22,1);
       backface-visibility: hidden;
-      will-change: transform, filter, opacity, clip-path;
+      contain: layout paint;
     }}
     .animated-slide.is-current {{
       opacity: 1;
-      filter: none;
       transform: translateZ(0) scale(1) rotateY(0);
-      clip-path: inset(0 round 0);
     }}
-    .animated-slide.is-before {{
-      transform: translate3d(55px,0,-150px) scale(.93) rotateY(4deg);
+    .animated-slide.is-near {{
+      will-change: transform, opacity;
+    }}
+    .animated-slide.is-near.is-before {{
+      opacity: .68;
+      transform: translate3d(24px,0,-38px) scale(.985) rotateY(1.2deg);
       transform-origin: right center;
     }}
-    .animated-slide.is-after {{
-      transform: translate3d(-55px,0,-150px) scale(.93) rotateY(-4deg);
+    .animated-slide.is-near.is-after {{
+      opacity: .68;
+      transform: translate3d(-24px,0,-38px) scale(.985) rotateY(-1.2deg);
       transform-origin: left center;
     }}
     .animated-slide[aria-hidden="true"] {{ pointer-events: none; }}
@@ -384,7 +379,6 @@ def presenter_css(width: int, height: int) -> str:
       z-index: 30;
       overflow: hidden;
       pointer-events: none;
-      mix-blend-mode: screen;
     }}
     .fx-blade {{
       position: absolute;
@@ -392,7 +386,6 @@ def presenter_css(width: int, height: int) -> str:
       width: 32%;
       height: 136%;
       opacity: 0;
-      filter: blur(1px);
       transform: skewX(-13deg);
     }}
     #fx-blade-a {{
@@ -413,7 +406,6 @@ def presenter_css(width: int, height: int) -> str:
       opacity: 0;
       background:
         radial-gradient(circle, white 0 2%, var(--show-c) 6%, var(--show-a) 18%, transparent 62%);
-      filter: blur(10px);
       transform: translate(-50%,-50%) scale(.2);
     }}
     #fx-prism {{
@@ -427,7 +419,6 @@ def presenter_css(width: int, height: int) -> str:
           rgba(255,255,255,.72) 50%,
           color-mix(in srgb, var(--show-b) 72%, transparent) 58%,
           transparent 76%);
-      filter: blur(18px);
     }}
     #scene-hud {{
       position: absolute;
@@ -604,7 +595,6 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
       const sceneNumber = document.getElementById("scene-hud-number");
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
       let current = 0;
-      let pendingReplay = false;
       let touchStartX = null;
       let transitionForward = null;
       let transitionBackward = null;
@@ -659,13 +649,11 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
           if (content) {{
             window.gsap.fromTo(
               content,
-              {{ scale: 1.025, filter: "brightness(1.16) saturate(1.12)" }},
+              {{ scale: 1.012 }},
               {{
                 scale: 1,
-                filter: "brightness(1) saturate(1)",
-                duration: .9,
+                duration: .72,
                 ease: "power3.out",
-                clearProps: "filter",
               }}
             );
           }}
@@ -801,6 +789,7 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
           slide.classList.toggle("is-current", active);
           slide.classList.toggle("is-before", index < current);
           slide.classList.toggle("is-after", index > current);
+          slide.classList.toggle("is-near", Math.abs(index - current) <= 1);
         }});
         countLabel.textContent = `${{String(current + 1).padStart(2, "0")}} / {count}`;
         chapterLabel.textContent = chapterFor(current);
@@ -827,19 +816,19 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
         const incoming = timelineFor(nextIndex);
         if (incoming) incoming.pause(0);
         current = nextIndex;
-        pendingReplay = options.replay !== false;
         if (options.instant) {{
           track.style.transition = "none";
         }}
         track.style.transform = `translate3d(${{-current * {width}}}px, 0, 0)`;
         updateUi();
+        if (options.replay !== false) {{
+          replayCurrent();
+        }}
         if (!options.instant && current !== previousIndex) {{
           playTransition(current > previousIndex ? 1 : -1);
         }}
         if (options.instant || reduceMotion.matches) {{
           resetInactive();
-          if (pendingReplay) replayCurrent();
-          pendingReplay = false;
           requestAnimationFrame(() => {{
             track.style.transition = "";
           }});
@@ -862,8 +851,6 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
       track.addEventListener("transitionend", (event) => {{
         if (event.target !== track || event.propertyName !== "transform") return;
         resetInactive();
-        if (pendingReplay) replayCurrent();
-        pendingReplay = false;
       }});
       previousButton.addEventListener("click", previous);
       nextButton.addEventListener("click", next);

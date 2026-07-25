@@ -32,6 +32,11 @@ class AnimatedPresentationTests(unittest.TestCase):
         self.assertIn('id="scene-hud"', document)
         self.assertIn("buildTransitionTimelines()", document)
         self.assertIn("prefers-reduced-motion", document)
+        self.assertIn('slide.classList.toggle("is-near"', document)
+        self.assertIn("replayCurrent();", document)
+        self.assertIn("contain: layout paint", document)
+        self.assertNotIn("filter: blur(12px)", document)
+        self.assertNotIn("will-change: transform, filter", document)
 
     def test_animation_contract_is_html_first(self):
         skill_root = Path(__file__).resolve().parent.parent

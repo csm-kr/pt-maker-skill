@@ -238,10 +238,24 @@ The generated HTML must:
 - respect `prefers-reduced-motion` by resolving to the final pose;
 - show the current slide count and a deck progress rail.
 
+Keep live navigation compositor-friendly:
+
+- animate the horizontal track with `transform` and use opacity/transform only
+  for lightweight depth;
+- never apply full-canvas blur, backdrop-filter, or animated clip-path to
+  incoming/outgoing slides;
+- never set `will-change` on every slide. Promote only the current and adjacent
+  slides so long decks do not exhaust GPU memory;
+- start the incoming scene timeline with the navigation transition instead of
+  waiting for the track to finish and exposing an empty frame;
+- profile two or more 1920×1080 transitions with `requestAnimationFrame` and
+  record maximum frame time plus frames over 25ms/40ms in HTML QA evidence.
+
 Use `qa_animated_presentation.py` with isolated background browser-harness to
 verify start→end, end→start, an arbitrary jump, replay, and at least one
-keyboard and touch path. Confirm that every slide has a timeline and that the
-live deck's count/order matches the HyperFrames root.
+keyboard and touch path. It also records two transition frame-time samples.
+Confirm that every slide has a timeline and that the live deck's count/order
+matches the HyperFrames root.
 
 ```bash
 python3 scripts/qa_animated_presentation.py \

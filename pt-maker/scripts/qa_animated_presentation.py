@@ -55,6 +55,48 @@ if initial["index"] != 0 or initial["runtimeError"]:
     raise RuntimeError(f"Initial slide state failed: {{initial}}")
 capture("slide-01-resolved.png")
 
+def profile_transition(target):
+    expression = '''new Promise(resolve => {{
+      const deltas = [];
+      let started = 0;
+      let previous = 0;
+      function frame(now) {{
+        if (!started) {{
+          started = now;
+          previous = now;
+        }} else {{
+          deltas.push(now - previous);
+          previous = now;
+        }}
+        if (now - started >= 800) {{
+          resolve({{
+            frames: deltas.length,
+            maxFrameMs: Math.max(...deltas),
+            averageFrameMs:
+              deltas.reduce((sum, value) => sum + value, 0) / deltas.length,
+            framesOver25Ms: deltas.filter(value => value > 25).length,
+            framesOver40Ms: deltas.filter(value => value > 40).length
+          }});
+          return;
+        }}
+        requestAnimationFrame(frame);
+      }}
+      requestAnimationFrame(frame);
+      window.__ptMakerPresenter.go(TARGET);
+    }})'''.replace("TARGET", str(target))
+    result = cdp(
+        "Runtime.evaluate",
+        expression=expression,
+        awaitPromise=True,
+        returnByValue=True,
+    )
+    return result["result"]["value"]
+
+performance_samples = []
+if expected > 1:
+    performance_samples.append(profile_transition(1))
+    performance_samples.append(profile_transition(0))
+
 forward = []
 for index in range(1, expected):
     js(f"window.__ptMakerPresenter.go({{index}})")
@@ -131,6 +173,19 @@ print(json.dumps({{
     "keyboard_from_to": [keyboard_start + 1, keyboard_end + 1],
     "touch_from_to": [touch_start + 1, touch_end + 1],
     "runtime_error": final_state["runtimeError"],
+    "transition_performance": {{
+        "samples": len(performance_samples),
+        "max_frame_ms": max(
+            (sample["maxFrameMs"] for sample in performance_samples),
+            default=None,
+        ),
+        "frames_over_25ms": sum(
+            sample["framesOver25Ms"] for sample in performance_samples
+        ),
+        "frames_over_40ms": sum(
+            sample["framesOver40Ms"] for sample in performance_samples
+        ),
+    }},
     "screenshots": str(out) if out else None,
 }}, ensure_ascii=False))
 """
