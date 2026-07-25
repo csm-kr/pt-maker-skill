@@ -9,7 +9,7 @@ P0 exists. A score without snapshot and complete timeline evidence is invalid.
 |---|---:|---|
 | Narrative and claims | 16 | Each scene has one claim; titles alone form a coherent arc; evidence supports the exact claim. |
 | Frame design | 14 | Hierarchy, safe area, contrast, typography, composition variety, and one dominant visual per scene. |
-| Motion craft | 20 | Motion reveals meaning, has a build–breathe–resolve rhythm, uses finite easing and only 2–3 slide-transition families, and distributes at least four semantic inside-scene signature builds without three consecutive generic repeats. |
+| Motion craft | 20 | Motion reveals meaning, has a build–breathe–resolve rhythm, uses 2–3 visibly distinct and finite slide-transition families rather than color-only repetition, and distributes at least four semantic inside-scene signature builds without three consecutive generic repeats. |
 | Seam continuity | 14 | Exit/entry vectors, carrier identity, camera state, and image-sequence identity remain coherent. |
 | Timing and readability | 12 | Claims appear before evidence; reading beats are long enough; no rushed last scene or accidental dead time. |
 | Accessibility and safe content | 8 | No essential content depends on audio alone; captions/labels are readable; rights and attributions are recorded. |
@@ -36,6 +36,9 @@ P0 exists. A score without snapshot and complete timeline evidence is invalid.
 - A dotted/solid line is claimed to draw but only shifts its dash pattern, a
   writing effect mutates accessible text, or an intermediate build pose visibly
   disconnects labels, connectors, or diagram nodes.
+- A 12+ slide live deck repeats one transition structure while only changing
+  color, does not exercise all three declared transition families, or assigns a
+  different family to the same seam when traversed backward.
 
 ## Review sampling
 
@@ -47,6 +50,7 @@ At minimum inspect:
 - every frame where generated-image identity changes
 - the full timeline once at normal speed and once at `0.25×`
 - the live presentation HTML from first→last and last→first
+- one forward and reverse sample of every declared transition family
 - one arbitrary jump plus replay on the same slide
 - one keyboard path and one touch-swipe path
 

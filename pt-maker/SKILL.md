@@ -209,9 +209,9 @@ Treat image subject integrity as a hard QA gate. A visually stylish crop still f
 ### Visual material requirement guardrail
 Apply this guardrail according to the selected production direction.
 
-- In `image`, concrete visual material is mandatory: cover, chapter opener, key concept, evidence/example, comparison, process/timeline, product, place, and closing slides must each have a planned visual asset. Every major text slide needs at least one directly relevant image, and the deck must contain multiple image assets.
-- In `text`, title and copy may be the visual focus. Do not force an image count or reject a slide merely because it is text-only; use typography, hierarchy, whitespace, and pacing as the composition.
-- In `animation`, kinetic typography may be a scene's primary visual, but every scene still needs an explicit motion/composition plan and a stable readable pose.
+- In `image`, concrete visual material is mandatory: cover, chapter opener, key concept, evidence/example, comparison, process/timeline, product, place, and closing slides must each have a planned visual asset. Every major text slide needs at least one directly relevant image, the deck must contain multiple distinct image assets, and the visual plan must record the exact `claim → image` match. Reject generic decoration that cannot explain or evidence the adjacent copy.
+- In `text`, title and copy may be the visual focus, but “줄글 위주” never means evenly distributed paragraphs. Give every slide one focal phrase, one supporting layer, and an explicit reading path. Use at least three typographic composition families across the deck—such as oversized statement, split contrast/quote, stepped phrase, metric-led copy, or editorial text grid—and never repeat the same block alignment for three consecutive slides. Emphasis must be visibly unequal: the focal phrase should dominate body copy through scale, weight, position, or color while preserving readable line lengths and whitespace.
+- In `animation`, kinetic typography may be a scene's primary visual, but every scene still needs an explicit motion/composition plan and a stable readable pose. Use two or three deterministic slide-transition families and vary them by seam; for decks with 12 or more slides, default to three families unless performance or narrative continuity clearly favors two.
 - Acceptable visual assets: user/original image, official/public photo, screenshot, chart/data visualization, SVG diagram/timeline/map/card grid, or approved AI-generated illustration.
 - Before building an `image` deck, write a `visual plan` for every slide in the outline: asset type, source/generation path, crop/layout role, subject/focal-point safety, map-base source if relevant, and fallback. For `text`, write a layout/copy plan; for `animation`, write a motion/composition plan.
 - If no suitable external image exists, build a self-made SVG/chart/diagram first for explanatory content. In `image`, announce the planned image count/purpose and actively use the `imagegen` skill's built-in `image_gen` tool without pausing for a separate approval question.
@@ -293,7 +293,7 @@ archive/                        ← 작업 스크래치 격리
 ### HTML-native 완성도 확장
 - 기획표에는 슬라이드별 `claim / evidence / visual plan / motion purpose / speaker note`를 추가한다. 연속 장면에는 subject·camera·environment invariants와 예상 프레임 수를 적는다.
 - 빌드 전에 [reference/html-presentation-craft.md](reference/html-presentation-craft.md)를 읽고 고정 1280×720 무대, scene layers, safe zone, finite motion, print/reduced-motion 정지 포즈를 적용한다.
-- presentation 모드의 fragment 모션과 animation 모드의 **슬라이드 간 전환**은 `rise|fade|scale|wipe` 중 덱 전체 2~3종으로 제한한다. animation 모드의 **슬라이드 내부 빌드**는 장면 의미에 맞춰 다양화하되, 같은 generic reveal을 3장 연속 반복하지 않는다. 장식용 무한 반복을 금지하고 슬라이드 이탈 시 media/sequence를 멈춘다.
+- presentation 모드의 fragment 모션과 animation 모드의 **슬라이드 간 전환**은 덱 전체 2~3종으로 제한한다. animation 발표 HTML은 seam마다 전환 family를 결정적으로 배정하고, 같은 seam을 역방향으로 이동할 때도 같은 family를 반대로 재생한다. 12장 이상이면 기본 생성기의 `prism / curtain / aperture` 세 family를 모두 사용하되, animation 모드의 **슬라이드 내부 빌드**는 장면 의미에 맞춰 별도로 다양화하고 같은 generic reveal을 3장 연속 반복하지 않는다. 장식용 무한 반복을 금지하고 슬라이드 이탈 시 media/sequence를 멈춘다.
 - 연속 이미지는 [reference/motion-continuity.md](reference/motion-continuity.md)에 따라 `$imagegen`으로 만들고, 프레임 1 이후에는 직전 승인 프레임을 reference로 사용한다.
 - 내보내기 전에 `qa_html_guard.py`와 `qa_media_guard.py`를 모두 통과한다. 렌더 후 [reference/html-quality-rubric.md](reference/html-quality-rubric.md)의 7개 영역을 채점하며 pass는 90점, 완성도 목표는 94점이다.
 
@@ -427,6 +427,8 @@ Codex의 `$imagegen` built-in 경로에는 API 키가 필요하지 않다. API �
 - `image` 포맷의 표지·챕터 오프너·핵심 개념·사례·마감 슬라이드가 텍스트만 있음 → ❌. 각 주요 슬라이드에 관련 사진/스샷/차트/SVG/AI 일러스트 중 하나를 배치하고, 개요 단계부터 `visual plan`을 적는다.
 - `image` 포맷에서 콘텐츠 슬라이드가 두 장 이상 연속 텍스트만 있음 → ❌. 설명형이면 SVG/차트/타임라인으로, 무드형이면 생성 이미지나 실사진으로 보강한다. `text` 포맷에는 이 이미지 수량 규칙을 적용하지 않는다.
 - 모든 콘텐츠 슬라이드가 같은 레이아웃(불릿 좌·비주얼 우) → ❌ 단조롭다. 한 덱에서 카드 그리드·미러(비주얼 좌)·허브·가로 타임라인·중앙 statement·이미지 주연 등 3~4종 이상 섞는다(craft.md §2-11).
+- `text` 포맷을 비슷한 크기의 제목+문단 박스로 반복하거나 모든 문장을 동일 굵기·정렬로 배치 → ❌. 슬라이드마다 초점 문구/보조 문구/읽는 경로를 정하고 최소 3개 타이포 구성 family를 분산한다.
+- `image` 포맷에서 문장 옆에 분위기만 비슷한 사진을 붙이거나 한 이미지를 반복해 수량만 채움 → ❌. `claim → image` 대응을 기록하고 각 주요 문장을 실제로 설명·증명하는 서로 다른 이미지를 쓴다.
 - 줄간격이 좁아 빽빽 / 한글 라벨(SVG·kicker)을 모노폰트로 / 정확한 연도·숫자·고유명사를 손글씨 폰트(Nanum Pen)로 → ❌ 가독성. 본문 `line-height ≥ 1.5`, 한글은 Pretendard, 손글씨는 가벼운 메모·감탄에만(사실 정보는 정자체).
 - 본문·불릿을 무조건 32px 이상으로 키워 둔탁하게 만들기 → ❌. 일반 HTML 덱은 Pretendard 기준 본문 28-30px, hard floor 26px가 기본. 라벨은 20-22px, 출처/fine-print는 15-16px까지 허용하되, 작아 보이면 문장을 줄이거나 슬라이드를 나눈다. 큰 발표장/프로젝터용이면 32px로 올린다.
 - 카드 썸네일/인물/선수/제품/음식 사진을 짧은 고정높이 `object-fit:cover`로 → ❌ 피사체 잘림. `aspect-ratio:3/2` 박스 + `object-fit:contain`(흰 배경) 또는 검증된 focal crop으로 얼굴·머리·손·로고·핵심 사물을 보존한다. 큰 히어로도 중요한 얼굴/피사체가 잘리면 실패다.

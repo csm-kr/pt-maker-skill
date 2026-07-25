@@ -29,6 +29,10 @@
 - 같은 composition에서 좌우 키·스페이스·터치로 넘기는 발표용 HTML을
   생성한다. 슬라이드에 들어올 때마다 해당 장면 애니메이션을 처음부터
   재생하고, 이전 방향으로 돌아와도 동일하게 재생해야 한다.
+- 슬라이드 내부 build와 슬라이드 사이 transition을 따로 설계한다. 내부
+  build는 장면 의미에 맞게 다양화하고, transition은 2~3개 family로
+  제한하되 seam마다 결정적으로 바꾼다. 12장 이상이면 기본적으로
+  `prism / curtain / aperture` 세 family를 모두 사용한다.
 - `qa_animation_guard → lint → check --snapshots → preview → 발표용 HTML 생성
   → 발표용 HTML 양방향 검수`를 끝까지 수행한다.
 - 완성 HTML 프로젝트와 발표용 HTML을 기본 완성본으로 납품한다.
@@ -46,8 +50,14 @@
 - 제목과 글자가 화면의 주인공인 Reveal HTML/PDF를 만든다.
 - 핵심 주장을 제목으로 세우고 본문은 읽는 순서가 분명한 문단·인용·목록으로
   구성한다. 이미지 수량을 억지로 늘리지 않는다.
-- 줄글 위주도 텍스트 벽을 뜻하지 않는다. 가독성 하한, 여백, 한 아이디어
-  한 슬라이드, overflow·orphan·footer collision P0 규칙을 그대로 적용한다.
+- 줄글 위주도 텍스트 벽이나 동일한 제목+문단 박스 반복을 뜻하지 않는다.
+  각 슬라이드에 `focal phrase / supporting layer / reading path`를 정하고,
+  초점 문구가 크기·굵기·색·위치 중 하나 이상으로 본문보다 먼저 보이게 한다.
+- oversized statement, split contrast/quote, stepped phrase, metric-led copy,
+  editorial text grid 중 최소 3개 타이포 구성 family를 덱에 분산한다. 같은
+  정렬과 블록 분포를 3장 연속 반복하지 않는다.
+- 가독성 하한, 여백, 한 아이디어 한 슬라이드, overflow·orphan·footer
+  collision P0 규칙을 그대로 적용한다.
 - 필요한 도식이나 근거 이미지는 보조적으로 쓸 수 있지만 텍스트보다
   시각적 우선순위를 높이지 않는다.
 
@@ -56,6 +66,8 @@
 - 덱 전체에 이미지 자산을 여러 장 반드시 확보한다.
 - 텍스트가 있는 모든 주요 슬라이드에는 해당 문장을 직접 설명하거나
   증명하는 이미지가 적어도 한 장 있어야 한다.
+- visual plan에 각 주요 문장의 `claim → image` 대응을 적고, 렌더 QA에서
+  이미지가 인접 문장을 실제로 설명·증명하는지 확인한다.
 - 같은 이미지를 반복하거나 무관한 장식 이미지로 수량만 채우지 않는다.
 - 사용자 자산과 공식·공개 웹 자료를 먼저 찾고, 적합한 이미지가 부족하면
   `imagegen` 스킬의 built-in `image_gen`을 적극 사용한다.

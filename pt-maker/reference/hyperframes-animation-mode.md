@@ -95,6 +95,19 @@ Use a build–breathe–resolve rhythm:
 Keep slide-to-slide transition grammar to two or three families, but vary the
 inside-scene build so the deck feels authored rather than templated.
 
+For the generated live presentation, assign transition family by seam rather
+than palette. Decks with 12 or more slides use all three default families unless
+a written performance or continuity reason limits them to two:
+
+- `prism` — diagonal horizontal sweep with mild perspective;
+- `curtain` — top/bottom split with vertical slide counter-motion;
+- `aperture` — concentric ring expansion with depth scale.
+
+The same seam must use the same family in both directions, reversing its vector
+instead of selecting a new effect. Arbitrary multi-slide jumps use `aperture`.
+Expose the active family through `window.__ptMakerPresenter.state()` so browser
+QA can prove that transition variation is structural rather than color-only.
+
 1. Assign every scene one semantic `signature build` in `STORYBOARD.md` and
    `motion-ledger.json`: `text-write`, `line-draw`, `image-reveal`,
    `card-assembly`, `metric-stamp`, `diagram-build`, or `photo-zoom`.
@@ -302,7 +315,10 @@ Use `qa_animated_presentation.py` with isolated background browser-harness to
 verify start→end, end→start, an arbitrary jump, replay, and at least one
 keyboard and touch path. It also records two transition frame-time samples.
 Confirm that every slide has a timeline and that the live deck's count/order
-matches the HyperFrames root.
+matches the HyperFrames root. For decks with 12 or more slides, verify that
+`prism`, `curtain`, and `aperture` all occur, the same seam keeps its family
+when traversed backward, and every sampled transition remains under the
+performance thresholds.
 
 ```bash
 python3 scripts/qa_animated_presentation.py \

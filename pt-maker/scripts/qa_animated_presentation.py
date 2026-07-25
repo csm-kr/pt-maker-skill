@@ -47,9 +47,20 @@ def capture(name):
     if not out:
         return
     payload = cdp("Page.captureScreenshot", format="png", fromSurface=True, captureBeyondViewport=False)
-    (out / name).write_bytes(base64.b64decode(payload["data"]))
+    destination = out / name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_bytes(base64.b64decode(payload["data"]))
+
+def resolve_current():
+    return js('''(() => {{
+      const state = window.__ptMakerPresenter.state();
+      const timeline = window.__timelines?.[state.sceneId];
+      if (timeline) timeline.pause(timeline.duration());
+      return window.__ptMakerPresenter.state();
+    }})()''')
 
 wait(2.3)
+resolve_current()
 initial = js("window.__ptMakerPresenter.state()")
 if initial["index"] != 0 or initial["runtimeError"]:
     raise RuntimeError(f"Initial slide state failed: {{initial}}")
@@ -90,38 +101,78 @@ def profile_transition(target):
         awaitPromise=True,
         returnByValue=True,
     )
-    return result["result"]["value"]
+    payload = result["result"]["value"]
+    payload["family"] = js(
+        "window.__ptMakerPresenter.state().transitionFamily"
+    )
+    return payload
 
 performance_samples = []
-if expected > 1:
-    performance_samples.append(profile_transition(1))
-    performance_samples.append(profile_transition(0))
+if expected > 3:
+    for target in [1, 2, 3, 2, 1, 0]:
+        performance_samples.append(profile_transition(target))
+elif expected > 2:
+    for target in [1, 2, 1, 0]:
+        performance_samples.append(profile_transition(target))
+elif expected > 1:
+    for target in [1, 0]:
+        performance_samples.append(profile_transition(target))
+if any(sample["framesOver40Ms"] for sample in performance_samples):
+    raise RuntimeError(
+        f"Transition performance exceeded 40ms: {{performance_samples}}"
+    )
 
 forward = []
+forward_families = []
+forward_family_by_seam = {{}}
 for index in range(1, expected):
     js(f"window.__ptMakerPresenter.go({{index}})")
     wait(.56)
     state = js("window.__ptMakerPresenter.state()")
     if state["index"] != index or state["runtimeError"]:
         raise RuntimeError(f"Forward navigation failed at {{index + 1}}: {{state}}")
+    family = state.get("transitionFamily")
+    if not family:
+        raise RuntimeError(f"Missing transition family at seam {{index}}→{{index + 1}}")
     forward.append(state["sceneId"])
-wait(2.3)
+    forward_families.append(family)
+    forward_family_by_seam[index - 1] = family
+resolve_current()
+wait(.1)
 capture(f"slide-{{expected:02d}}-resolved.png")
 
 reverse = []
+reverse_families = []
 for index in range(expected - 2, -1, -1):
     js(f"window.__ptMakerPresenter.go({{index}})")
     wait(.56)
     state = js("window.__ptMakerPresenter.state()")
     if state["index"] != index or state["runtimeError"]:
         raise RuntimeError(f"Reverse navigation failed at {{index + 1}}: {{state}}")
+    family = state.get("transitionFamily")
+    expected_family = forward_family_by_seam.get(index)
+    if family != expected_family:
+        raise RuntimeError(
+            f"Transition family changed on reverse seam {{index + 1}}↔{{index + 2}}: "
+            f"{{expected_family}} -> {{family}}"
+        )
     reverse.append(state["sceneId"])
+    reverse_families.append(family)
+
+required_families = {{"prism", "curtain", "aperture"}}
+observed_families = set(forward_families)
+if expected >= 12 and not required_families.issubset(observed_families):
+    raise RuntimeError(
+        f"Transition family coverage failed: {{sorted(observed_families)}}"
+    )
 
 jump_index = min(12, expected - 1)
 js(f"window.__ptMakerPresenter.go({{jump_index}})")
 wait(.7)
 wait(2.0)
 jump_before = js("window.__ptMakerPresenter.state()")
+if expected >= 12 and jump_index > 1 and jump_before.get("transitionFamily") != "aperture":
+    raise RuntimeError(f"Multi-slide jump must use aperture: {{jump_before}}")
 js("window.__ptMakerPresenter.replay()")
 wait(.12)
 jump_after = js("window.__ptMakerPresenter.state()")
@@ -129,7 +180,8 @@ if jump_after["index"] != jump_index or jump_after["runtimeError"]:
     raise RuntimeError(f"Replay failed: {{jump_after}}")
 if jump_after["timelineProgress"] is None or jump_after["timelineProgress"] >= jump_before["timelineProgress"]:
     raise RuntimeError(f"Replay did not restart the timeline: {{jump_before}} -> {{jump_after}}")
-wait(2.1)
+resolve_current()
+wait(.1)
 capture(f"slide-{{jump_index + 1:02d}}-resolved.png")
 
 keyboard_start = int(js("window.__ptMakerPresenter.index"))
@@ -162,6 +214,52 @@ if touch_start < expected - 1:
 else:
     touch_end = touch_start
 
+if out:
+    for index in range(expected):
+        js(
+            f"window.__ptMakerPresenter.go({{index}}, "
+            "{{instant:true,replay:false,force:true}})"
+        )
+        wait(.04)
+        js('''(() => {{
+          const track = document.getElementById("slide-track");
+          const slide = document.querySelectorAll(".animated-slide")[INDEX];
+          track.style.transition = "none";
+          track.style.transform =
+            `translate3d(${{-slide.offsetLeft}}px, 0, 0)`;
+          void track.offsetWidth;
+          return true;
+        }})()'''.replace("INDEX", str(index)))
+        resolve_current()
+        wait(.04)
+        capture(f"all-resolved/slide-{{index + 1:02d}}-resolved.png")
+
+    if expected > 3:
+        js(
+            "window.__ptMakerPresenter.go(0, "
+            "{{instant:true,replay:false,force:true}})"
+        )
+        wait(.06)
+        js('document.getElementById("slide-track").style.transition = ""')
+        resolve_current()
+        for target in [1, 2, 3]:
+            js(f"window.__ptMakerPresenter.go({{target}})")
+            wait(.08)
+            family = js(
+                "window.__ptMakerPresenter.state().transitionFamily"
+            )
+            js(
+                "window.__ptMakerPresenter.poseTransition("
+                f"{{family!r}}, 1, .5)"
+            )
+            capture(f"transitions/{{target:02d}}-{{family}}.png")
+            js(
+                "window.__ptMakerPresenter.poseTransition("
+                f"{{family!r}}, 1, 0)"
+            )
+            wait(.54)
+            resolve_current()
+
 final_state = js("window.__ptMakerPresenter.state()")
 print(json.dumps({{
     "animated_presentation_qa": "pass",
@@ -173,8 +271,16 @@ print(json.dumps({{
     "keyboard_from_to": [keyboard_start + 1, keyboard_end + 1],
     "touch_from_to": [touch_start + 1, touch_end + 1],
     "runtime_error": final_state["runtimeError"],
+    "transition_families": sorted(observed_families),
+    "transition_family_forward": forward_families,
+    "transition_family_reverse": reverse_families,
+    "reverse_family_match": True,
     "transition_performance": {{
         "samples": len(performance_samples),
+        "families": sorted(
+            set(sample["family"] for sample in performance_samples)
+        ),
+        "sample_details": performance_samples,
         "max_frame_ms": max(
             (sample["maxFrameMs"] for sample in performance_samples),
             default=None,

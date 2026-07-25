@@ -181,7 +181,18 @@ These rules override any softer polish language in this checklist.
 - 주요 슬라이드가 텍스트만으로 끝나지 않는가.
 - 이미지, 도표, 지도, 타임라인, 캡처, AI 이미지의 역할이 명확한가.
 - 이미지는 슬라이드 주장과 직접 연결되는가.
+- `image` 포맷은 visual plan의 `claim → image` 대응이 모두 채워지고,
+  서로 다른 이미지 여러 장이 실제 인접 문장을 설명·증명하는가.
 - AI 이미지는 사료/증거가 아니라 보조 일러스트로 표시되는가.
+
+## 2.1 줄글 포맷의 타이포 분포
+
+- 각 슬라이드에 초점 문구, 보조 문구, 읽는 경로가 한눈에 구분되는가.
+- 초점 문구가 크기·굵기·색·위치 중 하나 이상으로 본문보다 먼저 보이는가.
+- 덱 전체에 최소 3개 타이포 구성 family가 있고, 같은 정렬/블록 분포가
+  3장 연속 반복되지 않는가.
+- 텍스트 양을 균등하게 채운 문단 벽 대신 여백과 비대칭 분포가 의도적으로
+  사용되었는가.
 
 ## 3. 줄바꿈/정렬 기준
 
@@ -237,6 +248,8 @@ These rules override any softer polish language in this checklist.
 - 사용자 리뷰 기반 취향 학습을 diff로 제안하고, 확인된 경우에만 `taste-profile.md`/`dark-taste-profile.md`를 업데이트했는가.
 - PPTX가 기본 산출물로 자동 생성되지 않았는가.
 - PPTX가 필요하다면 사용자의 명시 요청 또는 합의가 있고, PDF가 통과한 뒤에만 export했는가.
+- 12장 이상의 animation 발표 HTML은 선언한 3개 transition family를 모두
+  사용하고, 동일 seam의 역방향에서도 같은 family를 반대로 재생하는가.
 
 ## 100점 채점표
 

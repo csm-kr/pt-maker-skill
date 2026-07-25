@@ -372,6 +372,46 @@ def presenter_css(width: int, height: int) -> str:
       transform: translate3d(-24px,0,-38px) scale(.985) rotateY(-1.2deg);
       transform-origin: left center;
     }}
+    #animated-presentation[data-transition-family="curtain"] #slide-track {{
+      transition-duration: .56s;
+      transition-timing-function: cubic-bezier(.3,.74,.18,1);
+    }}
+    #animated-presentation[data-transition-family="curtain"]
+      .animated-slide.is-near {{
+      transition-duration: .56s;
+    }}
+    #animated-presentation[data-transition-family="curtain"]
+      .animated-slide.is-near.is-before {{
+      opacity: .5;
+      transform: translate3d(0,-68px,-54px) scale(.975) rotateX(-2.2deg);
+      transform-origin: center bottom;
+    }}
+    #animated-presentation[data-transition-family="curtain"]
+      .animated-slide.is-near.is-after {{
+      opacity: .5;
+      transform: translate3d(0,68px,-54px) scale(.975) rotateX(2.2deg);
+      transform-origin: center top;
+    }}
+    #animated-presentation[data-transition-family="aperture"] #slide-track {{
+      transition-duration: .52s;
+      transition-timing-function: cubic-bezier(.18,.82,.18,1);
+    }}
+    #animated-presentation[data-transition-family="aperture"]
+      .animated-slide.is-near {{
+      transition-duration: .52s;
+    }}
+    #animated-presentation[data-transition-family="aperture"]
+      .animated-slide.is-near.is-before {{
+      opacity: .42;
+      transform: translate3d(0,0,-120px) scale(.92) rotateZ(-.32deg);
+      transform-origin: center center;
+    }}
+    #animated-presentation[data-transition-family="aperture"]
+      .animated-slide.is-near.is-after {{
+      opacity: .42;
+      transform: translate3d(0,0,-120px) scale(1.075) rotateZ(.32deg);
+      transform-origin: center center;
+    }}
     .animated-slide[aria-hidden="true"] {{ pointer-events: none; }}
     #transition-fx {{
       position: absolute;
@@ -379,6 +419,11 @@ def presenter_css(width: int, height: int) -> str:
       z-index: 30;
       overflow: hidden;
       pointer-events: none;
+      contain: paint;
+    }}
+    #transition-fx > i {{
+      backface-visibility: hidden;
+      will-change: transform, opacity;
     }}
     .fx-blade {{
       position: absolute;
@@ -419,6 +464,49 @@ def presenter_css(width: int, height: int) -> str:
           rgba(255,255,255,.72) 50%,
           color-mix(in srgb, var(--show-b) 72%, transparent) 58%,
           transparent 76%);
+    }}
+    .fx-curtain {{
+      position: absolute;
+      left: -4%;
+      width: 108%;
+      height: 54%;
+      opacity: 0;
+      border-color: rgba(255,255,255,.7);
+      background:
+        linear-gradient(118deg,
+          color-mix(in srgb, var(--show-night) 88%, black),
+          color-mix(in srgb, var(--show-a) 64%, var(--show-night)) 48%,
+          color-mix(in srgb, var(--show-b) 58%, var(--show-night)));
+      box-shadow: 0 0 0 1px rgba(255,255,255,.18);
+    }}
+    #fx-curtain-top {{
+      top: 0;
+      border-bottom: 3px solid;
+    }}
+    #fx-curtain-bottom {{
+      bottom: 0;
+      border-top: 3px solid;
+    }}
+    .fx-ring {{
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 30%;
+      aspect-ratio: 1;
+      border: 5px solid rgba(255,255,255,.82);
+      border-radius: 50%;
+      opacity: 0;
+      box-shadow:
+        0 0 0 12px color-mix(in srgb, var(--show-a) 42%, transparent),
+        0 0 0 26px color-mix(in srgb, var(--show-b) 24%, transparent);
+      transform: translate(-50%,-50%) scale(.18);
+    }}
+    #fx-ring-b {{
+      width: 19%;
+      border-color: var(--show-c);
+      box-shadow:
+        0 0 0 8px color-mix(in srgb, var(--show-c) 34%, transparent),
+        0 0 0 22px color-mix(in srgb, var(--show-a) 22%, transparent);
     }}
     #scene-hud {{
       position: absolute;
@@ -596,8 +684,7 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
       let current = 0;
       let touchStartX = null;
-      let transitionForward = null;
-      let transitionBackward = null;
+      let transitionTimelines = {{}};
 
       const palettes = [
         ["#ff78aa", "#75e7e0", "#ffd166", "#090711"],
@@ -614,6 +701,7 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
         "NIGHT BLOOM",
         "AFTER SCENT",
       ];
+      const transitionFamilies = ["prism", "curtain", "aperture"];
 
       function clamp(index) {{
         return Math.max(0, Math.min(slides.length - 1, index));
@@ -680,60 +768,21 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
         deck.dataset.phase = String(index % palettes.length);
       }}
 
-      function buildTransitionTimelines() {{
-        transitionForward = window.gsap.timeline({{ paused: true }})
-          .fromTo(
-            "#fx-blade-a",
-            {{ xPercent: 0, opacity: 0 }},
-            {{
-              xPercent: 470,
-              opacity: .72,
-              duration: .54,
-              ease: "power3.inOut",
-            }},
-            0
-          )
-          .to(
-            "#fx-blade-a",
-            {{ opacity: 0, duration: .18, ease: "power2.out" }},
-            .38
-          )
-          .fromTo(
-            "#fx-prism",
-            {{ xPercent: -52, opacity: 0 }},
-            {{
-              xPercent: 52,
-              opacity: .72,
-              duration: .64,
-              ease: "expo.inOut",
-            }},
-            .03
-          )
-          .to("#fx-prism", {{ opacity: 0, duration: .18 }}, .48)
-          .fromTo(
-            "#fx-flare",
-            {{ xPercent: -38, scale: .18, opacity: 0 }},
-            {{
-              xPercent: 34,
-              scale: 1.34,
-              opacity: .74,
-              duration: .42,
-              ease: "power2.out",
-            }},
-            .08
-          )
-          .to(
-            "#fx-flare",
-            {{ scale: 1.8, opacity: 0, duration: .3, ease: "power3.out" }},
-            .38
-          );
+      function transitionFamilyFor(fromIndex, toIndex) {{
+        if (Math.abs(toIndex - fromIndex) > 1) return "aperture";
+        const seamIndex = Math.max(0, Math.min(fromIndex, toIndex));
+        return transitionFamilies[seamIndex % transitionFamilies.length];
+      }}
 
-        transitionBackward = window.gsap.timeline({{ paused: true }})
+      function buildPrismTransition(direction) {{
+        const sign = direction < 0 ? -1 : 1;
+        const blade = direction < 0 ? "#fx-blade-b" : "#fx-blade-a";
+        return window.gsap.timeline({{ paused: true }})
           .fromTo(
-            "#fx-blade-b",
+            blade,
             {{ xPercent: 0, opacity: 0 }},
             {{
-              xPercent: -470,
+              xPercent: 470 * sign,
               opacity: .72,
               duration: .54,
               ease: "power3.inOut",
@@ -741,15 +790,15 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
             0
           )
           .to(
-            "#fx-blade-b",
+            blade,
             {{ opacity: 0, duration: .18, ease: "power2.out" }},
             .38
           )
           .fromTo(
             "#fx-prism",
-            {{ xPercent: 52, opacity: 0 }},
+            {{ xPercent: -52 * sign, opacity: 0 }},
             {{
-              xPercent: -52,
+              xPercent: 52 * sign,
               opacity: .72,
               duration: .64,
               ease: "expo.inOut",
@@ -759,9 +808,9 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
           .to("#fx-prism", {{ opacity: 0, duration: .18 }}, .48)
           .fromTo(
             "#fx-flare",
-            {{ xPercent: 38, scale: .18, opacity: 0 }},
+            {{ xPercent: -38 * sign, scale: .18, opacity: 0 }},
             {{
-              xPercent: -34,
+              xPercent: 34 * sign,
               scale: 1.34,
               opacity: .74,
               duration: .42,
@@ -776,10 +825,166 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
           );
       }}
 
-      function playTransition(direction) {{
+      function buildCurtainTransition(direction) {{
+        const sign = direction < 0 ? -1 : 1;
+        return window.gsap.timeline({{ paused: true }})
+          .fromTo(
+            "#fx-curtain-top",
+            {{ yPercent: -108, xPercent: -6 * sign, opacity: 0 }},
+            {{
+              yPercent: -1,
+              xPercent: 0,
+              opacity: .98,
+              duration: .22,
+              ease: "expo.out",
+            }},
+            0
+          )
+          .fromTo(
+            "#fx-curtain-bottom",
+            {{ yPercent: 108, xPercent: 6 * sign, opacity: 0 }},
+            {{
+              yPercent: 1,
+              xPercent: 0,
+              opacity: .98,
+              duration: .22,
+              ease: "expo.out",
+            }},
+            0
+          )
+          .to(
+            "#fx-curtain-top",
+            {{
+              yPercent: -108,
+              xPercent: 7 * sign,
+              opacity: 0,
+              duration: .3,
+              ease: "power3.out",
+            }},
+            .34
+          )
+          .to(
+            "#fx-curtain-bottom",
+            {{
+              yPercent: 108,
+              xPercent: -7 * sign,
+              opacity: 0,
+              duration: .3,
+              ease: "power3.out",
+            }},
+            .34
+          )
+          .fromTo(
+            "#fx-flare",
+            {{ xPercent: 0, scale: .12, opacity: 0 }},
+            {{
+              xPercent: 0,
+              scale: .72,
+              opacity: .34,
+              duration: .28,
+              ease: "power2.out",
+            }},
+            .18
+          )
+          .to(
+            "#fx-flare",
+            {{ scale: 1.16, opacity: 0, duration: .22, ease: "power3.out" }},
+            .38
+          );
+      }}
+
+      function buildApertureTransition(direction) {{
+        const sign = direction < 0 ? -1 : 1;
+        return window.gsap.timeline({{ paused: true }})
+          .fromTo(
+            "#fx-ring-a",
+            {{ scale: .16, rotation: -12 * sign, opacity: .9 }},
+            {{
+              scale: 1.92,
+              rotation: 20 * sign,
+              opacity: 0,
+              duration: .62,
+              ease: "expo.out",
+            }},
+            0
+          )
+          .fromTo(
+            "#fx-ring-b",
+            {{ scale: .12, rotation: 10 * sign, opacity: .88 }},
+            {{
+              scale: 2.34,
+              rotation: -24 * sign,
+              opacity: 0,
+              duration: .58,
+              ease: "power3.out",
+            }},
+            .1
+          )
+          .fromTo(
+            "#fx-flare",
+            {{ xPercent: 0, scale: .08, opacity: 0 }},
+            {{
+              xPercent: 0,
+              scale: .92,
+              opacity: .52,
+              duration: .3,
+              ease: "power2.out",
+            }},
+            .06
+          )
+          .to(
+            "#fx-flare",
+            {{ scale: 1.5, opacity: 0, duration: .3, ease: "power3.out" }},
+            .3
+          );
+      }}
+
+      function buildTransitionTimelines() {{
+        transitionTimelines = {{
+          prism: {{
+            forward: buildPrismTransition(1),
+            backward: buildPrismTransition(-1),
+          }},
+          curtain: {{
+            forward: buildCurtainTransition(1),
+            backward: buildCurtainTransition(-1),
+          }},
+          aperture: {{
+            forward: buildApertureTransition(1),
+            backward: buildApertureTransition(-1),
+          }},
+        }};
+      }}
+
+      function resetTransitionFx() {{
+        Object.values(transitionTimelines).forEach((pair) => {{
+          Object.values(pair).forEach((timeline) => timeline.pause(0));
+        }});
+        window.gsap.set("#transition-fx > i", {{ clearProps: "transform" }});
+        window.gsap.set("#transition-fx > i", {{ opacity: 0 }});
+      }}
+
+      function playTransition(direction, family) {{
         if (reduceMotion.matches) return;
-        const timeline = direction < 0 ? transitionBackward : transitionForward;
+        resetTransitionFx();
+        const directionKey = direction < 0 ? "backward" : "forward";
+        const timeline = transitionTimelines[family]?.[directionKey];
         timeline?.restart();
+      }}
+
+      function poseTransition(family, direction = 1, progress = .5) {{
+        resetTransitionFx();
+        const directionKey = direction < 0 ? "backward" : "forward";
+        const timeline = transitionTimelines[family]?.[directionKey];
+        if (!timeline) return null;
+        deck.dataset.transitionFamily = family;
+        const resolvedProgress = Math.max(0, Math.min(1, Number(progress)));
+        timeline.pause(timeline.duration() * resolvedProgress);
+        return {{
+          family,
+          direction: directionKey,
+          progress: resolvedProgress,
+        }};
       }}
 
       function updateUi() {{
@@ -813,9 +1018,11 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
           return current;
         }}
         const previousIndex = current;
+        const transitionFamily = transitionFamilyFor(previousIndex, nextIndex);
         const incoming = timelineFor(nextIndex);
         if (incoming) incoming.pause(0);
         current = nextIndex;
+        deck.dataset.transitionFamily = transitionFamily;
         if (options.instant) {{
           track.style.transition = "none";
         }}
@@ -825,7 +1032,10 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
           replayCurrent();
         }}
         if (!options.instant && current !== previousIndex) {{
-          playTransition(current > previousIndex ? 1 : -1);
+          playTransition(
+            current > previousIndex ? 1 : -1,
+            transitionFamily
+          );
         }}
         if (options.instant || reduceMotion.matches) {{
           resetInactive();
@@ -905,12 +1115,14 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
         next,
         previous,
         replay: replayCurrent,
+        poseTransition,
         state() {{
           const timeline = timelineFor(current);
           return {{
             index: current,
             count: slides.length,
             sceneId: slides[current]?.dataset.sceneId || null,
+            transitionFamily: deck.dataset.transitionFamily || null,
             timelineProgress: timeline ? timeline.progress() : null,
             runtimeError: deck.dataset.runtimeError === "true",
           }};
@@ -926,6 +1138,7 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
         }}
         fitStage();
         buildTransitionTimelines();
+        resetTransitionFx();
         const start = clamp((Number(location.hash.slice(1)) || 1) - 1);
         go(start, {{ instant: true, replay: true, force: true }});
         window.__ptMakerPresenter.ready = true;
@@ -1004,6 +1217,10 @@ def build_document(
         <i id="fx-blade-b" class="fx-blade"></i>
         <i id="fx-prism"></i>
         <i id="fx-flare"></i>
+        <i id="fx-curtain-top" class="fx-curtain"></i>
+        <i id="fx-curtain-bottom" class="fx-curtain"></i>
+        <i id="fx-ring-a" class="fx-ring"></i>
+        <i id="fx-ring-b" class="fx-ring"></i>
       </div>
       <div id="scene-hud" aria-hidden="true">
         <span id="scene-hud-chapter" class="scene-hud__chapter">

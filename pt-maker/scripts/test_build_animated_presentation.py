@@ -29,8 +29,20 @@ class AnimatedPresentationTests(unittest.TestCase):
         self.assertIn('"ArrowRight"', document)
         self.assertIn('"pointerup"', document)
         self.assertIn('id="transition-fx"', document)
+        self.assertIn('id="fx-curtain-top"', document)
+        self.assertIn('id="fx-ring-a"', document)
         self.assertIn('id="scene-hud"', document)
         self.assertIn("buildTransitionTimelines()", document)
+        self.assertIn("buildTransitionTimelines();\n        resetTransitionFx();", document)
+        self.assertIn("function poseTransition(", document)
+        self.assertIn("poseTransition,", document)
+        self.assertIn(
+            'const transitionFamilies = ["prism", "curtain", "aperture"]',
+            document,
+        )
+        self.assertIn("transitionFamilyFor(previousIndex, nextIndex)", document)
+        self.assertIn('data-transition-family="curtain"', document)
+        self.assertIn('data-transition-family="aperture"', document)
         self.assertIn("prefers-reduced-motion", document)
         self.assertIn('slide.classList.toggle("is-near"', document)
         self.assertIn("replayCurrent();", document)
