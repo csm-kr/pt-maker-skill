@@ -297,8 +297,8 @@ The generated HTML must:
 - expose `window.__ptMakerPresenter` for background browser QA;
 - respect `prefers-reduced-motion` by resolving to the final pose;
 - show the current slide count and a deck progress rail;
-- show each clip host's `data-chapter` as the HUD chapter label (an empty or
-  missing value hides the label).
+- show each clip host's `data-chapter` as the HUD chapter label; without it,
+  fall back to the scene's first h1-h3 text, and hide the label if there is none.
 
 Pass `--theme paper` for paper-motion decks. The paper shell has no neon,
 flare, glow, or blur; seams are hard (match) cuts by default, and a clip host

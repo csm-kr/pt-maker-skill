@@ -90,6 +90,20 @@ class Scene:
     transition: str = ""
 
 
+HEADING_RE = re.compile(r"<h[1-3]\b[^>]*>(.*?)</h[1-3]\s*>", re.IGNORECASE | re.DOTALL)
+
+
+def heading_text(markup: str) -> str:
+    """First h1-h3 of a scene as plain text, used when a clip has no data-chapter."""
+    match = HEADING_RE.search(markup)
+    if not match:
+        return ""
+    # <br> separates words, but inline tags like <span> sit inside a word.
+    text = re.sub(r"<br\s*/?>", " ", match.group(1), flags=re.IGNORECASE)
+    text = html.unescape(re.sub(r"<[^>]+>", "", text))
+    return " ".join(text.split())
+
+
 def attribute(tag: str, name: str) -> str | None:
     match = re.search(
         ATTR_RE_TEMPLATE.format(name=re.escape(name)),
@@ -211,7 +225,8 @@ def parse_project(
         scenes.append(
             replace(
                 scene,
-                chapter=(attribute(clip_tag, "data-chapter") or "").strip(),
+                chapter=(attribute(clip_tag, "data-chapter") or "").strip()
+                or heading_text(scene.markup),
                 transition=transition,
             )
         )

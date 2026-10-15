@@ -121,7 +121,7 @@ python3 .codex/skills/pt-maker/scripts/build_animated_presentation.py \
 - 장면 사이 전환은 기본이 하드컷입니다. 짧은 종이 밀기 전환이 필요한
   장면에만 clip host에 `data-transition="paper"`를 붙입니다.
 - 화면 하단의 장 이름은 clip host의 `data-chapter` 값을 씁니다. 값이 없으면
-  장 이름을 숨깁니다.
+  그 장면의 첫 제목(h1~h3)을 쓰고, 제목도 없으면 숨깁니다.
 
 ## 이전 방식과 달라진 점
 
@@ -135,10 +135,10 @@ python3 .codex/skills/pt-maker/scripts/build_animated_presentation.py \
 | 모션 원칙 | `hyperframes-animation-mode.md` | `motion-graphics-grammar.md` 추가: 덱 전체를 관통하는 사물 하나, 같은 사물을 같은 자리에 두고 넘기는 컷, 강조색을 아껴 두었다 한 번 쓰기 등 |
 | 화자 캐릭터 | 없음 | 코드로 그린 부엉이 SVG(포즈 5개)와 GSAP 헬퍼 `PtSpeaker` |
 | 발표용 HTML 테마 | 네온 테마 하나 | `--theme paper` 추가(네온·플래시 없음, 하드컷 기본) |
-| 하단 장 이름 | 다른 덱의 문구(`OPEN THE SCENT`, `MEMBER SIGNAL`)가 모든 덱에 고정으로 나오던 버그 | 장면의 `data-chapter`에서 읽고, 없으면 숨김 |
+| 하단 장 이름 | 다른 덱의 문구(`OPEN THE SCENT`, `MEMBER SIGNAL`)가 모든 덱에 고정으로 나오던 버그 | 장면의 `data-chapter`에서 읽고, 없으면 장면 제목(h1~h3), 둘 다 없으면 숨김. 그래서 예전 덱도 장 이름이 비지 않음 |
 | 발표 HTML QA | 전환 종류를 코드에 고정, 로드 직후 첫 전환에서 가끔 실패 | 페이지가 알려 주는 전환 종류를 읽음, 측정 전에 전환을 한 번 미리 실행(warm-up) |
 | 이미지 생성 도구가 없는 환경(Claude Code 등) | Codex `$imagegen` 전제 | 캐릭터·일러스트·도식을 SVG/CSS로 만든다는 규칙 추가 |
-| 테스트 | 37개 | 49개 |
+| 테스트 | 37개 | 50개 |
 
 ## 테스트
 

@@ -104,7 +104,26 @@ class AnimatedPresentationTests(unittest.TestCase):
             '<span id="scene-hud-chapter" class="scene-hud__chapter">문제 정의</span>',
             document,
         )
-        self.assertIn('const chapters = ["문제 정의", "", "", "", ""];', document)
+        self.assertIn('const chapters = ["문제 정의", ', document)
+
+    def test_hud_chapter_falls_back_to_scene_heading(self):
+        # Decks made before data-chapter existed must not end up with an empty
+        # HUD, so a clip without it borrows its scene's first heading.
+        with tempfile.TemporaryDirectory() as folder:
+            document = build_animated_presentation.build(
+                ANIMATION, Path(folder) / "out.html"
+            ).read_text(encoding="utf-8")
+        self.assertIn(
+            '<span id="scene-hud-chapter" class="scene-hud__chapter">'
+            "발표는 장수가 아니라 장면의 흐름으로 기억됩니다</span>",
+            document,
+        )
+        self.assertIn(
+            'const chapters = ["발표는 장수가 아니라 장면의 흐름으로 기억됩니다", '
+            '"한 장에는 하나의 주장만", "설계 → 움직임 → 검수", "", '
+            '"이제 PT를 보는 자료에서 경험하는 장면으로"];',
+            document,
+        )
 
     def test_paper_theme_has_no_flash_or_neon_layers(self):
         with tempfile.TemporaryDirectory() as folder:
