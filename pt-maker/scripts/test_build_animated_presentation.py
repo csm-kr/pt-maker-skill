@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
@@ -68,6 +69,108 @@ class AnimatedPresentationTests(unittest.TestCase):
             [scene.composition_id for scene in scenes],
             ["scene-1", "scene-2", "scene-3", "scene-4", "scene-5"],
         )
+
+    def test_hud_does_not_leak_hardcoded_chapter_labels(self):
+        with tempfile.TemporaryDirectory() as folder:
+            document = build_animated_presentation.build(
+                ANIMATION, Path(folder) / "out.html"
+            ).read_text(encoding="utf-8")
+        for stale in (
+            "OPEN THE SCENT",
+            "MEMBER SIGNAL",
+            "SCENE OF RESCENE",
+            "NIGHT BLOOM",
+            "AFTER SCENT",
+        ):
+            self.assertNotIn(stale, document)
+
+    def test_hud_chapter_comes_from_clip_metadata(self):
+        with tempfile.TemporaryDirectory() as folder:
+            project = Path(folder) / "animation"
+            shutil.copytree(ANIMATION, project)
+            index = project / "index.html"
+            index.write_text(
+                index.read_text(encoding="utf-8").replace(
+                    'id="scene-1" class="scene clip"',
+                    'id="scene-1" data-chapter="문제 정의" class="scene clip"',
+                    1,
+                ),
+                encoding="utf-8",
+            )
+            document = build_animated_presentation.build(
+                project, Path(folder) / "out.html"
+            ).read_text(encoding="utf-8")
+        self.assertIn(
+            '<span id="scene-hud-chapter" class="scene-hud__chapter">문제 정의</span>',
+            document,
+        )
+        self.assertIn('const chapters = ["문제 정의", "", "", "", ""];', document)
+
+    def test_paper_theme_has_no_flash_or_neon_layers(self):
+        with tempfile.TemporaryDirectory() as folder:
+            paper = build_animated_presentation.build(
+                ANIMATION, Path(folder) / "paper.html", theme="paper"
+            ).read_text(encoding="utf-8")
+            default = build_animated_presentation.build(
+                ANIMATION, Path(folder) / "default.html"
+            ).read_text(encoding="utf-8")
+        self.assertIn('data-theme="paper"', paper)
+        self.assertIn('const paperFamilies = ["cut", "paper"];', paper)
+        self.assertEqual(paper.count('class="animated-slide"'), 5)
+        for neon in (
+            'id="fx-flare"',
+            'id="fx-blade-a"',
+            'class="show-lightfield"',
+            'class="stage-atmosphere"',
+            "mix-blend-mode: screen",
+            "#ff78aa",
+        ):
+            self.assertNotIn(neon, paper)
+        # the paper HUD sits on a solid panel so it stays readable on every world
+        self.assertNotIn("mix-blend-mode", paper)
+        self.assertIn("--hud-panel", paper)
+        self.assertIn('data-theme="default"', default)
+        self.assertIn('id="fx-flare"', default)
+        self.assertIn('class="show-lightfield"', default)
+
+    def test_paper_theme_reads_seam_transition_metadata(self):
+        with tempfile.TemporaryDirectory() as folder:
+            project = Path(folder) / "animation"
+            shutil.copytree(ANIMATION, project)
+            index = project / "index.html"
+            index.write_text(
+                index.read_text(encoding="utf-8").replace(
+                    'id="scene-3" class="scene clip"',
+                    'id="scene-3" data-transition="paper" class="scene clip"',
+                    1,
+                ),
+                encoding="utf-8",
+            )
+            document = build_animated_presentation.build(
+                project, Path(folder) / "out.html", theme="paper"
+            ).read_text(encoding="utf-8")
+        self.assertEqual(document.count('data-transition="paper"'), 1)
+        self.assertIn('data-scene-id="scene-3"\n        data-transition="paper"', document)
+
+    def test_unknown_theme_and_transition_are_rejected(self):
+        with tempfile.TemporaryDirectory() as folder:
+            with self.assertRaises(ValueError):
+                build_animated_presentation.build(
+                    ANIMATION, Path(folder) / "out.html", theme="neon"
+                )
+            project = Path(folder) / "animation"
+            shutil.copytree(ANIMATION, project)
+            index = project / "index.html"
+            index.write_text(
+                index.read_text(encoding="utf-8").replace(
+                    'id="scene-2" class="scene clip"',
+                    'id="scene-2" data-transition="wipe" class="scene clip"',
+                    1,
+                ),
+                encoding="utf-8",
+            )
+            with self.assertRaises(ValueError):
+                build_animated_presentation.parse_project(project)
 
     def test_missing_composition_is_rejected(self):
         with tempfile.TemporaryDirectory() as folder:

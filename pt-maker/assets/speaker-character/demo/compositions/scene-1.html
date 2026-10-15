@@ -1,0 +1,61 @@
+<template id="scene-1-template">
+  <div data-composition-id="scene-1" data-width="1920" data-height="1080">
+    <!-- 세계 B: 연회색 평면. 개념 설명은 흰 외곽선 스티커 + 굵은 라벨, 색은 '핵심' 표시에만 -->
+    <div class="world world--plain"></div>
+    <p class="statement" id="s1-statement" style="top:120px;">가운데, <span class="hl">관계<i class="hl-bar" id="s1-hl" aria-hidden="true"></i></span>가 핵심이에요</p>
+
+    <div class="sticker" id="s1-class" data-xywh="0.0719 0.3148 0.1563 0.2778" style="left:138px; top:340px; width:300px; height:300px;">
+      <svg viewBox="0 0 300 300" aria-hidden="true">
+        <path d="M30 78 L120 78 L140 102 L270 102 L270 250 L30 250 Z" fill="#5c5c5c"/>
+        <g transform="rotate(-6 143 130)">
+          <rect x="60" y="64" width="168" height="128" fill="#f2f2f2"/>
+          <rect x="82" y="88" width="118" height="11" rx="5" fill="#c4c4c4"/>
+          <rect x="82" y="112" width="86" height="11" rx="5" fill="#c4c4c4"/>
+        </g>
+        <path d="M22 128 L278 128 L262 252 L38 252 Z" fill="#8e8e8e"/>
+      </svg>
+    </div>
+    <p class="label" id="s1-class-label" style="left:88px; top:730px; width:400px;">개념</p>
+
+    <div class="sticker" id="s1-relation" data-xywh="0.4219 0.3148 0.1563 0.2778" style="left:810px; top:340px; width:300px; height:300px;">
+      <svg viewBox="0 0 300 300" aria-hidden="true">
+        <rect x="30" y="104" width="146" height="92" rx="46" fill="none" stroke="#4a4a4a" stroke-width="26" transform="rotate(-30 103 150)"/>
+        <rect x="124" y="104" width="146" height="92" rx="46" fill="none" stroke="#7c7c7c" stroke-width="26" transform="rotate(-30 197 150)"/>
+      </svg>
+    </div>
+    <p class="label" id="s1-relation-label" style="left:760px; top:730px; width:400px;">관계</p>
+
+    <div class="sticker" id="s1-instance" data-xywh="0.7719 0.3148 0.1563 0.2778" style="left:1482px; top:340px; width:300px; height:300px;">
+      <svg viewBox="0 0 300 300" aria-hidden="true">
+        <g transform="rotate(-12 150 150)">
+          <path d="M72 62 L202 62 L268 150 L202 238 L72 238 Q50 238 50 216 L50 84 Q50 62 72 62 Z" fill="#8a8a8a"/>
+          <circle cx="206" cy="150" r="16" fill="#ececec"/>
+          <rect x="80" y="122" width="92" height="14" rx="7" fill="#d4d4d4"/>
+          <rect x="80" y="152" width="64" height="14" rx="7" fill="#d4d4d4"/>
+        </g>
+      </svg>
+    </div>
+    <p class="label" id="s1-instance-label" style="left:1432px; top:730px; width:400px;">사례</p>
+
+    <!-- 금색 붓터치 원: 다음 장면 t=0에도 같은 자리에 남는다(match cut) -->
+    <svg class="brush brush--gold" id="s1-brush" viewBox="0 0 1920 1080" aria-hidden="true">
+      <path class="b1" d="M1067.5 325.5 A215 190 0 0 1 852.5 654.5 A215 190 0 1 1 1124.7 367.8" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+      <path class="b2" d="M1059.3 326.6 A222 184 0 0 1 864.7 657.4 A222 184 0 1 1 1141.6 383.8" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+      <path class="b3" d="M1074.3 324.7 A208 197 0 0 1 841.7 651.3 A208 197 0 1 1 1107.6 351.2" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+    </svg>
+    <script>
+      const s1T = { first: .25, second: .95, third: 1.65, circle: 2.5, statement: 3.5, highlight: 3.75, end: 5.5 };
+      const scene1Tl = gsap.timeline({ paused: true });
+      [["#s1-class", s1T.first], ["#s1-relation", s1T.second], ["#s1-instance", s1T.third]].forEach(([id, at]) => {
+        scene1Tl.from(id, { scale: .6, opacity: 0, duration: .26, ease: "power3.out" }, at);
+        scene1Tl.from(id + "-label", { y: 14, opacity: 0, duration: .2, ease: "power3.out" }, at + .08);
+      });
+      scene1Tl.fromTo("#s1-brush path", { attr: { "stroke-dashoffset": 1 } },
+        { attr: { "stroke-dashoffset": 0 }, duration: .8, ease: "power1.inOut", stagger: .04 }, s1T.circle);
+      scene1Tl.from("#s1-statement", { opacity: 0, duration: .01 }, s1T.statement);
+      scene1Tl.from("#s1-hl", { scaleX: 0, duration: .4, ease: "power1.out" }, s1T.highlight);
+      scene1Tl.set({}, {}, s1T.end);
+      window.__timelines["scene-1"] = scene1Tl;
+    </script>
+  </div>
+</template>

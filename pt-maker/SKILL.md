@@ -312,6 +312,14 @@ archive/                        ← 작업 스크래치 격리
 - Codex에서는 preview/check/render에 `--background`가 필수다. wrapper가 foreground 실행을 차단한다. `status`로 PID·완료·로그를 보고, `stop --target preview|check|render|all`로 wrapper가 만든 process group만 종료한다. shell `&`/`nohup`을 임의로 쓰지 않는다. background render도 승인·QA gate를 우회하지 않는다.
 - 최종 산출물과 발표용 HTML 검수가 끝나면 반드시 `hyperframes_mode.py stop animation --target all`을 실행하고 `status`에서 모든 managed job의 `alive:false`를 확인한다. HyperFrames Studio/preview 서버를 최종 납품 뒤 계속 띄워 두지 않는다.
 
+### paper-motion 스타일 (종이 질감 모션그래픽 + 화자 캐릭터)
+- `애니메이션 위주` 포맷 안에서 고를 수 있는 스타일이다. 첫 포맷 3지선다 질문은 바꾸지 않는다. 포맷이 `animation`으로 정해진 뒤 비주얼 방향 질문에서 사용자가 종이 질감 모션그래픽이나 화자 캐릭터를 원하면 `paper-motion`으로 인테이크 노트와 build-notes에 기록한다.
+- 고르면 빌드 전에 `taste-profile.md`와 함께 [paper-motion-taste-profile.md](paper-motion-taste-profile.md), [reference/motion-graphics-grammar.md](reference/motion-graphics-grammar.md), [assets/speaker-character/README.md](assets/speaker-character/README.md)를 읽는다. 두 프로필이 부딪히면 paper-motion 덱 안에서는 `paper-motion-taste-profile.md`가 이긴다. 리뷰에서 나온 paper-motion 취향은 같은 diff 제안·확인 절차로 이 파일에 반영한다.
+- [reference/hyperframes-animation-mode.md](reference/hyperframes-animation-mode.md) 계약이 우선한다. motion-graphics-grammar.md는 그 안에서 hero object, persistent frame, accent payoff, 사물이 시선을 넘겨주는 장면 전환, 의미를 연기하는 kinetic typography, 박자 격자, 시간만으로 계산하는 카메라를 정한다. 발표용 HTML이 기본 산출물이고 영상은 명시 요청 시만 만드는 규칙은 그대로다.
+- 화자 캐릭터는 `assets/speaker-character/`의 코드로 그린 부엉이 SVG와 `PtSpeaker` 헬퍼를 쓴다. 이미지 생성 결과가 아니라 SVG라서 같은 시각에 언제나 같은 포즈가 나온다. 포즈는 트윈 없이 즉시 바뀌고 깜빡임·립싱크는 기본으로 꺼져 있다.
+- 발표용 HTML은 `build_animated_presentation.py animation --theme paper -o animation/<주제>-발표용-vN.html`로 만든다. paper 테마는 네온·플래시 없이 하드컷(match cut)을 기본 seam으로 쓰고, 세계가 바뀌는 seam만 clip host의 `data-transition="paper"`로 짧은 종이 밀기를 쓴다.
+- Claude Code에는 이미지 생성 도구가 없다. Claude Code에서 실행할 때는 `$imagegen` 대신 SVG/CSS로 캐릭터·일러스트·도식·질감을 만든다.
+
 ## 취향 학습 루프
 `taste-profile.md`가 취향 정본(구조·스토리 / 비주얼·브랜드 프리셋 / 어투·톤 / 안티-취향, 각 항목 `[conf:]`). 3지점에서 동작:
 - **읽기**(시작): Phase 1 전에 읽어 기본값 적용. 없으면 빈 템플릿 생성.
@@ -358,6 +366,7 @@ Color Hunt(`https://colorhunt.co/`)는 **reference 자료가 아니라 palette s
 - 프롬프트에는 현재 활성 팔레트, 슬라이드 용도, 구도, 피사체 보존, 금지 요소를 포함한다. 생성 이미지는 사실 증거가 아니라 일러스트로 표시하고 `assets/CREDITS.txt`에 생성 자산임을 기록한다.
 - built-in 도구가 실패하거나 unavailable이면 API/CLI 폴백이 있음을 설명하고, 사용자가 명시적으로 승인한 경우에만 `$imagegen` 스킬의 fallback CLI 절차를 따른다. 이 경우에만 `OPENAI_API_KEY`가 필요하다.
 - `scripts/gen_image.py`, `env.example`, [reference/apiyi.md](reference/apiyi.md)는 비-Codex 호환 또는 사용자가 직접 API 방식을 명시한 레거시 경로다. Codex 기본 경로로 사용하지 않는다.
+- Claude Code처럼 이미지 생성 도구가 없는 환경에서는 생성 대신 웹·공개 자료와 인라인 SVG/CSS 일러스트·도식으로 시각자료를 만든다. 사용자가 direct API 방식을 명시한 경우에만 위 레거시 경로를 쓴다.
 
 ### 연속 이미지 → HTML 애니메이션
 - 먼저 subject identity, camera, environment, palette, motion path, invariants, 3~6장 storyboard를 고정하고 사용자 승인을 받는다.

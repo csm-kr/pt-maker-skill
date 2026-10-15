@@ -1,0 +1,223 @@
+<template id="scene-3-template">
+  <div data-composition-id="scene-3" data-width="1920" data-height="1080">
+    <!-- 세계 A: 검은 우주. 화자는 도식과 번갈아 나와 연결·반론·질문·CTA를 맡는다. 포즈는 즉시 교체 -->
+    <div class="world world--space"><div class="dust" id="s3-dust"></div></div>
+    <div class="spk spk--plain" id="s3-speaker" data-pose="wave" style="--spk-x:770px; --spk-y:410px; --spk-w:380px; --spk-bubble-ink:#ffffff; --spk-bubble-size:54px;">
+      <svg class="spk-figure" viewBox="0 0 200 240" aria-hidden="true" focusable="false">
+    <defs>
+      <pattern id="s3-speaker-dots" width="5" height="5" patternUnits="userSpaceOnUse">
+        <rect class="spk-dots-bg" width="5" height="5"/>
+        <circle class="spk-dots" cx="1.25" cy="1.25" r="1.15"/>
+        <circle class="spk-dots" cx="3.75" cy="3.75" r="1.15"/>
+      </pattern>
+    </defs>
+    <g class="spk-front" data-poses="smile o wave think">
+      <path class="spk-tuft" fill="url(#s3-speaker-dots)" d="M62 68 Q54 40 40 14 Q70 26 92 52 Z"/>
+      <path class="spk-tuft" fill="url(#s3-speaker-dots)" d="M138 68 Q146 40 160 14 Q130 26 108 52 Z"/>
+      <ellipse class="spk-foot" cx="80" cy="221" rx="13" ry="8"/>
+      <ellipse class="spk-foot" cx="120" cy="221" rx="13" ry="8"/>
+      <path class="spk-body" d="M100 38 C152 38 172 80 172 136 C172 194 140 222 100 222 C60 222 28 194 28 136 C28 80 48 38 100 38 Z"/>
+      <circle class="spk-disc" cx="79" cy="102" r="25"/>
+      <circle class="spk-disc" cx="121" cy="102" r="25"/>
+      <path class="spk-chest" d="M84 166 q6 6 12 0 M104 166 q6 6 12 0 M94 182 q6 6 12 0"/>
+      <g data-poses="smile wave">
+        <g class="spk-eye" data-origin="79 101"><ellipse cx="79" cy="101" rx="7" ry="9"/><circle class="spk-glint" cx="81.5" cy="97.5" r="2.4"/></g>
+        <g class="spk-eye" data-origin="121 101"><ellipse cx="121" cy="101" rx="7" ry="9"/><circle class="spk-glint" cx="123.5" cy="97.5" r="2.4"/></g>
+      </g>
+      <g data-poses="o">
+        <g class="spk-eye" data-origin="79 100"><ellipse cx="79" cy="100" rx="9.5" ry="11"/><circle class="spk-glint" cx="82.5" cy="95.5" r="3"/></g>
+        <g class="spk-eye" data-origin="121 100"><ellipse cx="121" cy="100" rx="9.5" ry="11"/><circle class="spk-glint" cx="124.5" cy="95.5" r="3"/></g>
+      </g>
+      <g data-poses="think">
+        <g class="spk-eye" data-origin="74 95"><ellipse cx="74" cy="95" rx="6.5" ry="8.5"/><circle class="spk-glint" cx="72" cy="91.5" r="2.2"/></g>
+        <g class="spk-eye" data-origin="116 95"><ellipse cx="116" cy="95" rx="6.5" ry="8.5"/><circle class="spk-glint" cx="114" cy="91.5" r="2.2"/></g>
+        <path class="spk-brow" d="M107 78 Q117 71 129 76"/>
+      </g>
+      <g data-poses="smile think">
+        <ellipse class="spk-mouth-in" cx="100" cy="125" rx="4.5" ry="3.5"/>
+        <path class="spk-jaw" d="M95.5 123 L104.5 123 L100 130 Z"/>
+        <path class="spk-beak" d="M91 114 Q100 109 109 114 L104 123 L96 123 Z"/>
+      </g>
+      <g data-poses="o">
+        <ellipse class="spk-mouth-in" cx="100" cy="132" rx="6.5" ry="8"/>
+        <path class="spk-beak" d="M91 113 Q100 108 109 113 L100 124 Z"/>
+      </g>
+      <g data-poses="wave">
+        <path class="spk-mouth-in" d="M87 121 L113 121 Q111 142 100 142 Q89 142 87 121 Z"/>
+        <ellipse class="spk-tongue" cx="100" cy="136" rx="6.5" ry="3.6"/>
+        <path class="spk-beak" d="M91 112 Q100 107 109 112 L100 122 Z"/>
+      </g>
+      <g class="spk-pencil" transform="translate(46 190) rotate(32)">
+        <path class="spk-pencil-wood" d="M-5.5 -50 L5.5 -50 L0 -66 Z"/>
+        <path class="spk-pencil-lead" d="M-1.9 -60.5 L1.9 -60.5 L0 -66 Z"/>
+        <rect class="spk-pencil-body" x="-5.5" y="-50" width="11" height="43" rx="1.5"/>
+        <path class="spk-pencil-line" d="M-1.8 -47 V-10 M1.8 -47 V-10"/>
+        <rect class="spk-pencil-band" x="-5.5" y="-8" width="11" height="9" rx="2"/>
+      </g>
+      <path class="spk-wing" fill="url(#s3-speaker-dots)" d="M44 110 C24 130 20 166 36 194 C52 182 58 148 54 114 Z"/>
+      <path class="spk-wing" data-poses="smile o" fill="url(#s3-speaker-dots)" d="M156 110 C176 130 180 166 164 194 C148 182 142 148 146 114 Z"/>
+      <path class="spk-wing" data-poses="wave" fill="url(#s3-speaker-dots)" d="M146 120 C150 94 166 66 190 50 C193 80 178 108 158 130 Z"/>
+      <path class="spk-wing" data-poses="think" fill="url(#s3-speaker-dots)" d="M157 112 C154 140 134 156 110 150 C118 138 138 126 147 108 Z"/>
+    </g>
+    <g class="spk-side" data-poses="side">
+      <path class="spk-tuft" fill="url(#s3-speaker-dots)" d="M76 66 Q68 38 56 14 Q86 24 108 46 Z"/>
+      <ellipse class="spk-foot" cx="96" cy="221" rx="13" ry="8"/>
+      <ellipse class="spk-foot" cx="124" cy="221" rx="13" ry="8"/>
+      <path class="spk-body" d="M104 38 C152 38 168 84 166 138 C164 194 136 222 100 222 C62 222 36 192 38 138 C40 84 58 38 104 38 Z"/>
+      <circle class="spk-disc" cx="130" cy="100" r="24"/>
+      <path class="spk-chest" d="M110 166 q6 6 12 0 M124 182 q6 6 12 0"/>
+      <g class="spk-eye" data-origin="134 98"><ellipse cx="134" cy="98" rx="7" ry="9"/><circle class="spk-glint" cx="136.5" cy="94.5" r="2.4"/></g>
+      <ellipse class="spk-mouth-in" cx="159" cy="117" rx="4" ry="3"/>
+      <path class="spk-jaw" d="M154 115 L166 117 L154 121 Z"/>
+      <path class="spk-beak" d="M152 104 L174 112 L154 116 Z"/>
+      <path class="spk-wing" fill="url(#s3-speaker-dots)" d="M72 108 C54 134 58 176 86 198 C100 172 100 134 86 108 Z"/>
+    </g>
+  </svg>
+      <div class="spk-bubbles">
+        <p class="spk-bubble">처음 들으면 이름부터 낯설죠.</p>
+        <p class="spk-bubble">“ 그거 그냥 분류표 아니에요? ”</p>
+        <p class="spk-bubble">분류표와 무엇이 다를까요?</p>
+        <p class="spk-bubble is-rest">다음 장에서 같이 확인해요!</p>
+      </div>
+    </div>
+    <script>
+/* pt-maker speaker character helper v2 (owl)
+   composition의 inline <script> 맨 앞(장면 timeline 코드보다 먼저)에 그대로 붙여 넣는다.
+   build_animated_presentation.py는 composition의 inline script만 발표용 HTML로 옮기므로 <script src>로 불러오지 않는다.
+   여러 composition에 중복으로 들어가도 첫 정의만 쓰인다.
+   결정성 계약: 모든 변화는 넘겨받은 paused GSAP timeline의 절대 시각에만 추가한다.
+   무한 반복, 타이머, 벽시계, 난수, 재생 호출을 쓰지 않는다. DOM 크기를 측정하지 않는다.
+   paper-motion 기본값: 포즈와 대사는 트윈 없이 즉시 바뀐다. 깜빡임(blink)과 입 움직임(lipSync)은 요청할 때만 켠다. */
+window.PtSpeaker = window.PtSpeaker || (function () {
+  "use strict";
+  var POSES = ["smile", "o", "wave", "side", "think"];
+  /* 한글 중성 21개(ㅏ..ㅣ)별 입 벌림 정도: 넓게 1, 중간 .72, 작게 .45 */
+  var VOWEL_OPEN = [1, 1, 1, 1, .72, .72, .72, .72, .72, 1, 1, .45, .72, .72, .72, .72, .45, .72, .45, .45, .45];
+
+  function fail(message) { throw new Error("PtSpeaker: " + message); }
+
+  function finite(value, label) {
+    if (typeof value !== "number" || !isFinite(value)) fail(label + " must be a finite number of seconds");
+    return value;
+  }
+
+  function openness(ch) {
+    var code = ch.charCodeAt(0);
+    if (code >= 0xac00 && code <= 0xd7a3) return VOWEL_OPEN[Math.floor(((code - 0xac00) % 588) / 28)];
+    if (/[0-9A-Za-zㄱ-ㆎ]/.test(ch)) return [.55, .8, 1][code % 3];
+    return /\s/.test(ch) ? -0.6 : -1.6;
+  }
+
+  /* options: { start, tween: false, lipSync: false }
+     start는 t=0 포즈(없으면 root의 data-pose). data-pose는 정지 포즈(인쇄·첫 진입 전)이므로 장면의 마지막 포즈를 적는다.
+     tween=true면 포즈를 0.12초 교차, 대사를 짧게 튀어나오게 한다. lipSync=true면 say() 동안 부리가 움직인다. */
+  function attach(tl, target, options) {
+    if (!tl || typeof tl.to !== "function") fail("attach() needs the composition's paused GSAP timeline");
+    var opts = Object.assign({ start: null, tween: false, lipSync: false }, options || {});
+    var root = typeof target === "string" ? document.querySelector(target) : target;
+    if (!root) fail("speaker root not found: " + target);
+    var variants = Array.from(root.querySelectorAll("[data-poses]")).map(function (el) {
+      return { el: el, poses: el.getAttribute("data-poses").trim().split(/\s+/) };
+    });
+    if (!variants.length) fail("speaker has no [data-poses] parts");
+    var eyes = Array.from(root.querySelectorAll(".spk-eye"));
+    var jaws = Array.from(root.querySelectorAll(".spk-jaw"));
+    var bubbles = root.querySelectorAll(".spk-bubble");
+    var startPose = opts.start || root.getAttribute("data-pose") || "smile";
+    if (POSES.indexOf(startPose) < 0) fail("unknown start pose: " + startPose);
+
+    /* 깜빡임 기준점은 그림 좌표(data-origin)로 고정한다. */
+    eyes.forEach(function (el) {
+      var origin = el.getAttribute("data-origin");
+      if (!origin) fail("every .spk-eye needs data-origin=\"x y\"");
+      window.gsap.set(el, { svgOrigin: origin });
+    });
+
+    /* t=0 출발 포즈. immediateRender가 없으면 한 번도 렌더되지 않은 timeline의 t=0이
+       CSS 정지 포즈로 보여 seek 순서에 따라 첫 프레임이 달라진다. */
+    function rest(targets, vars) {
+      if (targets.length === 0) return;
+      tl.set(targets, Object.assign({ immediateRender: true }, vars), 0);
+    }
+    variants.forEach(function (v) { rest([v.el], { autoAlpha: v.poses.indexOf(startPose) >= 0 ? 1 : 0 }); });
+    rest(eyes, { scaleY: 1 });
+    rest(jaws, { y: 0 });
+    rest(bubbles, { autoAlpha: 0, scale: 1, y: 0 });
+
+    var api = {
+      /* 포즈 교체: smile(기본 진행) | o(놀람·반론) | wave(질문·CTA) | side(내레이션) | think(생각) */
+      pose: function (name, at) {
+        if (POSES.indexOf(name) < 0) fail("unknown pose: " + name);
+        finite(at, "pose time");
+        variants.forEach(function (v) {
+          var vars = { autoAlpha: v.poses.indexOf(name) >= 0 ? 1 : 0 };
+          if (opts.tween) tl.to(v.el, Object.assign({ duration: .12, ease: "none" }, vars), at);
+          else tl.set(v.el, vars, at);
+        });
+        return api;
+      },
+
+      /* 정해진 시각마다 한 번 깜빡임(기본 꺼짐: 부르지 않으면 깜빡이지 않는다). */
+      blink: function (times) {
+        (times || []).forEach(function (t) {
+          finite(t, "blink time");
+          tl.set(eyes, { scaleY: .1 }, t);
+          tl.set(eyes, { scaleY: 1 }, t + .12);
+        });
+        return api;
+      },
+
+      /* index번째 대사를 at~until 동안 보인다. keep=true면 until 뒤에도 남긴다.
+         lipSync(attach 옵션 또는 say 옵션)가 켜져 있으면 대사 음절 수만큼 부리를 움직이고 until 전에 닫는다. */
+      say: function (index, at, until, sayOptions) {
+        var bubble = bubbles[index];
+        if (!bubble) fail("speech line #" + index + " not found");
+        finite(at, "say start");
+        finite(until, "say end");
+        if (until <= at + .4) fail("say end must be at least 0.4s after start");
+        var o = Object.assign({ keep: false, lipSync: opts.lipSync, syllable: .13 }, sayOptions || {});
+        if (opts.tween) {
+          tl.fromTo(bubble, { autoAlpha: 0, scale: .9, y: 10 },
+            { autoAlpha: 1, scale: 1, y: 0, duration: .18, ease: "power3.out", immediateRender: false }, at);
+          if (!o.keep) tl.to(bubble, { autoAlpha: 0, duration: .12, ease: "none" }, until - .12);
+        } else {
+          tl.set(bubble, { autoAlpha: 1 }, at);
+          if (!o.keep) tl.set(bubble, { autoAlpha: 0 }, until);
+        }
+        if (o.lipSync && jaws.length) {
+          var step = o.syllable;
+          var limit = until - .2;
+          var t = at + .12;
+          Array.from(bubble.textContent.trim()).forEach(function (ch) {
+            var level = openness(ch);
+            if (t + step > limit) return;
+            if (level < 0) { t += step * -level; return; }
+            tl.to(jaws, { y: 5 * level, duration: step * .42, ease: "sine.out" }, t);
+            tl.to(jaws, { y: 0, duration: step * .4, ease: "sine.in" }, t + step * .5);
+            t += step;
+          });
+        }
+        return api;
+      }
+    };
+    return api;
+  }
+
+  return { version: 2, poses: POSES.slice(), attach: attach };
+})();
+      const s3T = { narrate: .2, object: 2.0, think: 4.0, cta: 5.8, end: 7.5 };
+      const scene3Tl = gsap.timeline({ paused: true });
+      scene3Tl.fromTo("#s3-dust", { x: 0 }, { x: -28, duration: s3T.end, ease: "none" }, 0);
+      PtSpeaker.attach(scene3Tl, "#s3-speaker", { start: "side" })
+        .say(0, s3T.narrate, s3T.object - .1)
+        .pose("o", s3T.object)
+        .say(1, s3T.object, s3T.think - .1)
+        .pose("think", s3T.think)
+        .say(2, s3T.think, s3T.cta - .1)
+        .pose("wave", s3T.cta)
+        .say(3, s3T.cta, s3T.end - .2, { keep: true });
+      scene3Tl.set({}, {}, s3T.end);
+      window.__timelines["scene-3"] = scene3Tl;
+    </script>
+  </div>
+</template>

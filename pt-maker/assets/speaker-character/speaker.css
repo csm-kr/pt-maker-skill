@@ -1,0 +1,134 @@
+/* pt-maker speaker character v2 (owl) — animation/index.html의 <style>에 한 번만 붙여 넣는다.
+   build_animated_presentation.py는 index.html의 <style>만 발표용 HTML로 옮기므로
+   별도 <link>로 불러오지 않는다. 생김새는 아래 --spk-* 토큰만 바꿔 조정한다. */
+.spk {
+  --spk-w: 300px;                       /* 캐릭터 폭. 높이는 viewBox 비율(200:240)로 자동 */
+  --spk-body: #e0e0e0;                  /* 몸 */
+  --spk-belly: #f7f7f7;                 /* 얼굴 원반·연필 나무 */
+  --spk-ink: #111111;                   /* 외곽선·눈·부리 */
+  --spk-cheek: #7a2a20;                 /* 벌린 입 안쪽 */
+  --spk-tuft: #222222;                  /* 망점(깃털·날개) 점 */
+  --spk-tuft-bg: #7a7a7a;               /* 망점 바탕 */
+  --spk-prop: #e6d86c;                  /* 노란 연필: 캐릭터의 유일한 색 */
+  --spk-cut-shadow: rgba(17, 17, 17, .14); /* 상자 말풍선 그림자 */
+  --spk-bubble-bg: #ffffff;
+  --spk-bubble-ink: #111111;
+  --spk-bubble-w: 760px;                /* 말풍선/대사 최대 폭 */
+  --spk-bubble-size: 44px;              /* 대사 글자 크기(1920×1080 기준) */
+  position: absolute;
+  left: var(--spk-x);
+  top: var(--spk-y);
+  width: var(--spk-w);
+  aspect-ratio: 200 / 240;
+  pointer-events: none;
+}
+.spk-figure { display: block; width: 100%; height: 100%; overflow: visible; }
+.spk--flip .spk-figure { transform: scaleX(-1); }
+
+/* 포즈: data-poses에 이름이 있는 부품만 보인다. 정지 포즈는 root의 data-pose(기본 smile). */
+.spk [data-poses] { opacity: 0; visibility: hidden; }
+.spk:not([data-pose]) [data-poses~="smile"],
+.spk[data-pose="smile"] [data-poses~="smile"],
+.spk[data-pose="o"] [data-poses~="o"],
+.spk[data-pose="wave"] [data-poses~="wave"],
+.spk[data-pose="side"] [data-poses~="side"],
+.spk[data-pose="think"] [data-poses~="think"] { opacity: 1; visibility: inherit; }
+
+.spk-body,
+.spk-foot,
+.spk-wing {
+  stroke: var(--spk-ink);
+  stroke-width: 3.5;
+  stroke-linejoin: round;
+}
+.spk-body,
+.spk-foot { fill: var(--spk-body); }
+.spk-disc { fill: var(--spk-belly); }
+.spk-chest,
+.spk-brow {
+  fill: none;
+  stroke: var(--spk-ink);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.spk-chest { stroke-opacity: .28; }
+.spk-eye ellipse,
+.spk-beak,
+.spk-jaw { fill: var(--spk-ink); }
+.spk-beak,
+.spk-jaw { stroke: var(--spk-ink); stroke-width: 1.5; stroke-linejoin: round; }
+.spk-glint { fill: #fff; }
+.spk-mouth-in { fill: var(--spk-cheek); stroke: var(--spk-ink); stroke-width: 3; stroke-linejoin: round; }
+.spk-tongue { fill: #fff; opacity: .28; }
+.spk-dots-bg { fill: var(--spk-tuft-bg); }
+.spk-dots { fill: var(--spk-tuft); }
+.spk-pencil-body { fill: var(--spk-prop); }
+.spk-pencil-wood { fill: var(--spk-belly); }
+.spk-pencil-band { fill: var(--spk-tuft-bg); }
+.spk-pencil-body,
+.spk-pencil-wood,
+.spk-pencil-band { stroke: var(--spk-ink); stroke-width: 3; stroke-linejoin: round; }
+.spk-pencil-lead { fill: var(--spk-ink); }
+.spk-pencil-line { stroke: var(--spk-ink); stroke-opacity: .3; stroke-width: 1.6; }
+
+/* 대사. 기본은 상자 말풍선, spk--plain이면 머리 위 굵은 글자(paper-motion 기본). */
+.spk-bubbles {
+  position: absolute;
+  right: 58%;
+  bottom: 88%;
+  width: var(--spk-bubble-w);
+}
+.spk--bubble-right .spk-bubbles { right: auto; left: 58%; }
+.spk-bubble {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: max-content;
+  max-width: 100%;
+  margin: 0;
+  padding: 24px 34px 26px;
+  border: 4px solid var(--spk-ink);
+  border-radius: 34px;
+  background: var(--spk-bubble-bg);
+  color: var(--spk-bubble-ink);
+  box-shadow: 8px 8px 0 var(--spk-cut-shadow);
+  font-size: var(--spk-bubble-size);
+  font-weight: 800;
+  line-height: 1.36;
+  letter-spacing: -.02em;
+  word-break: keep-all;
+  text-wrap: pretty;
+  transform-origin: 86% 100%;
+  opacity: 0;
+  visibility: hidden;
+}
+/* 꼬리: 잉크 삼각형(::before) 위에 바탕 삼각형(::after)을 겹쳐 테두리를 만든다 */
+.spk-bubble::before,
+.spk-bubble::after {
+  content: "";
+  position: absolute;
+  clip-path: polygon(0 0, 64% 0, 100% 100%);
+}
+.spk-bubble::before { top: 100%; right: 30px; width: 50px; height: 40px; background: var(--spk-ink); }
+.spk-bubble::after { top: calc(100% - 4px); right: 36px; width: 38px; height: 34px; background: var(--spk-bubble-bg); }
+.spk--bubble-right .spk-bubble { right: auto; left: 0; transform-origin: 14% 100%; }
+.spk--bubble-right .spk-bubble::before,
+.spk--bubble-right .spk-bubble::after { clip-path: polygon(36% 0, 100% 0, 0 100%); }
+.spk--bubble-right .spk-bubble::before { right: auto; left: 30px; }
+.spk--bubble-right .spk-bubble::after { right: auto; left: 36px; }
+.spk--plain .spk-bubbles { right: auto; left: 50%; bottom: 100%; margin-bottom: 20px; transform: translateX(-50%); }
+.spk--plain .spk-bubble {
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  text-align: center;
+  transform-origin: 50% 100%;
+}
+.spk--plain .spk-bubble::before,
+.spk--plain .spk-bubble::after { display: none; }
+/* 정지 포즈(첫 진입 전·인쇄·스크립트 없음)에서 보일 대사 하나 */
+.spk-bubble.is-rest { opacity: 1; visibility: inherit; }

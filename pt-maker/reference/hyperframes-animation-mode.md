@@ -296,7 +296,16 @@ The generated HTML must:
   jump, and replay;
 - expose `window.__ptMakerPresenter` for background browser QA;
 - respect `prefers-reduced-motion` by resolving to the final pose;
-- show the current slide count and a deck progress rail.
+- show the current slide count and a deck progress rail;
+- show each clip host's `data-chapter` as the HUD chapter label (an empty or
+  missing value hides the label).
+
+Pass `--theme paper` for paper-motion decks. The paper shell has no neon,
+flare, glow, or blur; seams are hard (match) cuts by default, and a clip host
+with `data-transition="paper"` gets a short paper push instead. The page
+exposes its transition families through
+`window.__ptMakerPresenter.transitionContract`, which
+`qa_animated_presentation.py` reads.
 
 Keep live navigation compositor-friendly:
 
@@ -315,7 +324,7 @@ Use `qa_animated_presentation.py` with isolated background browser-harness to
 verify start→end, end→start, an arbitrary jump, replay, and at least one
 keyboard and touch path. It also records two transition frame-time samples.
 Confirm that every slide has a timeline and that the live deck's count/order
-matches the HyperFrames root. For decks with 12 or more slides, verify that
+matches the HyperFrames root. For default-theme decks with 12 or more slides, verify that
 `prism`, `curtain`, and `aperture` all occur, the same seam keeps its family
 when traversed backward, and every sampled transition remains under the
 performance thresholds.

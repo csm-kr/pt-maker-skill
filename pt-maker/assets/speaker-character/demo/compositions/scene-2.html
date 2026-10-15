@@ -1,0 +1,93 @@
+<template id="scene-2-template">
+  <div data-composition-id="scene-2" data-width="1920" data-height="1080">
+    <!-- 세계 C: 종이 사진. 흑백 '사진' 안에서 금색만 컬러. 금색 원은 앞 장면과 같은 자리(match cut) -->
+    <div class="world world--photo"></div>
+
+    <div class="torn-wrap" id="s2-corner-a" style="left:-90px; top:-70px; width:560px; height:380px; transform:rotate(-14deg);">
+      <div class="torn torn--b">
+        <svg viewBox="0 0 516 336" preserveAspectRatio="none" aria-hidden="true">
+          <rect width="516" height="336" fill="#6f6f6f"/>
+          <ellipse cx="300" cy="150" rx="260" ry="170" fill="#8c8c8c" opacity=".55"/>
+          <g fill="#e4e4e4"><rect x="120" y="120" width="230" height="140" transform="rotate(-8 235 190)"/><rect x="150" y="96" width="230" height="140" fill="#cfcfcf" transform="rotate(5 265 166)"/></g>
+          <rect x="182" y="132" width="150" height="10" rx="5" fill="#9a9a9a" transform="rotate(5 265 166)"/>
+          <rect x="182" y="156" width="110" height="10" rx="5" fill="#9a9a9a" transform="rotate(5 265 166)"/>
+        </svg>
+      </div>
+    </div>
+    <div class="torn-wrap" id="s2-corner-b" style="left:1560px; top:-90px; width:560px; height:380px; transform:rotate(16deg);">
+      <div class="torn torn--b">
+        <svg viewBox="0 0 516 336" preserveAspectRatio="none" aria-hidden="true">
+          <rect width="516" height="336" fill="#5d5d5d"/>
+          <g><rect x="60" y="70" width="58" height="230" fill="#3b3b3b"/><rect x="124" y="50" width="46" height="250" fill="#8a8a8a"/><rect x="176" y="90" width="64" height="210" fill="#4a4a4a"/><rect x="246" y="60" width="52" height="240" fill="#a3a3a3"/><rect x="304" y="100" width="70" height="200" fill="#333"/></g>
+          <rect y="300" width="516" height="36" fill="#2a2a2a"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="torn-wrap" id="s2-card" data-xywh="0.1771 0.1019 0.6458 0.6481" style="left:340px; top:110px; width:1240px; height:700px;">
+      <div class="torn">
+        <!-- 사진 안 좌표 = 프레임 좌표(1920×1080): viewBox가 안쪽 영역과 같다 -->
+        <svg viewBox="374 144 1172 632" preserveAspectRatio="none" aria-hidden="true">
+          <rect x="374" y="144" width="1172" height="632" fill="#6d6d6d"/>
+          <ellipse cx="960" cy="420" rx="620" ry="330" fill="#878787" opacity=".6"/>
+          <ellipse cx="960" cy="420" rx="420" ry="230" fill="#9a9a9a" opacity=".45"/>
+          <rect x="374" y="716" width="1172" height="60" fill="#4b4b4b"/>
+          <rect x="596" y="194" width="728" height="20" fill="#2c2c2c"/>
+          <rect x="610" y="210" width="700" height="530" fill="#3b3b3b"/>
+          <g fill="#686868">
+            <rect x="624" y="224" width="205" height="156"/><rect x="853" y="224" width="205" height="156"/><rect x="1082" y="224" width="214" height="156"/>
+            <rect x="624" y="396" width="205" height="156"/><rect x="1082" y="396" width="214" height="156"/>
+            <rect x="624" y="568" width="205" height="156"/><rect x="853" y="568" width="205" height="156"/><rect x="1082" y="568" width="214" height="156"/>
+          </g>
+          <g fill="#d0d0d0">
+            <rect x="691" y="250" width="70" height="22"/><rect x="920" y="250" width="70" height="22"/><rect x="1154" y="250" width="70" height="22"/>
+            <rect x="691" y="422" width="70" height="22"/><rect x="1154" y="422" width="70" height="22"/>
+            <rect x="691" y="594" width="70" height="22"/><rect x="920" y="594" width="70" height="22"/><rect x="1154" y="594" width="70" height="22"/>
+          </g>
+          <g fill="#262626">
+            <circle cx="726" cy="320" r="9"/><circle cx="955" cy="320" r="9"/><circle cx="1189" cy="320" r="9"/>
+            <circle cx="726" cy="492" r="9"/><circle cx="1189" cy="492" r="9"/>
+            <circle cx="726" cy="664" r="9"/><circle cx="955" cy="664" r="9"/><circle cx="1189" cy="664" r="9"/>
+          </g>
+          <rect x="853" y="396" width="205" height="156" fill="#1c1c1c"/>
+          <path d="M853 552 L838 600 L1082 600 L1058 552 Z" fill="#505050"/>
+          <rect x="866" y="436" width="180" height="88" fill="#d9d9d9"/>
+          <rect x="872" y="452" width="168" height="80" fill="#c4c4c4"/>
+          <rect x="905" y="402" width="110" height="96" class="photo-gold" transform="rotate(-4 960 450)"/>
+          <rect x="922" y="420" width="60" height="9" rx="4" fill="#8a5d18" transform="rotate(-4 960 450)"/>
+          <rect x="838" y="524" width="244" height="80" fill="#757575"/>
+          <rect x="925" y="548" width="70" height="22" fill="#d0d0d0"/>
+          <circle cx="960" cy="588" r="9" fill="#262626"/>
+        </svg>
+      </div>
+    </div>
+
+    <svg class="brush brush--gold" id="s2-circle" viewBox="0 0 1920 1080" aria-hidden="true">
+      <path class="b1" d="M1067.5 325.5 A215 190 0 0 1 852.5 654.5 A215 190 0 1 1 1124.7 367.8"/>
+      <path class="b2" d="M1059.3 326.6 A222 184 0 0 1 864.7 657.4 A222 184 0 1 1 1141.6 383.8"/>
+      <path class="b3" d="M1074.3 324.7 A208 197 0 0 1 841.7 651.3 A208 197 0 1 1 1107.6 351.2"/>
+    </svg>
+    <svg class="brush brush--gold" id="s2-arrows" viewBox="0 0 1920 1080" aria-hidden="true">
+      <path class="b1 s2-arrow-a" d="M1022 410 Q1112 322 1198 292" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+      <path class="b2 s2-arrow-a" d="M1028 418 Q1114 334 1194 302" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+      <path class="b1 s2-head-a" d="M1166 280 L1200 292 L1180 322" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+      <path class="b1 s2-arrow-b" d="M898 476 Q800 562 738 642" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+      <path class="b2 s2-arrow-b" d="M906 484 Q810 572 748 646" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+      <path class="b1 s2-head-b" d="M740 608 L736 644 L770 644" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+    </svg>
+    <p class="label" id="s2-label" style="left:360px; top:850px; width:1200px;">카드 한 장이 여러 서랍과 이어져요</p>
+    <script>
+      const s2T = { corners: 0, arrowA: 1.0, arrowB: 1.6, label: 2.4, end: 5 };
+      const scene2Tl = gsap.timeline({ paused: true });
+      scene2Tl.from("#s2-corner-a", { x: -260, y: -200, duration: .5, ease: "power3.out" }, s2T.corners);
+      scene2Tl.from("#s2-corner-b", { x: 260, y: -200, duration: .5, ease: "power3.out" }, s2T.corners);
+      [[".s2-arrow-a", ".s2-head-a", s2T.arrowA], [".s2-arrow-b", ".s2-head-b", s2T.arrowB]].forEach(([shaft, head, at]) => {
+        scene2Tl.fromTo(shaft, { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: .45, ease: "power1.out", stagger: .03 }, at);
+        scene2Tl.fromTo(head, { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: .18, ease: "power1.out" }, at + .45);
+      });
+      scene2Tl.from("#s2-label", { opacity: 0, duration: .01 }, s2T.label);
+      scene2Tl.set({}, {}, s2T.end);
+      window.__timelines["scene-2"] = scene2Tl;
+    </script>
+  </div>
+</template>

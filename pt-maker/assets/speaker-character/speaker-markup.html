@@ -1,0 +1,83 @@
+<!-- pt-maker speaker character v2 (owl) markup.
+     composition root(data-composition-id 요소)의 직계 자식으로 붙여 넣는다. .scene-content 안에 넣지 않는다.
+     - 붙여 넣은 뒤 "sN-"을 장면 접두어(s3- 등)로 모두 바꾼다: root id, 망점 pattern id, fill="url(#...)" 참조.
+     - --spk-x/--spk-y는 1920×1080 프레임 기준 좌상단 px, --spk-w는 폭 px.
+     - data-pose: 정지 포즈(smile | o | wave | side | think). 타임라인 t=0도 이 포즈에서 시작한다.
+     - 대사는 쓸 줄 수만큼 <p class="spk-bubble">을 둔다. 정지 포즈에 남길 한 줄에만 is-rest를 붙인다.
+     - spk--plain: 머리 위 굵은 글자(paper-motion 기본). 빼면 상자 말풍선(spk--bubble-left/right로 방향). -->
+<div class="spk spk--plain" id="sN-speaker" data-pose="smile" style="--spk-x:810px; --spk-y:330px; --spk-w:300px;">
+  <svg class="spk-figure" viewBox="0 0 200 240" aria-hidden="true" focusable="false">
+    <defs>
+      <pattern id="sN-speaker-dots" width="5" height="5" patternUnits="userSpaceOnUse">
+        <rect class="spk-dots-bg" width="5" height="5"/>
+        <circle class="spk-dots" cx="1.25" cy="1.25" r="1.15"/>
+        <circle class="spk-dots" cx="3.75" cy="3.75" r="1.15"/>
+      </pattern>
+    </defs>
+    <g class="spk-front" data-poses="smile o wave think">
+      <path class="spk-tuft" fill="url(#sN-speaker-dots)" d="M62 68 Q54 40 40 14 Q70 26 92 52 Z"/>
+      <path class="spk-tuft" fill="url(#sN-speaker-dots)" d="M138 68 Q146 40 160 14 Q130 26 108 52 Z"/>
+      <ellipse class="spk-foot" cx="80" cy="221" rx="13" ry="8"/>
+      <ellipse class="spk-foot" cx="120" cy="221" rx="13" ry="8"/>
+      <path class="spk-body" d="M100 38 C152 38 172 80 172 136 C172 194 140 222 100 222 C60 222 28 194 28 136 C28 80 48 38 100 38 Z"/>
+      <circle class="spk-disc" cx="79" cy="102" r="25"/>
+      <circle class="spk-disc" cx="121" cy="102" r="25"/>
+      <path class="spk-chest" d="M84 166 q6 6 12 0 M104 166 q6 6 12 0 M94 182 q6 6 12 0"/>
+      <g data-poses="smile wave">
+        <g class="spk-eye" data-origin="79 101"><ellipse cx="79" cy="101" rx="7" ry="9"/><circle class="spk-glint" cx="81.5" cy="97.5" r="2.4"/></g>
+        <g class="spk-eye" data-origin="121 101"><ellipse cx="121" cy="101" rx="7" ry="9"/><circle class="spk-glint" cx="123.5" cy="97.5" r="2.4"/></g>
+      </g>
+      <g data-poses="o">
+        <g class="spk-eye" data-origin="79 100"><ellipse cx="79" cy="100" rx="9.5" ry="11"/><circle class="spk-glint" cx="82.5" cy="95.5" r="3"/></g>
+        <g class="spk-eye" data-origin="121 100"><ellipse cx="121" cy="100" rx="9.5" ry="11"/><circle class="spk-glint" cx="124.5" cy="95.5" r="3"/></g>
+      </g>
+      <g data-poses="think">
+        <g class="spk-eye" data-origin="74 95"><ellipse cx="74" cy="95" rx="6.5" ry="8.5"/><circle class="spk-glint" cx="72" cy="91.5" r="2.2"/></g>
+        <g class="spk-eye" data-origin="116 95"><ellipse cx="116" cy="95" rx="6.5" ry="8.5"/><circle class="spk-glint" cx="114" cy="91.5" r="2.2"/></g>
+        <path class="spk-brow" d="M107 78 Q117 71 129 76"/>
+      </g>
+      <g data-poses="smile think">
+        <ellipse class="spk-mouth-in" cx="100" cy="125" rx="4.5" ry="3.5"/>
+        <path class="spk-jaw" d="M95.5 123 L104.5 123 L100 130 Z"/>
+        <path class="spk-beak" d="M91 114 Q100 109 109 114 L104 123 L96 123 Z"/>
+      </g>
+      <g data-poses="o">
+        <ellipse class="spk-mouth-in" cx="100" cy="132" rx="6.5" ry="8"/>
+        <path class="spk-beak" d="M91 113 Q100 108 109 113 L100 124 Z"/>
+      </g>
+      <g data-poses="wave">
+        <path class="spk-mouth-in" d="M87 121 L113 121 Q111 142 100 142 Q89 142 87 121 Z"/>
+        <ellipse class="spk-tongue" cx="100" cy="136" rx="6.5" ry="3.6"/>
+        <path class="spk-beak" d="M91 112 Q100 107 109 112 L100 122 Z"/>
+      </g>
+      <g class="spk-pencil" transform="translate(46 190) rotate(32)">
+        <path class="spk-pencil-wood" d="M-5.5 -50 L5.5 -50 L0 -66 Z"/>
+        <path class="spk-pencil-lead" d="M-1.9 -60.5 L1.9 -60.5 L0 -66 Z"/>
+        <rect class="spk-pencil-body" x="-5.5" y="-50" width="11" height="43" rx="1.5"/>
+        <path class="spk-pencil-line" d="M-1.8 -47 V-10 M1.8 -47 V-10"/>
+        <rect class="spk-pencil-band" x="-5.5" y="-8" width="11" height="9" rx="2"/>
+      </g>
+      <path class="spk-wing" fill="url(#sN-speaker-dots)" d="M44 110 C24 130 20 166 36 194 C52 182 58 148 54 114 Z"/>
+      <path class="spk-wing" data-poses="smile o" fill="url(#sN-speaker-dots)" d="M156 110 C176 130 180 166 164 194 C148 182 142 148 146 114 Z"/>
+      <path class="spk-wing" data-poses="wave" fill="url(#sN-speaker-dots)" d="M146 120 C150 94 166 66 190 50 C193 80 178 108 158 130 Z"/>
+      <path class="spk-wing" data-poses="think" fill="url(#sN-speaker-dots)" d="M157 112 C154 140 134 156 110 150 C118 138 138 126 147 108 Z"/>
+    </g>
+    <g class="spk-side" data-poses="side">
+      <path class="spk-tuft" fill="url(#sN-speaker-dots)" d="M76 66 Q68 38 56 14 Q86 24 108 46 Z"/>
+      <ellipse class="spk-foot" cx="96" cy="221" rx="13" ry="8"/>
+      <ellipse class="spk-foot" cx="124" cy="221" rx="13" ry="8"/>
+      <path class="spk-body" d="M104 38 C152 38 168 84 166 138 C164 194 136 222 100 222 C62 222 36 192 38 138 C40 84 58 38 104 38 Z"/>
+      <circle class="spk-disc" cx="130" cy="100" r="24"/>
+      <path class="spk-chest" d="M110 166 q6 6 12 0 M124 182 q6 6 12 0"/>
+      <g class="spk-eye" data-origin="134 98"><ellipse cx="134" cy="98" rx="7" ry="9"/><circle class="spk-glint" cx="136.5" cy="94.5" r="2.4"/></g>
+      <ellipse class="spk-mouth-in" cx="159" cy="117" rx="4" ry="3"/>
+      <path class="spk-jaw" d="M154 115 L166 117 L154 121 Z"/>
+      <path class="spk-beak" d="M152 104 L174 112 L154 116 Z"/>
+      <path class="spk-wing" fill="url(#sN-speaker-dots)" d="M72 108 C54 134 58 176 86 198 C100 172 100 134 86 108 Z"/>
+    </g>
+  </svg>
+  <div class="spk-bubbles">
+    <p class="spk-bubble">첫 번째 대사를 여기에 씁니다.</p>
+    <p class="spk-bubble is-rest">정지 포즈에 남을 마지막 대사.</p>
+  </div>
+</div>

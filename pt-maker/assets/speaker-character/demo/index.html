@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>paper-motion speaker demo</title>
+  <style>
+    @font-face {
+      font-family: "Pretendard Local";
+      src: local("Pretendard"), local("Apple SD Gothic Neo"), local("Noto Sans KR");
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: block;
+    }
+
+    /* paper-motion 토큰: 무채색 세계 + 의미 있을 때만 색 (paper-motion-taste-profile.md) */
+    :root {
+      --paper: #ececec;
+      --ink: #111111;
+      --photo: #b2afa9;
+      --torn: #e2dcd8;
+      --gold: #d89c30;
+      --highlight: #fccc48;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    body {
+      background: #111;
+      color: var(--ink);
+      font-family: "Pretendard Local", system-ui, sans-serif;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: var(--paper);
+    }
+    .scene { position: absolute; inset: 0; overflow: hidden; }
+
+    /* 세계: 연회색 평면(개념) / 종이 사진(비유·사례) / 검은 우주(질문·독백) */
+    .world { position: absolute; inset: 0; }
+    .world--plain { background: var(--paper); }
+    .world--photo {
+      background: radial-gradient(ellipse 75% 70% at 50% 48%, #b8b5af 0%, var(--photo) 58%, #8e8b86 100%);
+    }
+    .world--space { background: radial-gradient(circle at 88% 62%, rgba(96, 76, 150, .16), transparent 38%), #000; }
+    .dust {
+      position: absolute;
+      inset: -40px;
+      background:
+        radial-gradient(2.1px 2.1px at 0.0% 65.8%, rgba(170, 186, 214, 0.49), transparent),
+        radial-gradient(2.4px 2.4px at 66.4% 9.5%, rgba(170, 186, 214, 0.27), transparent),
+        radial-gradient(2.8px 2.8px at 39.6% 67.3%, rgba(170, 186, 214, 0.55), transparent),
+        radial-gradient(2.9px 2.9px at 15.5% 17.3%, rgba(170, 186, 214, 0.29), transparent),
+        radial-gradient(2.2px 2.2px at 35.6% 3.8%, rgba(170, 186, 214, 0.55), transparent),
+        radial-gradient(2.9px 2.9px at 8.7% 43.4%, rgba(170, 186, 214, 0.56), transparent),
+        radial-gradient(2.1px 2.1px at 23.1% 63.5%, rgba(170, 186, 214, 0.36), transparent),
+        radial-gradient(3.3px 3.3px at 8.0% 50.6%, rgba(170, 186, 214, 0.40), transparent),
+        radial-gradient(2.9px 2.9px at 31.2% 23.7%, rgba(170, 186, 214, 0.45), transparent),
+        radial-gradient(3.3px 3.3px at 16.3% 78.2%, rgba(170, 186, 214, 0.56), transparent),
+        radial-gradient(3.2px 3.2px at 23.5% 91.3%, rgba(170, 186, 214, 0.43), transparent),
+        radial-gradient(2.4px 2.4px at 25.8% 36.3%, rgba(170, 186, 214, 0.24), transparent),
+        radial-gradient(2.4px 2.4px at 36.4% 18.2%, rgba(170, 186, 214, 0.51), transparent),
+        radial-gradient(3.3px 3.3px at 18.9% 37.5%, rgba(170, 186, 214, 0.50), transparent),
+        radial-gradient(2.2px 2.2px at 43.3% 48.8%, rgba(170, 186, 214, 0.40), transparent),
+        radial-gradient(2.8px 2.8px at 52.3% 52.3%, rgba(170, 186, 214, 0.41), transparent),
+        radial-gradient(2.5px 2.5px at 93.3% 47.0%, rgba(170, 186, 214, 0.31), transparent),
+        radial-gradient(3.5px 3.5px at 73.9% 36.9%, rgba(170, 186, 214, 0.38), transparent),
+        radial-gradient(2.2px 2.2px at 38.5% 56.9%, rgba(170, 186, 214, 0.44), transparent),
+        radial-gradient(3.4px 3.4px at 70.5% 25.0%, rgba(170, 186, 214, 0.50), transparent),
+        radial-gradient(2.5px 2.5px at 13.9% 62.7%, rgba(170, 186, 214, 0.21), transparent),
+        radial-gradient(2.9px 2.9px at 34.1% 14.8%, rgba(170, 186, 214, 0.45), transparent),
+        radial-gradient(2.7px 2.7px at 99.7% 44.3%, rgba(170, 186, 214, 0.25), transparent),
+        radial-gradient(2.0px 2.0px at 75.5% 56.6%, rgba(170, 186, 214, 0.56), transparent),
+        radial-gradient(1.7px 1.7px at 6.0% 20.8%, rgba(170, 186, 214, 0.32), transparent),
+        radial-gradient(3.5px 3.5px at 68.7% 34.0%, rgba(170, 186, 214, 0.35), transparent),
+        radial-gradient(1.9px 1.9px at 76.9% 85.8%, rgba(170, 186, 214, 0.18), transparent),
+        radial-gradient(3.1px 3.1px at 67.2% 49.2%, rgba(170, 186, 214, 0.49), transparent),
+        radial-gradient(2.0px 2.0px at 77.3% 45.4%, rgba(170, 186, 214, 0.23), transparent),
+        radial-gradient(2.9px 2.9px at 79.9% 6.4%, rgba(170, 186, 214, 0.41), transparent),
+        radial-gradient(1.7px 1.7px at 45.5% 37.3%, rgba(170, 186, 214, 0.19), transparent),
+        radial-gradient(1.9px 1.9px at 13.4% 54.9%, rgba(170, 186, 214, 0.46), transparent),
+        radial-gradient(2.1px 2.1px at 90.4% 58.8%, rgba(170, 186, 214, 0.35), transparent),
+        radial-gradient(3.6px 3.6px at 75.2% 40.7%, rgba(170, 186, 214, 0.55), transparent),
+        radial-gradient(2.0px 2.0px at 49.9% 73.8%, rgba(170, 186, 214, 0.55), transparent),
+        radial-gradient(3.1px 3.1px at 95.1% 77.7%, rgba(170, 186, 214, 0.49), transparent),
+        radial-gradient(3.3px 3.3px at 91.7% 4.4%, rgba(170, 186, 214, 0.46), transparent),
+        radial-gradient(3.3px 3.3px at 26.1% 44.3%, rgba(170, 186, 214, 0.31), transparent),
+        radial-gradient(1.8px 1.8px at 63.0% 99.9%, rgba(170, 186, 214, 0.42), transparent),
+        radial-gradient(1.5px 1.5px at 63.4% 25.6%, rgba(170, 186, 214, 0.22), transparent),
+        radial-gradient(1.5px 1.5px at 23.9% 38.2%, rgba(170, 186, 214, 0.56), transparent),
+        radial-gradient(3.1px 3.1px at 14.2% 50.8%, rgba(170, 186, 214, 0.23), transparent);
+    }
+    .photo-gold { fill: var(--gold); }
+
+    /* 흰 외곽선 스티커: 그림자 없이 다이컷 흰 테두리만 */
+    .sticker {
+      position: absolute;
+      filter: drop-shadow(5px 0 0 #fff) drop-shadow(-5px 0 0 #fff) drop-shadow(0 5px 0 #fff) drop-shadow(0 -5px 0 #fff);
+    }
+    .sticker svg { display: block; width: 100%; height: 100%; overflow: visible; }
+    .label {
+      position: absolute;
+      margin: 0;
+      font-size: 54px;
+      font-weight: 850;
+      letter-spacing: -.03em;
+      line-height: 1.2;
+      text-align: center;
+      word-break: keep-all;
+    }
+    .statement {
+      position: absolute;
+      z-index: 1;
+      left: 0;
+      right: 0;
+      margin: 0;
+      font-size: 72px;
+      font-weight: 900;
+      letter-spacing: -.04em;
+      line-height: 1.2;
+      text-align: center;
+      word-break: keep-all;
+    }
+    /* 형광펜: 단어 뒤에서 왼쪽→오른쪽으로 그어진다(scaleX). 노랑 = 핵심어 */
+    .hl { position: relative; display: inline-block; margin-left: .16em; }
+    .hl-bar {
+      position: absolute;
+      left: -4px;
+      right: -8px;
+      top: 52%;
+      height: 40%;
+      z-index: -1;
+      border-radius: 8px 14px 10px 6px;
+      background: var(--highlight);
+      transform-origin: left center;
+    }
+
+    /* 붓터치 주석: 겹친 세 획으로 마른 붓 결을 만든다. pathLength=1 + dashoffset으로 그려짐 */
+    .brush { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: visible; pointer-events: none; }
+    .brush path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .brush .b1 { stroke-width: 15; opacity: .92; }
+    .brush .b2 { stroke-width: 6; opacity: .55; }
+    .brush .b3 { stroke-width: 3; opacity: .45; }
+    .brush--gold path { stroke: var(--gold); }
+
+    /* 찢긴 종이 사진 카드: 미색 테두리 + 불규칙한 찢긴 가장자리 + 부드러운 그림자 */
+    .torn-wrap { position: absolute; filter: drop-shadow(10px 16px 18px rgba(0, 0, 0, .3)); }
+    .torn {
+      width: 100%;
+      height: 100%;
+      padding: 34px;
+      background: var(--torn);
+      clip-path: polygon(0.00% 0.00%, 3.33% 1.83%, 6.67% 0.14%, 10.00% 1.23%, 13.33% 0.35%, 16.67% 1.50%, 20.00% 0.16%, 23.33% 1.69%, 26.67% 0.36%, 30.00% 1.51%, 33.33% 0.33%, 36.67% 1.59%, 40.00% 0.39%, 43.33% 1.25%, 46.67% 0.18%, 50.00% 1.65%, 53.33% 0.33%, 56.67% 1.09%, 60.00% 0.32%, 63.33% 1.45%, 66.67% 0.44%, 70.00% 1.74%, 73.33% 0.06%, 76.67% 1.48%, 80.00% 0.44%, 83.33% 1.63%, 86.67% 0.31%, 90.00% 1.54%, 93.33% 0.43%, 96.67% 1.82%, 99.82% 0.00%, 98.67% 3.33%, 99.60% 6.67%, 98.67% 10.00%, 99.93% 13.33%, 98.70% 16.67%, 99.80% 20.00%, 98.70% 23.33%, 99.55% 26.67%, 98.48% 30.00%, 99.65% 33.33%, 98.20% 36.67%, 99.97% 40.00%, 98.72% 43.33%, 99.73% 46.67%, 98.52% 50.00%, 99.80% 53.33%, 98.79% 56.67%, 99.57% 60.00%, 98.91% 63.33%, 99.83% 66.67%, 98.66% 70.00%, 99.68% 73.33%, 98.16% 76.67%, 99.76% 80.00%, 98.81% 83.33%, 99.81% 86.67%, 98.71% 90.00%, 99.83% 93.33%, 98.59% 96.67%, 100.00% 99.84%, 96.67% 98.50%, 93.33% 99.71%, 90.00% 98.76%, 86.67% 99.57%, 83.33% 98.56%, 80.00% 99.59%, 76.67% 98.41%, 73.33% 99.70%, 70.00% 98.51%, 66.67% 99.76%, 63.33% 98.37%, 60.00% 99.55%, 56.67% 98.62%, 53.33% 99.66%, 50.00% 98.74%, 46.67% 99.72%, 43.33% 98.66%, 40.00% 99.84%, 36.67% 98.62%, 33.33% 99.62%, 30.00% 98.20%, 26.67% 99.95%, 23.33% 98.25%, 20.00% 99.96%, 16.67% 98.61%, 13.33% 99.93%, 10.00% 98.89%, 6.67% 99.53%, 3.33% 98.77%, 0.30% 100.00%, 1.17% 96.67%, 0.22% 93.33%, 1.55% 90.00%, 0.07% 86.67%, 1.83% 83.33%, 0.42% 80.00%, 1.81% 76.67%, 0.42% 73.33%, 1.82% 70.00%, 0.36% 66.67%, 1.28% 63.33%, 0.00% 60.00%, 1.26% 56.67%, 0.04% 53.33%, 1.05% 50.00%, 0.29% 46.67%, 1.24% 43.33%, 0.35% 40.00%, 1.46% 36.67%, 0.33% 33.33%, 1.25% 30.00%, 0.42% 26.67%, 1.25% 23.33%, 0.18% 20.00%, 1.81% 16.67%, 0.06% 13.33%, 1.46% 10.00%, 0.00% 6.67%, 1.83% 3.33%);
+    }
+    .torn--b { padding: 22px; clip-path: polygon(0.00% 0.00%, 4.55% 1.52%, 9.09% 0.28%, 13.64% 1.69%, 18.18% 0.34%, 22.73% 2.35%, 27.27% 0.30%, 31.82% 1.48%, 36.36% 0.04%, 40.91% 2.57%, 45.45% 0.58%, 50.00% 1.55%, 54.55% 0.49%, 59.09% 1.51%, 63.64% 0.43%, 68.18% 1.92%, 72.73% 0.52%, 77.27% 1.71%, 81.82% 0.58%, 86.36% 1.51%, 90.91% 0.61%, 95.45% 1.77%, 99.83% 0.00%, 97.58% 4.55%, 99.85% 9.09%, 98.18% 13.64%, 99.45% 18.18%, 98.25% 22.73%, 99.42% 27.27%, 97.71% 31.82%, 99.86% 36.36%, 97.84% 40.91%, 99.91% 45.45%, 98.02% 50.00%, 99.47% 54.55%, 98.36% 59.09%, 99.60% 63.64%, 98.04% 68.18%, 99.53% 72.73%, 98.19% 77.27%, 99.57% 81.82%, 98.03% 86.36%, 99.74% 90.91%, 98.16% 95.45%, 100.00% 99.87%, 95.45% 98.27%, 90.91% 99.62%, 86.36% 98.07%, 81.82% 99.70%, 77.27% 97.95%, 72.73% 99.51%, 68.18% 97.62%, 63.64% 99.76%, 59.09% 97.96%, 54.55% 99.91%, 50.00% 98.38%, 45.45% 99.95%, 40.91% 97.60%, 36.36% 99.88%, 31.82% 97.54%, 27.27% 99.97%, 22.73% 97.82%, 18.18% 100.00%, 13.64% 97.53%, 9.09% 99.62%, 4.55% 98.20%, 0.16% 100.00%, 2.38% 95.45%, 0.25% 90.91%, 1.76% 86.36%, 0.34% 81.82%, 2.49% 77.27%, 0.38% 72.73%, 1.81% 68.18%, 0.27% 63.64%, 1.90% 59.09%, 0.11% 54.55%, 2.08% 50.00%, 0.39% 45.45%, 2.46% 40.91%, 0.43% 36.36%, 2.47% 31.82%, 0.32% 27.27%, 1.83% 22.73%, 0.60% 18.18%, 2.03% 13.64%, 0.53% 9.09%, 2.00% 4.55%); }
+    .torn svg { display: block; width: 100%; height: 100%; }
+
+/* pt-maker speaker character v2 (owl) — animation/index.html의 <style>에 한 번만 붙여 넣는다.
+   build_animated_presentation.py는 index.html의 <style>만 발표용 HTML로 옮기므로
+   별도 <link>로 불러오지 않는다. 생김새는 아래 --spk-* 토큰만 바꿔 조정한다. */
+.spk {
+  --spk-w: 300px;                       /* 캐릭터 폭. 높이는 viewBox 비율(200:240)로 자동 */
+  --spk-body: #e0e0e0;                  /* 몸 */
+  --spk-belly: #f7f7f7;                 /* 얼굴 원반·연필 나무 */
+  --spk-ink: #111111;                   /* 외곽선·눈·부리 */
+  --spk-cheek: #7a2a20;                 /* 벌린 입 안쪽 */
+  --spk-tuft: #222222;                  /* 망점(깃털·날개) 점 */
+  --spk-tuft-bg: #7a7a7a;               /* 망점 바탕 */
+  --spk-prop: #e6d86c;                  /* 노란 연필: 캐릭터의 유일한 색 */
+  --spk-cut-shadow: rgba(17, 17, 17, .14); /* 상자 말풍선 그림자 */
+  --spk-bubble-bg: #ffffff;
+  --spk-bubble-ink: #111111;
+  --spk-bubble-w: 760px;                /* 말풍선/대사 최대 폭 */
+  --spk-bubble-size: 44px;              /* 대사 글자 크기(1920×1080 기준) */
+  position: absolute;
+  left: var(--spk-x);
+  top: var(--spk-y);
+  width: var(--spk-w);
+  aspect-ratio: 200 / 240;
+  pointer-events: none;
+}
+.spk-figure { display: block; width: 100%; height: 100%; overflow: visible; }
+.spk--flip .spk-figure { transform: scaleX(-1); }
+
+/* 포즈: data-poses에 이름이 있는 부품만 보인다. 정지 포즈는 root의 data-pose(기본 smile). */
+.spk [data-poses] { opacity: 0; visibility: hidden; }
+.spk:not([data-pose]) [data-poses~="smile"],
+.spk[data-pose="smile"] [data-poses~="smile"],
+.spk[data-pose="o"] [data-poses~="o"],
+.spk[data-pose="wave"] [data-poses~="wave"],
+.spk[data-pose="side"] [data-poses~="side"],
+.spk[data-pose="think"] [data-poses~="think"] { opacity: 1; visibility: inherit; }
+
+.spk-body,
+.spk-foot,
+.spk-wing {
+  stroke: var(--spk-ink);
+  stroke-width: 3.5;
+  stroke-linejoin: round;
+}
+.spk-body,
+.spk-foot { fill: var(--spk-body); }
+.spk-disc { fill: var(--spk-belly); }
+.spk-chest,
+.spk-brow {
+  fill: none;
+  stroke: var(--spk-ink);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.spk-chest { stroke-opacity: .28; }
+.spk-eye ellipse,
+.spk-beak,
+.spk-jaw { fill: var(--spk-ink); }
+.spk-beak,
+.spk-jaw { stroke: var(--spk-ink); stroke-width: 1.5; stroke-linejoin: round; }
+.spk-glint { fill: #fff; }
+.spk-mouth-in { fill: var(--spk-cheek); stroke: var(--spk-ink); stroke-width: 3; stroke-linejoin: round; }
+.spk-tongue { fill: #fff; opacity: .28; }
+.spk-dots-bg { fill: var(--spk-tuft-bg); }
+.spk-dots { fill: var(--spk-tuft); }
+.spk-pencil-body { fill: var(--spk-prop); }
+.spk-pencil-wood { fill: var(--spk-belly); }
+.spk-pencil-band { fill: var(--spk-tuft-bg); }
+.spk-pencil-body,
+.spk-pencil-wood,
+.spk-pencil-band { stroke: var(--spk-ink); stroke-width: 3; stroke-linejoin: round; }
+.spk-pencil-lead { fill: var(--spk-ink); }
+.spk-pencil-line { stroke: var(--spk-ink); stroke-opacity: .3; stroke-width: 1.6; }
+
+/* 대사. 기본은 상자 말풍선, spk--plain이면 머리 위 굵은 글자(paper-motion 기본). */
+.spk-bubbles {
+  position: absolute;
+  right: 58%;
+  bottom: 88%;
+  width: var(--spk-bubble-w);
+}
+.spk--bubble-right .spk-bubbles { right: auto; left: 58%; }
+.spk-bubble {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: max-content;
+  max-width: 100%;
+  margin: 0;
+  padding: 24px 34px 26px;
+  border: 4px solid var(--spk-ink);
+  border-radius: 34px;
+  background: var(--spk-bubble-bg);
+  color: var(--spk-bubble-ink);
+  box-shadow: 8px 8px 0 var(--spk-cut-shadow);
+  font-size: var(--spk-bubble-size);
+  font-weight: 800;
+  line-height: 1.36;
+  letter-spacing: -.02em;
+  word-break: keep-all;
+  text-wrap: pretty;
+  transform-origin: 86% 100%;
+  opacity: 0;
+  visibility: hidden;
+}
+/* 꼬리: 잉크 삼각형(::before) 위에 바탕 삼각형(::after)을 겹쳐 테두리를 만든다 */
+.spk-bubble::before,
+.spk-bubble::after {
+  content: "";
+  position: absolute;
+  clip-path: polygon(0 0, 64% 0, 100% 100%);
+}
+.spk-bubble::before { top: 100%; right: 30px; width: 50px; height: 40px; background: var(--spk-ink); }
+.spk-bubble::after { top: calc(100% - 4px); right: 36px; width: 38px; height: 34px; background: var(--spk-bubble-bg); }
+.spk--bubble-right .spk-bubble { right: auto; left: 0; transform-origin: 14% 100%; }
+.spk--bubble-right .spk-bubble::before,
+.spk--bubble-right .spk-bubble::after { clip-path: polygon(36% 0, 100% 0, 0 100%); }
+.spk--bubble-right .spk-bubble::before { right: auto; left: 30px; }
+.spk--bubble-right .spk-bubble::after { right: auto; left: 36px; }
+.spk--plain .spk-bubbles { right: auto; left: 50%; bottom: 100%; margin-bottom: 20px; transform: translateX(-50%); }
+.spk--plain .spk-bubble {
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  text-align: center;
+  transform-origin: 50% 100%;
+}
+.spk--plain .spk-bubble::before,
+.spk--plain .spk-bubble::after { display: none; }
+/* 정지 포즈(첫 진입 전·인쇄·스크립트 없음)에서 보일 대사 하나 */
+.spk-bubble.is-rest { opacity: 1; visibility: inherit; }
+  </style>
+</head>
+<body>
+  <div id="root" data-composition-id="main" data-start="0" data-duration="18" data-width="1920" data-height="1080" data-fps="30" aria-label="pt-maker paper-motion speaker demo">
+    <div id="scene-1" class="scene clip" data-chapter="개념" data-composition-id="scene-1" data-composition-src="compositions/scene-1.html" data-start="0" data-duration="5.5" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080"></div>
+    <div id="scene-2" class="scene clip" data-chapter="비유" data-transition="cut" data-composition-id="scene-2" data-composition-src="compositions/scene-2.html" data-start="5.5" data-duration="5" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080"></div>
+    <div id="scene-3" class="scene clip" data-chapter="질문" data-transition="paper" data-composition-id="scene-3" data-composition-src="compositions/scene-3.html" data-start="10.5" data-duration="7.5" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.set({}, {}, 18);
+    window.__timelines = window.__timelines || {};
+    window.__timelines["main"] = tl;
+  </script>
+</body>
+</html>

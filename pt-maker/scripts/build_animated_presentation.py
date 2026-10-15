@@ -11,9 +11,10 @@ from __future__ import annotations
 
 import argparse
 import html
+import json
 import re
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 
@@ -40,6 +41,43 @@ GSAP_RE = re.compile(
     re.IGNORECASE,
 )
 ATTR_RE_TEMPLATE = r"\b{name}\s*=\s*[\"']([^\"']*)[\"']"
+THEMES = ("default", "paper")
+# Paper-theme seam families. A clip host opts into the short paper push with
+# data-transition="paper"; every other seam is a hard (match) cut.
+PAPER_TRANSITIONS = ("", "cut", "paper")
+
+
+# Default-theme shell layers, kept verbatim so the default output is unchanged.
+_DEFAULT_PALETTES_JS = """      const palettes = [
+        ["#ff78aa", "#75e7e0", "#ffd166", "#090711"],
+        ["#ff9ac5", "#9ca6ff", "#8cf0cf", "#100814"],
+        ["#ffcf6e", "#ff7e9f", "#6ee7ff", "#0b0c17"],
+        ["#c995ff", "#ff88b7", "#f7e27a", "#0c0917"],
+        ["#75e7e0", "#ff7fa7", "#ffdc85", "#071113"],
+        ["#ff6c98", "#85a8ff", "#fff0aa", "#0d0712"],
+      ];
+"""
+_DEFAULT_LIGHTFIELD = """    <div class="show-lightfield" aria-hidden="true">
+      <i class="show-aurora show-aurora--a"></i>
+      <i class="show-aurora show-aurora--b"></i>
+      <i class="show-aurora show-aurora--c"></i>
+      <i class="show-beam"></i>
+      <i class="show-grain"></i>
+    </div>"""
+_DEFAULT_ATMOSPHERE = """      <div class="stage-atmosphere" aria-hidden="true">
+        <i class="stage-corner stage-corner--tl"></i>
+        <i class="stage-corner stage-corner--br"></i>
+      </div>"""
+_DEFAULT_TRANSITION_FX = """      <div id="transition-fx" aria-hidden="true">
+        <i id="fx-blade-a" class="fx-blade"></i>
+        <i id="fx-blade-b" class="fx-blade"></i>
+        <i id="fx-prism"></i>
+        <i id="fx-flare"></i>
+        <i id="fx-curtain-top" class="fx-curtain"></i>
+        <i id="fx-curtain-bottom" class="fx-curtain"></i>
+        <i id="fx-ring-a" class="fx-ring"></i>
+        <i id="fx-ring-b" class="fx-ring"></i>
+      </div>"""
 
 
 @dataclass(frozen=True)
@@ -48,6 +86,8 @@ class Scene:
     source_path: Path
     markup: str
     scripts: tuple[str, ...]
+    chapter: str = ""
+    transition: str = ""
 
 
 def attribute(tag: str, name: str) -> str | None:
@@ -157,11 +197,22 @@ def parse_project(
         if composition_id in seen_ids:
             raise ValueError(f"Duplicate composition id: {composition_id}")
         seen_ids.add(composition_id)
+        scene = parse_scene(
+            project,
+            composition_id=composition_id,
+            source=composition_src,
+        )
+        transition = (attribute(clip_tag, "data-transition") or "").strip()
+        if transition not in PAPER_TRANSITIONS:
+            raise ValueError(
+                f"Unknown data-transition={transition!r} on {composition_id}; "
+                "use cut or paper"
+            )
         scenes.append(
-            parse_scene(
-                project,
-                composition_id=composition_id,
-                source=composition_src,
+            replace(
+                scene,
+                chapter=(attribute(clip_tag, "data-chapter") or "").strip(),
+                transition=transition,
             )
         )
     if not scenes:
@@ -530,6 +581,7 @@ def presenter_css(width: int, height: int) -> str:
       letter-spacing: .18em;
       text-transform: uppercase;
     }}
+    .scene-hud__chapter:empty {{ display: none; }}
     .scene-hud__chapter::before {{
       content: "";
       width: 54px;
@@ -667,7 +719,174 @@ def presenter_css(width: int, height: int) -> str:
 """
 
 
-def presenter_runtime(width: int, height: int, count: int) -> str:
+def paper_presenter_css(width: int, height: int) -> str:
+    """Calm shell for paper-motion decks: no neon, flare, glow, or blur."""
+    return f"""
+    html, body {{
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #1c1b19;
+    }}
+    body {{ overscroll-behavior: none; }}
+    #animated-presentation {{
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      background: #1c1b19;
+      touch-action: pan-y;
+      user-select: none;
+    }}
+    #presentation-stage {{
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 5;
+      width: {width}px;
+      height: {height}px;
+      overflow: hidden;
+      background: var(--paper, #ececec);
+      transform: translate(-50%, -50%) scale(1);
+      transform-origin: center center;
+    }}
+    #slide-track {{
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      transition: none;
+    }}
+    .animated-slide {{
+      position: absolute;
+      top: 0;
+      width: {width}px;
+      height: {height}px;
+      overflow: hidden;
+      background: var(--paper, #ececec);
+      backface-visibility: hidden;
+      contain: layout paint;
+    }}
+    .animated-slide.is-near {{ will-change: transform; }}
+    .animated-slide.is-paper-top {{
+      box-shadow: -14px 0 0 rgba(17,17,17,.18), 14px 0 0 rgba(17,17,17,.18);
+    }}
+    .animated-slide[aria-hidden="true"] {{ pointer-events: none; }}
+    #scene-hud {{
+      --hud-panel: rgba(17,17,17,.78);
+      position: absolute;
+      right: 32px;
+      bottom: 22px;
+      z-index: 34;
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      padding: 8px 16px 9px;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--hud-panel);
+      pointer-events: none;
+      font-family: "Pretendard Local", system-ui, sans-serif;
+    }}
+    .scene-hud__chapter {{ font-size: 17px; font-weight: 700; letter-spacing: .04em; }}
+    .scene-hud__chapter:empty {{ display: none; }}
+    #scene-hud-number {{ font-size: 22px; font-weight: 800; }}
+    #scene-hud-total {{ margin-left: 4px; font-size: 14px; opacity: .7; }}
+    .presenter-progress {{
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 50;
+      height: 3px;
+      background: rgba(255,255,255,.08);
+      pointer-events: none;
+    }}
+    #presenter-progress-fill {{
+      width: 100%;
+      height: 100%;
+      background: #cfc9bf;
+      transform: scaleX(0);
+      transform-origin: left center;
+    }}
+    .presenter-controls {{
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 999px;
+      background: rgba(28,27,25,.9);
+      opacity: 0;
+      transition: opacity 160ms linear;
+    }}
+    .presenter-controls:hover,
+    .presenter-controls:focus-within {{ opacity: 1; }}
+    .presenter-controls button {{
+      min-width: 42px;
+      height: 42px;
+      padding: 0 13px;
+      border: 0;
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(255,255,255,.1);
+      font: 750 15px/1 "Pretendard Local", system-ui, sans-serif;
+      cursor: pointer;
+    }}
+    .presenter-controls button:hover,
+    .presenter-controls button:focus-visible {{
+      outline: 2px solid #e6d86c;
+      outline-offset: 2px;
+    }}
+    .presenter-controls button:disabled {{ opacity: .36; cursor: default; }}
+    #presenter-count {{
+      min-width: 72px;
+      color: rgba(255,255,255,.86);
+      text-align: center;
+      font: 760 14px/1 "Pretendard Local", system-ui, sans-serif;
+    }}
+    #presenter-error {{
+      position: fixed;
+      left: 50%;
+      top: 24px;
+      z-index: 80;
+      display: none;
+      transform: translateX(-50%);
+      padding: 12px 18px;
+      border-radius: 12px;
+      color: #fff;
+      background: #b42318;
+      font: 700 15px/1.4 system-ui, sans-serif;
+    }}
+    #animated-presentation[data-runtime-error="true"] #presenter-error {{
+      display: block;
+    }}
+    @media print {{
+      .presenter-controls,
+      .presenter-progress,
+      #presenter-error,
+      #scene-hud {{
+        display: none !important;
+      }}
+    }}
+"""
+
+
+def presenter_runtime(
+    width: int,
+    height: int,
+    count: int,
+    chapters: list[str],
+    theme: str = "default",
+) -> str:
+    # HUD chapter labels come from each clip host's data-chapter attribute.
+    palettes_js = (
+        "      const palettes = [];\n" if theme == "paper" else _DEFAULT_PALETTES_JS
+    )
+    chapter_json = json.dumps(chapters, ensure_ascii=False).replace("</", "<\\/")
     return f"""
     (() => {{
       const deck = document.getElementById("animated-presentation");
@@ -685,22 +904,12 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
       let current = 0;
       let touchStartX = null;
       let transitionTimelines = {{}};
+      // paper theme: hard (match) cut by default, short paper push on opt-in seams.
+      const paperTheme = deck.dataset.theme === "paper";
+      const paperFamilies = ["cut", "paper"];
+      let paperPush = null;
 
-      const palettes = [
-        ["#ff78aa", "#75e7e0", "#ffd166", "#090711"],
-        ["#ff9ac5", "#9ca6ff", "#8cf0cf", "#100814"],
-        ["#ffcf6e", "#ff7e9f", "#6ee7ff", "#0b0c17"],
-        ["#c995ff", "#ff88b7", "#f7e27a", "#0c0917"],
-        ["#75e7e0", "#ff7fa7", "#ffdc85", "#071113"],
-        ["#ff6c98", "#85a8ff", "#fff0aa", "#0d0712"],
-      ];
-      const chapters = [
-        "OPEN THE SCENT",
-        "MEMBER SIGNAL",
-        "SCENE OF RESCENE",
-        "NIGHT BLOOM",
-        "AFTER SCENT",
-      ];
+{palettes_js}      const chapters = {chapter_json};
       const transitionFamilies = ["prism", "curtain", "aperture"];
 
       function clamp(index) {{
@@ -734,7 +943,7 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
         }} else {{
           timeline.restart();
           const content = slides[current]?.querySelector(".scene-content");
-          if (content) {{
+          if (content && !paperTheme) {{
             window.gsap.fromTo(
               content,
               {{ scale: 1.012 }},
@@ -750,16 +959,11 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
       }}
 
       function chapterFor(index) {{
-        const chapterIndex = Math.min(
-          chapters.length - 1,
-          Math.floor(
-            index / Math.max(1, Math.ceil(slides.length / chapters.length))
-          )
-        );
-        return chapters[chapterIndex];
+        return chapters[index] || "";
       }}
 
       function applyPalette(index) {{
+        if (paperTheme) return;
         const palette = palettes[index % palettes.length];
         deck.style.setProperty("--show-a", palette[0]);
         deck.style.setProperty("--show-b", palette[1]);
@@ -769,6 +973,11 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
       }}
 
       function transitionFamilyFor(fromIndex, toIndex) {{
+        if (paperTheme) {{
+          if (Math.abs(toIndex - fromIndex) !== 1) return "cut";
+          const seamOwner = slides[Math.max(fromIndex, toIndex)];
+          return seamOwner?.dataset.transition === "paper" ? "paper" : "cut";
+        }}
         if (Math.abs(toIndex - fromIndex) > 1) return "aperture";
         const seamIndex = Math.max(0, Math.min(fromIndex, toIndex));
         return transitionFamilies[seamIndex % transitionFamilies.length];
@@ -940,6 +1149,7 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
       }}
 
       function buildTransitionTimelines() {{
+        if (paperTheme) return;
         transitionTimelines = {{
           prism: {{
             forward: buildPrismTransition(1),
@@ -957,11 +1167,42 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
       }}
 
       function resetTransitionFx() {{
+        if (paperTheme) return;
         Object.values(transitionTimelines).forEach((pair) => {{
           Object.values(pair).forEach((timeline) => timeline.pause(0));
         }});
         window.gsap.set("#transition-fx > i", {{ clearProps: "transform" }});
         window.gsap.set("#transition-fx > i", {{ opacity: 0 }});
+      }}
+
+      function finishPaperPush() {{
+        if (paperPush) paperPush.progress(1);
+      }}
+
+      function playPaperPush(fromIndex, toIndex, family) {{
+        if (family !== "paper" || reduceMotion.matches) {{
+          resetInactive();
+          return;
+        }}
+        const incomingSlide = slides[toIndex];
+        const outgoingSlide = slides[fromIndex];
+        const direction = toIndex > fromIndex ? 1 : -1;
+        // keep the outgoing page under the incoming sheet while it slides in
+        window.gsap.set(outgoingSlide, {{ x: (toIndex - fromIndex) * {width}, zIndex: 1 }});
+        window.gsap.set(incomingSlide, {{ zIndex: 2 }});
+        incomingSlide.classList.add("is-paper-top");
+        paperPush = window.gsap.timeline({{
+          onComplete: () => {{
+            window.gsap.set([outgoingSlide, incomingSlide], {{ clearProps: "transform,zIndex" }});
+            incomingSlide.classList.remove("is-paper-top");
+            paperPush = null;
+            resetInactive();
+          }},
+        }}).fromTo(
+          incomingSlide,
+          {{ x: direction * {width} * .16 }},
+          {{ x: 0, duration: .3, ease: "power3.out" }}
+        );
       }}
 
       function playTransition(direction, family) {{
@@ -1017,13 +1258,14 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
           replayCurrent();
           return current;
         }}
+        if (paperTheme) finishPaperPush();
         const previousIndex = current;
         const transitionFamily = transitionFamilyFor(previousIndex, nextIndex);
         const incoming = timelineFor(nextIndex);
         if (incoming) incoming.pause(0);
         current = nextIndex;
         deck.dataset.transitionFamily = transitionFamily;
-        if (options.instant) {{
+        if (options.instant || paperTheme) {{
           track.style.transition = "none";
         }}
         track.style.transform = `translate3d(${{-current * {width}}}px, 0, 0)`;
@@ -1031,7 +1273,9 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
         if (options.replay !== false) {{
           replayCurrent();
         }}
-        if (!options.instant && current !== previousIndex) {{
+        if (paperTheme && !options.instant && current !== previousIndex) {{
+          playPaperPush(previousIndex, current, transitionFamily);
+        }} else if (!options.instant && current !== previousIndex) {{
           playTransition(
             current > previousIndex ? 1 : -1,
             transitionFamily
@@ -1116,6 +1360,14 @@ def presenter_runtime(width: int, height: int, count: int) -> str:
         previous,
         replay: replayCurrent,
         poseTransition,
+        transitionContract: paperTheme
+          ? {{ theme: "paper", families: paperFamilies, required: [], jump: "cut" }}
+          : {{
+            theme: "default",
+            families: transitionFamilies,
+            required: transitionFamilies,
+            jump: "aperture",
+          }},
         state() {{
           const timeline = timelineFor(current);
           return {{
@@ -1155,14 +1407,23 @@ def build_document(
     height: int,
     scenes: list[Scene],
     gsap_source: str,
+    theme: str = "default",
 ) -> str:
+    if theme not in THEMES:
+        raise ValueError(f"Unknown theme {theme!r}; use one of {', '.join(THEMES)}")
+    paper = theme == "paper"
     slide_markup = []
     scene_scripts = []
     for index, scene in enumerate(scenes):
+        transition_attr = (
+            f'\n        data-transition="{scene.transition}"'
+            if paper and scene.transition
+            else ""
+        )
         slide_markup.append(
             f"""      <section
         class="animated-slide"
-        data-scene-id="{html.escape(scene.composition_id, quote=True)}"
+        data-scene-id="{html.escape(scene.composition_id, quote=True)}"{transition_attr}
         aria-label="슬라이드 {index + 1} / {len(scenes)}"
         aria-hidden="{'false' if index == 0 else 'true'}"
         style="left:{index * width}px"
@@ -1186,7 +1447,7 @@ def build_document(
   <title>{html.escape(title)} · 발표용</title>
   <style>
 {styles}
-{presenter_css(width, height)}
+{paper_presenter_css(width, height) if paper else presenter_css(width, height)}
   </style>
 </head>
 <body>
@@ -1195,37 +1456,18 @@ def build_document(
     data-animated-presentation="true"
     data-slide-count="{len(scenes)}"
     data-runtime-error="false"
+    data-theme="{theme}"
     aria-label="{html.escape(title, quote=True)} 발표자료"
   >
-    <div class="show-lightfield" aria-hidden="true">
-      <i class="show-aurora show-aurora--a"></i>
-      <i class="show-aurora show-aurora--b"></i>
-      <i class="show-aurora show-aurora--c"></i>
-      <i class="show-beam"></i>
-      <i class="show-grain"></i>
-    </div>
+{"" if paper else _DEFAULT_LIGHTFIELD}
     <div id="presentation-stage">
-      <div class="stage-atmosphere" aria-hidden="true">
-        <i class="stage-corner stage-corner--tl"></i>
-        <i class="stage-corner stage-corner--br"></i>
-      </div>
+{"" if paper else _DEFAULT_ATMOSPHERE}
       <div id="slide-track">
 {chr(10).join(slide_markup)}
       </div>
-      <div id="transition-fx" aria-hidden="true">
-        <i id="fx-blade-a" class="fx-blade"></i>
-        <i id="fx-blade-b" class="fx-blade"></i>
-        <i id="fx-prism"></i>
-        <i id="fx-flare"></i>
-        <i id="fx-curtain-top" class="fx-curtain"></i>
-        <i id="fx-curtain-bottom" class="fx-curtain"></i>
-        <i id="fx-ring-a" class="fx-ring"></i>
-        <i id="fx-ring-b" class="fx-ring"></i>
-      </div>
+{"" if paper else _DEFAULT_TRANSITION_FX}
       <div id="scene-hud" aria-hidden="true">
-        <span id="scene-hud-chapter" class="scene-hud__chapter">
-          OPEN THE SCENT
-        </span>
+        <span id="scene-hud-chapter" class="scene-hud__chapter">{html.escape(scenes[0].chapter)}</span>
         <span>
           <strong id="scene-hud-number">01</strong>
           <small id="scene-hud-total">/ {len(scenes):02d}</small>
@@ -1249,7 +1491,7 @@ def build_document(
 {chr(10).join(scene_scripts)}
   </script>
   <script>
-{presenter_runtime(width, height, len(scenes))}
+{presenter_runtime(width, height, len(scenes), [scene.chapter for scene in scenes], theme)}
   </script>
 </body>
 </html>
@@ -1283,7 +1525,11 @@ def validate_document(document: str, expected_count: int) -> list[str]:
     return problems
 
 
-def build(project_value: Path, output_value: Path | None = None) -> Path:
+def build(
+    project_value: Path,
+    output_value: Path | None = None,
+    theme: str = "default",
+) -> Path:
     project = resolve_project(project_value)
     title, styles, width, height, scenes, gsap_source = parse_project(project)
     document = build_document(
@@ -1293,6 +1539,7 @@ def build(project_value: Path, output_value: Path | None = None) -> Path:
         height=height,
         scenes=scenes,
         gsap_source=gsap_source,
+        theme=theme,
     )
     problems = validate_document(document, expected_count=len(scenes))
     if problems:
@@ -1311,10 +1558,17 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("project", type=Path)
     parser.add_argument("-o", "--output", type=Path)
+    parser.add_argument(
+        "--theme",
+        choices=THEMES,
+        default="default",
+        help="default=prism/curtain/aperture shell; paper=calm paper-motion shell "
+        "(hard cut, opt-in paper push via data-transition=\"paper\")",
+    )
     args = parser.parse_args()
     try:
         project = resolve_project(args.project)
-        output = build(project, args.output)
+        output = build(project, args.output, theme=args.theme)
         _, _, width, height, scenes, _ = parse_project(project)
     except (FileNotFoundError, ValueError, OSError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)

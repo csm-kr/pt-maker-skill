@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "duration": 18,
+  "assertions": [
+    {
+      "kind": "appearsBy",
+      "selector": "#s1-relation",
+      "bySec": 1.4
+    },
+    {
+      "kind": "before",
+      "a": "#s1-class",
+      "b": "#s1-relation"
+    },
+    {
+      "kind": "staysInFrame",
+      "selector": "#s2-card"
+    },
+    {
+      "kind": "staysInFrame",
+      "selector": "#s3-speaker"
+    }
+  ]
+}

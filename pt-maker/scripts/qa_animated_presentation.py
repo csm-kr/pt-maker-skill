@@ -107,6 +107,14 @@ def profile_transition(target):
     )
     return payload
 
+# Warm-up: the first transition after load rasterizes the incoming page once
+# and can spike in a cold headless browser. Run one round trip first, report
+# it as transition_warmup, and judge performance only on the samples after it.
+warmup_samples = []
+if expected > 1:
+    for target in [1, 0]:
+        warmup_samples.append(profile_transition(target))
+
 performance_samples = []
 if expected > 3:
     for target in [1, 2, 3, 2, 1, 0]:
@@ -159,8 +167,16 @@ for index in range(expected - 2, -1, -1):
     reverse.append(state["sceneId"])
     reverse_families.append(family)
 
-required_families = {{"prism", "curtain", "aperture"}}
+contract = js("window.__ptMakerPresenter.transitionContract || null") or {{}}
+default_families = ["prism", "curtain", "aperture"]
+required_families = set(contract.get("required", default_families))
+allowed_families = set(contract.get("families", default_families))
+jump_family = contract.get("jump", "aperture")
 observed_families = set(forward_families)
+if not observed_families.issubset(allowed_families):
+    raise RuntimeError(
+        f"Undeclared transition family: {{sorted(observed_families - allowed_families)}}"
+    )
 if expected >= 12 and not required_families.issubset(observed_families):
     raise RuntimeError(
         f"Transition family coverage failed: {{sorted(observed_families)}}"
@@ -171,8 +187,8 @@ js(f"window.__ptMakerPresenter.go({{jump_index}})")
 wait(.7)
 wait(2.0)
 jump_before = js("window.__ptMakerPresenter.state()")
-if expected >= 12 and jump_index > 1 and jump_before.get("transitionFamily") != "aperture":
-    raise RuntimeError(f"Multi-slide jump must use aperture: {{jump_before}}")
+if expected >= 12 and jump_index > 1 and jump_before.get("transitionFamily") != jump_family:
+    raise RuntimeError(f"Multi-slide jump must use {{jump_family}}: {{jump_before}}")
 js("window.__ptMakerPresenter.replay()")
 wait(.12)
 jump_after = js("window.__ptMakerPresenter.state()")
@@ -263,6 +279,7 @@ if out:
 final_state = js("window.__ptMakerPresenter.state()")
 print(json.dumps({{
     "animated_presentation_qa": "pass",
+    "theme": contract.get("theme", "default"),
     "slides": expected,
     "timelines": timeline_count,
     "forward_checked": len(forward),
@@ -275,6 +292,7 @@ print(json.dumps({{
     "transition_family_forward": forward_families,
     "transition_family_reverse": reverse_families,
     "reverse_family_match": True,
+    "transition_warmup": warmup_samples,
     "transition_performance": {{
         "samples": len(performance_samples),
         "families": sorted(
