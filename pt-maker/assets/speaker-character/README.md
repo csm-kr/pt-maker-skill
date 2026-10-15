@@ -1,6 +1,6 @@
 # Speaker character (paper-motion owl)
 
-paper-motion 스타일의 화자 캐릭터인 독창적인 부엉이다. 이미지 생성 없이 코드로 그린 SVG라서 같은 시각이면 언제나 같은 그림이 나오고(결정적), 포즈 교체가 쉽다. 그림 문법(밝은 회색 몸, 균일한 검은 외곽선, 둥근 콩 모양, 망점 깃, 노란 소품 하나)은 레퍼런스 분석을 따르되 레퍼런스 채널의 고슴도치 마스코트는 복제하지 않는다. 운용 원칙은 [../../paper-motion-taste-profile.md](../../paper-motion-taste-profile.md) §6, 모션 문법은 [../../reference/motion-graphics-grammar.md](../../reference/motion-graphics-grammar.md)를 따른다.
+paper-motion 스타일의 화자 캐릭터인 독창적인 부엉이다. 이미지 생성 없이 코드로 그린 SVG라서 같은 시각이면 언제나 같은 그림이 나오고(결정적), 포즈 교체가 쉽다. 그림 문법(밝은 회색 몸, 하트 모양 흰 얼굴판, 하이라이트가 있는 큰 둥근 눈, 균일한 검은 외곽선, 둥근 콩 모양, 망점 날개, 노란 소품 하나와 같은 노랑의 부리·발)은 레퍼런스 분석을 따르되 레퍼런스 채널의 고슴도치 마스코트는 복제하지 않는다. 운용 원칙은 [../../paper-motion-taste-profile.md](../../paper-motion-taste-profile.md) §6, 모션 문법은 [../../reference/motion-graphics-grammar.md](../../reference/motion-graphics-grammar.md)를 따른다.
 
 ## 파일
 
@@ -71,11 +71,11 @@ paper-motion 기본값은 레퍼런스와 같이 **트윈 없는 즉시 교체, 
 |---|---|---|
 | `--spk-x`, `--spk-y` | 없음(필수) | 프레임 기준 좌상단 px |
 | `--spk-w` | `300px` | 폭. 높이는 200:240 비율 |
-| `--spk-body` / `--spk-belly` | `#e0e0e0` / `#f7f7f7` | 몸 / 얼굴 원반·연필 나무 |
-| `--spk-ink` | `#111111` | 외곽선·눈·부리 |
+| `--spk-body` / `--spk-belly` | `#d4d4d4` / `#ffffff` | 몸 / 하트 얼굴판·연필 나무 |
+| `--spk-ink` | `#111111` | 외곽선·눈 |
 | `--spk-cheek` | `#7a2a20` | 벌린 입 안쪽 |
-| `--spk-tuft` / `--spk-tuft-bg` | `#222222` / `#7a7a7a` | 망점 점 / 바탕(깃·날개) |
-| `--spk-prop` | `#e6d86c` | 노란 연필(캐릭터의 유일한 색) |
+| `--spk-tuft` / `--spk-tuft-bg` | `#222222` / `#a8a8a8` | 망점 점 / 바탕(날개) |
+| `--spk-prop` | `#e6d86c` | 노란 연필·부리·발(캐릭터의 유일한 색) |
 | `--spk-cut-shadow` | `rgba(17,17,17,.14)` | 상자 말풍선 그림자 |
 | `--spk-bubble-bg` / `--spk-bubble-ink` | `#ffffff` / `#111111` | 대사 바탕 / 글자 |
 | `--spk-bubble-w` / `--spk-bubble-size` | `760px` / `44px` | 대사 최대 폭 / 글자 크기 |

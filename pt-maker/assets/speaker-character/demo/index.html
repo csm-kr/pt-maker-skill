@@ -164,13 +164,13 @@
    별도 <link>로 불러오지 않는다. 생김새는 아래 --spk-* 토큰만 바꿔 조정한다. */
 .spk {
   --spk-w: 300px;                       /* 캐릭터 폭. 높이는 viewBox 비율(200:240)로 자동 */
-  --spk-body: #e0e0e0;                  /* 몸 */
-  --spk-belly: #f7f7f7;                 /* 얼굴 원반·연필 나무 */
-  --spk-ink: #111111;                   /* 외곽선·눈·부리 */
+  --spk-body: #d4d4d4;                  /* 몸 */
+  --spk-belly: #ffffff;                 /* 하트 얼굴판·연필 나무 */
+  --spk-ink: #111111;                   /* 외곽선·눈 */
   --spk-cheek: #7a2a20;                 /* 벌린 입 안쪽 */
-  --spk-tuft: #222222;                  /* 망점(깃털·날개) 점 */
-  --spk-tuft-bg: #7a7a7a;               /* 망점 바탕 */
-  --spk-prop: #e6d86c;                  /* 노란 연필: 캐릭터의 유일한 색 */
+  --spk-tuft: #222222;                  /* 망점(날개) 점 */
+  --spk-tuft-bg: #a8a8a8;               /* 망점 바탕 */
+  --spk-prop: #e6d86c;                  /* 노란 연필·부리·발: 캐릭터의 유일한 색 */
   --spk-cut-shadow: rgba(17, 17, 17, .14); /* 상자 말풍선 그림자 */
   --spk-bubble-bg: #ffffff;
   --spk-bubble-ink: #111111;
@@ -202,22 +202,20 @@
   stroke-width: 3.5;
   stroke-linejoin: round;
 }
-.spk-body,
-.spk-foot { fill: var(--spk-body); }
+.spk-body { fill: var(--spk-body); }
+.spk-foot { fill: var(--spk-prop); stroke-width: 3; }
 .spk-disc { fill: var(--spk-belly); }
-.spk-chest,
-.spk-brow {
+.spk-brow,
+.spk-eye path {
   fill: none;
   stroke: var(--spk-ink);
-  stroke-width: 3;
+  stroke-width: 3.5;
   stroke-linecap: round;
 }
-.spk-chest { stroke-opacity: .28; }
-.spk-eye ellipse,
+.spk-eye path { stroke-width: 5.5; }
+.spk-eye ellipse { fill: var(--spk-ink); }
 .spk-beak,
-.spk-jaw { fill: var(--spk-ink); }
-.spk-beak,
-.spk-jaw { stroke: var(--spk-ink); stroke-width: 1.5; stroke-linejoin: round; }
+.spk-jaw { fill: var(--spk-prop); stroke: var(--spk-ink); stroke-width: 3; stroke-linejoin: round; }
 .spk-glint { fill: #fff; }
 .spk-mouth-in { fill: var(--spk-cheek); stroke: var(--spk-ink); stroke-width: 3; stroke-linejoin: round; }
 .spk-tongue { fill: #fff; opacity: .28; }
