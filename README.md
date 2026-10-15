@@ -4,6 +4,7 @@ Codex에서 발표자료를 기획·제작·검수하는 `pt-maker` 스킬입니
 
 - `애니메이션 위주`: HyperFrames 기반 가로 탐색 애니메이션 HTML이 기본 완성본
   (MP4/WebM/GIF는 명시 요청 시만 추가)
+  - `paper-motion` 스타일: 종이 질감 모션그래픽 + 코드로 그린 부엉이 화자 캐릭터
 - `줄글 위주`: 제목·카피·본문 중심의 Reveal.js HTML 덱과 PDF
 - `이미지 위주`: 주요 텍스트마다 관련 이미지가 들어가는 Reveal.js HTML 덱과 PDF
 - 렌더링·미리보기·스크린샷은 격리된 background `browser-harness` 사용
@@ -96,6 +97,48 @@ python3 .codex/skills/pt-maker/scripts/hyperframes_mode.py \
 python3 .codex/skills/pt-maker/scripts/hyperframes_mode.py \
   stop output/NN_topic_date --target all
 ```
+
+## paper-motion 스타일
+
+종이 질감 모션그래픽과 화자 캐릭터가 나오는 애니메이션 덱입니다.
+[motion-demo-video](https://github.com/csm-kr/motion-demo-video)의 모션그래픽
+원칙과 레퍼런스 영상 분석을 바탕으로 만들었습니다.
+
+- 고르는 법: 첫 포맷 질문에서 `애니메이션 위주`를 고른 뒤, 분위기 질문에서
+  "종이 모션그래픽"이나 "화자 캐릭터"를 말합니다.
+- 빌드 전에 읽는 파일
+  - `pt-maker/paper-motion-taste-profile.md`: 이 스타일의 취향 프로필
+  - `pt-maker/reference/motion-graphics-grammar.md`: 모션 원칙
+  - `pt-maker/assets/speaker-character/README.md`: 부엉이 캐릭터 사용법
+- 발표용 HTML은 종이 테마로 만듭니다.
+
+```bash
+python3 .codex/skills/pt-maker/scripts/build_animated_presentation.py \
+  output/NN_topic_date/animation --theme paper \
+  -o output/NN_topic_date/animation/<주제>-발표용-vN.html
+```
+
+- 장면 사이 전환은 기본이 하드컷입니다. 짧은 종이 밀기 전환이 필요한
+  장면에만 clip host에 `data-transition="paper"`를 붙입니다.
+- 화면 하단의 장 이름은 clip host의 `data-chapter` 값을 씁니다. 값이 없으면
+  장 이름을 숨깁니다.
+
+## 이전 방식과 달라진 점
+
+`paper-motion-taste` 브랜치에서 바뀐 내용입니다. 기본 테마 덱의 동작은
+그대로입니다.
+
+| 항목 | 이전 | 지금 |
+|---|---|---|
+| 애니메이션 스타일 | 네온 계열 전환(prism · curtain · aperture) 한 가지 | `paper-motion` 스타일 추가 |
+| 취향 프로필 | `taste-profile.md`, `dark-taste-profile.md` | `paper-motion-taste-profile.md` 추가. 부딪히는 부분은 paper-motion 덱 안에서 이 파일이 우선 |
+| 모션 원칙 | `hyperframes-animation-mode.md` | `motion-graphics-grammar.md` 추가: 덱 전체를 관통하는 사물 하나, 같은 사물을 같은 자리에 두고 넘기는 컷, 강조색을 아껴 두었다 한 번 쓰기 등 |
+| 화자 캐릭터 | 없음 | 코드로 그린 부엉이 SVG(포즈 5개)와 GSAP 헬퍼 `PtSpeaker` |
+| 발표용 HTML 테마 | 네온 테마 하나 | `--theme paper` 추가(네온·플래시 없음, 하드컷 기본) |
+| 하단 장 이름 | 다른 덱의 문구(`OPEN THE SCENT`, `MEMBER SIGNAL`)가 모든 덱에 고정으로 나오던 버그 | 장면의 `data-chapter`에서 읽고, 없으면 숨김 |
+| 발표 HTML QA | 전환 종류를 코드에 고정, 로드 직후 첫 전환에서 가끔 실패 | 페이지가 알려 주는 전환 종류를 읽음, 측정 전에 전환을 한 번 미리 실행(warm-up) |
+| 이미지 생성 도구가 없는 환경(Claude Code 등) | Codex `$imagegen` 전제 | 캐릭터·일러스트·도식을 SVG/CSS로 만든다는 규칙 추가 |
+| 테스트 | 37개 | 49개 |
 
 ## 테스트
 
