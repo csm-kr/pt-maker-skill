@@ -9,7 +9,8 @@
 
 치환 규칙 (경로는 소스 폴더 기준, 자리표시는 글자 자리에만 쓴다. 속성 안이면 실패):
   <!-- … -->          HTML 주석은 소스에만 남기고 지운다 (<script>·<style> 안은 그대로).
-  {{fact:id}}         facts.json의 값 + 단위를 <span class="fact" data-fact="id">로. {{fact:id:value}}는 값만.
+  {{fact:id}}         facts.json의 값 + 단위를 <span class="fact" data-fact="id">로(<svg> 안에서는 <tspan>).
+                      {{fact:id:value}}는 값만.
   {{dots:id}}         단위가 %, in 100, of 100, per 100인 fact 값만큼 채운 100칸 점 격자 (.dots, data-fact="id").
   {{link:NAME}}       환경변수 NAME의 URL. 없으면 경고 스타일 자리표시(.v.ph)와 stderr 경고.
   {{icon:name}}       assets/icons/name.svg를 인라인 SVG(.ic)로.
@@ -88,6 +89,21 @@ def map_text(html: str, fn: Callable[[str], str], skip: tuple[str, ...] = ()) ->
     return "".join(out)
 
 
+def map_text_with_svg(html: str, fn: Callable[[str, bool], str]) -> str:
+    """Like map_text, but tells fn whether the text sits inside an <svg>."""
+    out = []
+    depth = 0
+    for index, piece in enumerate(TOKEN_RE.split(html)):
+        if index % 2:
+            out.append(piece)
+            match = re.match(r"<(/?)svg\b", piece, re.I)
+            if match and not piece.endswith("/>"):
+                depth = max(0, depth - 1) if match.group(1) else depth + 1
+            continue
+        out.append(fn(piece, depth > 0) if piece else piece)
+    return "".join(out)
+
+
 def outside_protected(html: str, fn: Callable[[str], str]) -> str:
     parts = PROTECTED_RE.split(html)  # [text, block, tag name, text, ...]
     return "".join(fn(part) if index % 3 == 0 else (part if index % 3 == 1 else "") for index, part in enumerate(parts))
@@ -101,12 +117,12 @@ def load_facts(folder: Path) -> dict[str, dict]:
     return {str(fact.get("id")): fact for fact in data.get("facts", []) if isinstance(fact, dict)}
 
 
-def fact_html(fact_id: str, fact: dict, value_only: bool) -> str:
+def fact_html(fact_id: str, fact: dict, value_only: bool, tag: str = "span") -> str:
     value = html_lib.escape(str(fact.get("value", "")), quote=False)
     unit = html_lib.escape(str(fact.get("unit") or ""), quote=False)
     if not value_only and unit:
         value = value + unit if unit.startswith(GLUED_UNITS) else f"{value} {unit}"
-    return f'<span class="fact" data-fact="{fact_id}">{value}</span>'
+    return f'<{tag} class="fact" data-fact="{fact_id}">{value}</{tag}>'
 
 
 def dots_html(spec: str, facts: dict[str, dict]) -> str:
@@ -221,8 +237,14 @@ def build(src: Path, *, env: Mapping[str, str] | None = None) -> BuildResult:
     if unknown:
         raise BuildError(f"facts not in facts.json: {unknown}")
     html = re.sub(r"([≤≥~]) (?=\{\{fact:)", lambda m: m.group(1) + NBSP, html)
-    html = FACT_RE.sub(lambda m: fact_html(m.group(1), facts[m.group(1)], bool(m.group(2))), html)
-    html = DOTS_RE.sub(lambda m: dots_html(m.group(1), facts), html)
+    def place(text: str, in_svg: bool) -> str:
+        # Inside <svg> an HTML <span> would end the SVG in the browser's parser, so facts become <tspan>.
+        if in_svg and (DOTS_RE.search(text) or LINK_RE.search(text)):
+            raise BuildError("{{dots:…}} and {{link:…}} make HTML; put them outside <svg>")
+        text = FACT_RE.sub(lambda m: fact_html(m.group(1), facts[m.group(1)], bool(m.group(2)), "tspan" if in_svg else "span"), text)
+        return DOTS_RE.sub(lambda m: dots_html(m.group(1), facts), text)
+
+    html = map_text_with_svg(html, place)
     for name in sorted(set(ICON_RE.findall(html))):
         html = html.replace(f"{{{{icon:{name}}}}}", icon_svg(folder, name))
     for url in sorted(set(QR_RE.findall(html))):

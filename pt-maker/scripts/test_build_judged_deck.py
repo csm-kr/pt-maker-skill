@@ -12,6 +12,8 @@ from pathlib import Path
 from unittest import mock
 
 import build_judged_deck as build
+import qa_facts_gate
+from browser_harness_runtime import BrowserHarnessError, IsolatedBrowserHarness, ensure_background_runtime
 
 
 SCRIPT = Path(__file__).resolve().parent / "build_judged_deck.py"
@@ -71,6 +73,13 @@ class BuildJudgedDeckTests(unittest.TestCase):
     def test_bound_before_a_fact_stays_together(self):
         result = self.render("<p>≤ {{fact:trials}}</p>")
         self.assertIn(f'≤{NBSP}<span class="fact" data-fact="trials">', result.html)
+
+    def test_fact_inside_svg_text_is_a_tspan(self):
+        result = self.render(SVG_SLIDE)
+        self.assertIn('<text x="40" y="120"><tspan class="fact" data-fact="trials">35', result.html)
+        self.assertNotIn('<span class="fact"', result.html)
+        with self.assertRaises(build.BuildError):
+            self.render('<svg viewBox="0 0 10 10"><text>{{dots:adopters}}</text></svg>')
 
     def test_fact_inside_an_attribute_fails(self):
         with self.assertRaises(build.BuildError) as ctx:
@@ -206,6 +215,47 @@ class BuildJudgedDeckTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("placeholder: GITHUB_URL is not set", result.stderr)
         self.assertTrue((self.root / "deck.html").is_file())
+
+
+SVG_SLIDE = (
+    '<section class="slide" data-main><svg viewBox="0 0 800 300" width="800" height="300">'
+    '<rect x="10" y="10" width="300" height="200"/><text x="40" y="120">{{fact:trials}}</text>'
+    '<rect x="400" y="10" width="300" height="200"/></svg>'
+    '<footer class="ft"><div class="src">Details: evidence/trials.json</div></footer></section>'
+)
+
+
+def chrome_available() -> bool:
+    try:
+        ensure_background_runtime(install=False, quiet=True)
+        return True
+    except BrowserHarnessError:
+        return False
+
+
+@unittest.skipUnless(chrome_available(), "Chrome and browser-harness are required")
+class SvgFactInBrowserTests(unittest.TestCase):
+    def test_diagram_stays_intact_and_the_gate_sees_the_fact(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / "facts.json").write_text(
+                json.dumps({"facts": [{"id": "trials", "value": "35", "unit": "trials", "claim": "c", "source": "s", "checked": "2026-10-15"}]}),
+                encoding="utf-8",
+            )
+            src = root / "deck.src.html"
+            src.write_text(HEAD + SVG_SLIDE + TAIL, encoding="utf-8")
+            deck = root / "deck.html"
+            deck.write_text(build.build(src, env={}).html, encoding="utf-8")
+            code = (
+                f"new_tab({deck.as_uri()!r})\nwait_for_load(20)\n"
+                "print(json.dumps(js(\"({rects: document.querySelectorAll('svg rect').length, "
+                "fact: document.querySelector('svg text tspan.fact') ? document.querySelector('svg text tspan.fact').textContent : null})\")))"
+            )
+            with IsolatedBrowserHarness() as browser:
+                out = browser.run_code(code, timeout=60).stdout.strip().splitlines()[-1]
+            self.assertEqual(json.loads(out), {"rects": 2, "fact": "35\u00a0trials"})
+            result = qa_facts_gate.run_checks(deck, root / "facts.json", {})
+            self.assertEqual(result["qa_facts_gate"], "pass", result["errors"])
 
 
 if __name__ == "__main__":
