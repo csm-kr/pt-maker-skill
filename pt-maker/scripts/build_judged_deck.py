@@ -16,6 +16,9 @@
   {{icon:name}}       assets/icons/name.svg를 인라인 SVG(.ic)로.
   {{qr:url}}          QR SVG(.qr). 선택 패키지 segno가 필요하며, 쓸 때만 검사한다.
 
+숫자 표시: 장부 값은 그대로 두고, 화면에는 천 단위 쉼표를 넣는다(5자리 이상, 4자리는 1900-2099를 연도로 보고 제외).
+  쉼표가 이미 있거나 숫자만으로 된 값이 아니면 적힌 그대로 보인다.
+
 텍스트 규칙 (태그 안·<script>·<style>은 건드리지 않음):
   - 숫자와 단위, "≤ N"은 NBSP로 붙여 줄이 갈라지지 않게 한다 (facts.json 단위 포함).
   - 날짜(2026-10-15, 10-15)는 하이픈에서 끊기지 않게 .nw로 감싼다 (<code>/<text>/<title> 안은 제외).
@@ -117,8 +120,23 @@ def load_facts(folder: Path) -> dict[str, dict]:
     return {str(fact.get("id")): fact for fact in data.get("facts", []) if isinstance(fact, dict)}
 
 
+PLAIN_NUMBER_RE = re.compile(r"^([^\d\s,.-]*)(-?)(\d+)(\.\d+)?$")
+
+
+def format_value(raw: str) -> str:
+    """Thousands separators for display: 5+ digit integer parts always, 4 digits unless 1900-2099 (a year).
+    Values that already have a comma, or are not a plain number, are shown as written."""
+    match = PLAIN_NUMBER_RE.match(raw)
+    if not match or "," in raw:
+        return raw
+    prefix, sign, whole, fraction = match.groups()
+    if len(whole) < 4 or (len(whole) == 4 and 1900 <= int(whole) <= 2099):
+        return raw
+    return f"{prefix}{sign}{int(whole):,}{fraction or ''}"
+
+
 def fact_html(fact_id: str, fact: dict, value_only: bool, tag: str = "span") -> str:
-    value = html_lib.escape(str(fact.get("value", "")), quote=False)
+    value = html_lib.escape(format_value(str(fact.get("value", ""))), quote=False)
     unit = html_lib.escape(str(fact.get("unit") or ""), quote=False)
     if not value_only and unit:
         value = value + unit if unit.startswith(GLUED_UNITS) else f"{value} {unit}"

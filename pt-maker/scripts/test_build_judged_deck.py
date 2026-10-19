@@ -70,6 +70,39 @@ class BuildJudgedDeckTests(unittest.TestCase):
             result.html,
         )
 
+    def test_numbers_get_thousands_separators_but_years_do_not(self):
+        cases = {
+            "$200000": "$200,000",
+            "11889760": "11,889,760",
+            "4000": "4,000",
+            "12345.678": "12,345.678",
+            "2028": "2028",
+            "1999": "1999",
+            "980": "980",
+            "0.0120": "0.0120",
+            "1,669": "1,669",
+            "3 in 10": "3 in 10",
+            "2026-10-15": "2026-10-15",
+        }
+        for raw, shown in cases.items():
+            with self.subTest(raw=raw):
+                self.assertEqual(build.format_value(raw), shown)
+
+    def test_formatted_facts_still_pass_the_facts_gate(self):
+        facts = json.loads((self.root / "facts.json").read_text(encoding="utf-8"))
+        facts["facts"].append({"id": "price", "value": "$200000", "unit": "", "claim": "c", "source": "s", "checked": "2026-10-15"})
+        facts["facts"].append({"id": "year", "value": "2028", "unit": "", "claim": "c", "source": "s", "checked": "2026-10-15"})
+        (self.root / "facts.json").write_text(json.dumps(facts), encoding="utf-8")
+        result = self.render(
+            '<section class="slide"><p>{{fact:price}} from {{fact:year:value}}</p>'
+            '<footer class="ft"><div class="src">Details: price list</div></footer></section>'
+        )
+        self.assertIn('<span class="fact" data-fact="price">$200,000</span>', result.html)
+        self.assertIn('<span class="fact" data-fact="year">2028</span>', result.html)
+        (self.root / "deck.html").write_text(result.html, encoding="utf-8")
+        gate = qa_facts_gate.run_checks(self.root / "deck.html", self.root / "facts.json", {})
+        self.assertEqual(gate["qa_facts_gate"], "pass", gate["errors"])
+
     def test_bound_before_a_fact_stays_together(self):
         result = self.render("<p>≤ {{fact:trials}}</p>")
         self.assertIn(f'≤{NBSP}<span class="fact" data-fact="trials">', result.html)
