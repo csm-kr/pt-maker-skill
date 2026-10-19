@@ -101,7 +101,8 @@ def build_fixture(path: Path) -> None:
         "</p:spTree></p:cSld>"
         '<p:clrMap bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" '
         'accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/>'
-        '<p:txStyles><p:bodyStyle><a:lvl1pPr><a:defRPr sz="2000"/></a:lvl1pPr></p:bodyStyle>'
+        '<p:txStyles><p:titleStyle><a:lvl1pPr><a:defRPr sz="3200"><a:solidFill><a:srgbClr val="0B3D91"/></a:solidFill></a:defRPr></a:lvl1pPr></p:titleStyle>'
+        '<p:bodyStyle><a:lvl1pPr><a:defRPr sz="2000"/></a:lvl1pPr></p:bodyStyle>'
         '<p:otherStyle><a:lvl1pPr><a:defRPr sz="1200"/></a:lvl1pPr></p:otherStyle></p:txStyles></p:sldMaster>'
     )
     theme = (
@@ -226,7 +227,17 @@ class ImportTemplateTests(unittest.TestCase):
         self.assertEqual(box["color"], "#FFFFFF")
         self.assertEqual(box["font_px"], 48.0)
         self.assertEqual(self.slides["Approach"]["art"][0]["layer"], "top")
-        self.assertEqual(self.slides["Approach"]["title_box"]["color"], "#222222")  # theme text color (tx1 → dk1)
+        self.assertEqual(self.slides["Approach"]["title_box"]["color"], "#0B3D91")  # the master's title style
+        self.assertEqual(self.slides["Opening"]["title_box"]["color"], "#222222")  # a text box: theme text color (tx1 → dk1)
+
+    def test_reimport_keeps_each_slot_match_mode(self):
+        path = self.out / "template.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        data["slides"][1]["match"] = "prefix"
+        data["slides"][3]["match"] = "skip"
+        path.write_text(json.dumps(data), encoding="utf-8")
+        again = import_template.import_template(self.pptx, self.out)
+        self.assertEqual([entry["match"] for entry in again["slides"]], ["exact", "prefix", "exact", "skip"])
 
     def test_skipped_parts_are_warned(self):
         warnings = " ".join(self.data["warnings"])

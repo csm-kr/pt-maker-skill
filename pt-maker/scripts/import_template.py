@@ -18,6 +18,9 @@ out_dir에 만드는 것:
   - 템플릿 아트(겹치면 안 되는 영역): 슬라이드·레이아웃·마스터의 그림(srcRect crop 반영)과 채워진 도형
     (도형 모양과 상관없이; 단색, 그라데이션, 그림 채우기, p:style 테마 채우기).
     템플릿 제목 상자와 겹치는 아트는 제목 아래(layer "base")에 그려, 제목이 그 위에 올라갈 수 있다.
+  - 제목 색: 글자 → 상자 목록 스타일 → (제목 placeholder면) 레이아웃·마스터 제목 placeholder와 마스터
+    제목 스타일 → 테마 글자색.
+  - 다시 가져오면 같은 번호·같은 제목 슬롯의 "match"(exact/prefix/skip)는 template.json에서 유지한다.
   - 최소 글자 크기: 슬라이드와 그 레이아웃·마스터에 쓰인 가장 작은 sz(pt)를 출력 폭 기준 px로 바꾼 값.
   - 그룹, 표·차트(graphicFrame), 연결선(cxnSp), 채우기 없는 도형, 회전, 색 보정은 warnings에 남긴다.
 
@@ -310,7 +313,28 @@ class Importer:
             art.append(item)
         return backgrounds, art
 
-    def title_of(self, part: str, theme: Theme) -> tuple[str, list[str], dict[str, Any] | None]:
+    def title_color(self, shape: ET.Element, run: ET.Element | None, layout: str, master: str, theme: Theme) -> str | None:
+        """The title text color PowerPoint would draw: the run, the shape's list style, then for a title
+        placeholder the layout's and the master's title placeholder and the master title style, then the
+        theme text color."""
+        style_path = "p:txBody/a:lstStyle/a:lvl1pPr/a:defRPr/a:solidFill"
+        holders = [run.find("a:solidFill", NS) if run is not None else None, shape.find(style_path, NS)]
+        ph = shape.find("./*/p:nvPr/p:ph", NS)
+        if ph is not None and ph.get("type") in ("title", "ctrTitle"):
+            for part, kinds in ((layout, (ph.get("type"), "title")), (master, ("title",))):
+                tree = self.pkg.xml(part).find("p:cSld/p:spTree", NS)
+                for other in tree.iterfind("p:sp", NS) if tree is not None else []:
+                    other_ph = other.find("./*/p:nvPr/p:ph", NS)
+                    if other_ph is not None and other_ph.get("type") in kinds:
+                        holders.append(other.find(style_path, NS))
+            holders.append(self.pkg.xml(master).find("p:txStyles/p:titleStyle/a:lvl1pPr/a:defRPr/a:solidFill", NS))
+        for holder in holders:
+            color = theme.color(holder, self.warnings, layout) if holder is not None else None
+            if color:
+                return color
+        return theme.colors.get(theme.clr_map.get("tx1", "dk1"))
+
+    def title_of(self, part: str, layout: str, master: str, theme: Theme) -> tuple[str, list[str], dict[str, Any] | None]:
         tree = self.pkg.xml(part).find("p:cSld/p:spTree", NS)
         shapes = []
         for shape in tree.iterfind("p:sp", NS) if tree is not None else []:
@@ -351,8 +375,7 @@ class Importer:
                 "text_y": r2(self.px(y + int(attrs.get("tIns", DEFAULT_INSET_Y)))),
                 "font_px": r2(size / 100 * self.px_per_pt) if size else None,
                 "font": latin.get("typeface") if latin is not None else None,
-                "color": (theme.color(run.find("a:solidFill", NS), self.warnings, part) if run is not None else None)
-                or theme.colors.get(theme.clr_map.get("tx1", "dk1")),
+                "color": self.title_color(shape, run, layout, master, theme),
             }
         )
         return title["text"], prompts, title_box
@@ -400,7 +423,7 @@ class Importer:
                 for latin in el.iterfind("a:latin", NS)
                 if not latin.get("typeface", "+").startswith("+")
             )
-            title, prompts, title_box = self.title_of(part, theme)
+            title, prompts, title_box = self.title_of(part, layout, master, theme)
             for item in art:
                 item["layer"] = "base" if title_box and overlaps(item, title_box) else "top"
             slides.append(
@@ -502,6 +525,15 @@ def layer_css(data: dict[str, Any]) -> str:
 def import_template(pptx: Path, out_dir: Path, *, width: int = 1920) -> dict[str, Any]:
     importer = Importer(Path(pptx), width)
     data = importer.run()
+    previous = Path(out_dir) / "template.json"
+    if previous.is_file():
+        # Keep a slot's hand-set match mode (exact, prefix, skip) when the same slot comes back on re-import.
+        try:
+            old = {(e.get("index"), e.get("title")): e.get("match", "exact") for e in json.loads(previous.read_text(encoding="utf-8")).get("slides", [])}
+        except (ValueError, AttributeError):
+            old = {}
+        for entry in data["slides"]:
+            entry["match"] = old.get((entry["index"], entry["title"]), "exact")
     out_dir = Path(out_dir)
     media_dir = out_dir / "assets" / "template"
     media_dir.mkdir(parents=True, exist_ok=True)
