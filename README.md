@@ -7,6 +7,9 @@ Codex에서 발표자료를 기획·제작·검수하는 `pt-maker` 스킬입니
   - `paper-motion` 스타일: 종이 질감 모션그래픽 + 코드로 그린 부엉이 화자 캐릭터
 - `줄글 위주`: 제목·카피·본문 중심의 Reveal.js HTML 덱과 PDF
 - `이미지 위주`: 주요 텍스트마다 관련 이미지가 들어가는 Reveal.js HTML 덱과 PDF
+- `심사·제출용`: 공모전·투자 심사·지원사업처럼 채점 기준이나 지정 템플릿이 있는
+  자리용. 템플릿 크기의 고정 HTML 슬라이드와 화면과 1:1인 PDF, 그리고 숫자·출처·
+  레이아웃·심사 패널·제출 검사
 - 렌더링·미리보기·스크린샷은 격리된 background `browser-harness` 사용
 - HTML·미디어·PDF·애니메이션·사용자 리뷰 QA gate 포함
 
@@ -49,6 +52,7 @@ $pt-maker 이 기획안을 발표용 HTML과 애니메이션 영상으로 만들
 1. 애니메이션 위주
 2. 줄글 위주
 3. 이미지 위주
+4. 심사·제출용 (지정 템플릿 + 근거 검사)
 ```
 
 사용자가 `그냥 진행`, `알아서`, `넘어가`처럼 선택을 건너뛰면
@@ -75,6 +79,10 @@ python3 .codex/skills/pt-maker/scripts/new_deck.py \
 # 고급 옵션: 이미지 위주 발표 덱과 애니메이션 프로젝트를 함께 스캐폴딩
 python3 .codex/skills/pt-maker/scripts/new_deck.py \
   "topic-slug" --production-direction image --mode both
+
+# 심사·제출용: 지정 템플릿(.pptx)을 읽어 슬롯마다 한 페이지씩 스캐폴딩
+python3 .codex/skills/pt-maker/scripts/new_deck.py \
+  "topic-slug" --production-direction judged --template template.pptx
 ```
 
 ## Background 실행
@@ -123,10 +131,56 @@ python3 .codex/skills/pt-maker/scripts/build_animated_presentation.py \
 - 화면 하단의 장 이름은 clip host의 `data-chapter` 값을 씁니다. 값이 없으면
   그 장면의 첫 제목(h1~h3)을 쓰고, 제목도 없으면 숨깁니다.
 
+## 심사·제출용 모드
+
+채점 기준이 있는 자리(공모전, 투자 심사, 지원사업, 입찰)에 내는 덱입니다. 첫 포맷
+질문에서 `4. 심사·제출용`을 고르면, 지정 템플릿 → 채점 기준과 가중치 → 제한(쪽수·MB·
+단어 수·마감) → 근거 출처를 한 번에 하나씩 묻습니다. 1~3 포맷의 흐름은 그대로입니다.
+
+- 스타일은 고정입니다: 실제 제품 화면 캡처 + 주장형 문장 + 인라인 SVG 도식.
+- 숫자는 모두 `facts.json`(근거 장부)에서 넣고, 숫자가 있는 슬라이드는 footer에 출처
+  줄(`Details: …`)을 보입니다.
+- 근거 자리에는 생성 이미지를 쓰지 않습니다. 실제 화면은 `capture_screens.py`로 찍습니다.
+- 자세한 절차: `pt-maker/reference/judged-deck.md`, 심사 패널: `pt-maker/reference/judge-panel.md`
+
+```bash
+S=.codex/skills/pt-maker/scripts
+D=output/NN_topic_date
+python3 $S/new_deck.py "topic" --production-direction judged --template template.pptx
+python3 $S/capture_screens.py $D/shots.json          # 실제 화면 → assets/img/
+GITHUB_URL=… VIDEO_URL=… python3 $S/build_judged_deck.py $D/deck.src.html
+python3 $S/qa_layout_gate.py $D/deck.html --pdf $D/topic-v1.pdf   # 검사 + slides/NN.png + PDF
+python3 $S/qa_facts_gate.py $D/deck.html             # 장부에 없는 숫자, 출처 없는 슬라이드, 금지 표현
+python3 $S/qa_judge_gate.py $D/judge_ledger.json     # 기준별 눈가림 심사 + 사실 확인 결과
+python3 $S/qa_submission_gate.py $D/deck.html $D/topic-v1.pdf --config $D/judged.json
+```
+
+QR 자리표시(`{{qr:url}}`)를 쓸 때만 선택 패키지 `segno`가 필요합니다
+(`python3 -m pip install segno`). 나머지는 Python 표준 라이브러리와 기존
+browser-harness만 씁니다.
+
 ## 이전 방식과 달라진 점
 
-`paper-motion-taste` 브랜치에서 바뀐 내용입니다. 기본 테마 덱의 동작은
-그대로입니다.
+### `judged-deck` 브랜치
+
+| 항목 | 이전 | 지금 |
+|---|---|---|
+| 첫 포맷 질문 | 3지선다(애니메이션 / 줄글 / 이미지) | 4지선다: `4. 심사·제출용 (지정 템플릿 + 근거 검사)` 추가. 건너뛰면 여전히 `image` |
+| 심사용 인테이크 | 없음 | 4번을 고르면 템플릿 → 채점 기준·가중치 → 제한 → 근거 출처를 하나씩 질문. 1~3에는 새 질문 없음 |
+| `new_deck.py` | `--production-direction animation\|text\|image` | `judged` 추가, `--template template.pptx`로 템플릿을 읽어 요약과 warning을 출력하고 슬롯마다 한 페이지 스캐폴딩 |
+| 지정 템플릿 | 참고자료로만 흡수 | `import_template.py`: 슬라이드 크기(px, 인치), 배경(`p:bg`, 전체 그림), 템플릿 아트(그림 crop, 모양·채우기 종류와 상관없는 채워진 도형), 슬롯 제목과 제목 상자, 최소 글자 px, 글꼴, 건너뛴 것 warning → `template.json` + 템플릿 layer |
+| 덱 형식 | Reveal 1280×720 | 심사용은 템플릿 크기 고정 HTML 슬라이드, 템플릿 실제 쪽 크기로 인쇄한 1:1 PDF |
+| 숫자와 출처 | 출처는 작업 노트·CREDITS에, 슬라이드에는 최소한 | 심사용은 `facts.json` 장부 + `{{fact:id}}`(빌드가 `data-fact`로 표시) + footer 출처 줄. `qa_facts_gate.py`가 모든 슬라이드의 표시 없는 숫자, 출처 없는 슬라이드, 빈 `Details:`, 금지 표현을 막음 |
+| 근거 이미지 | 웹 이미지 또는 생성 일러스트 | 심사용 근거는 실제 캡처(`capture_screens.py`)나 공개 자료만. 생성 이미지는 근거 금지 |
+| 레이아웃 검사 | 렌더 후 사람/agent 검수 | `qa_layout_gate.py`: 실제 글줄 기준 최소 글자(transform 배율 반영)·가장자리·가로 넘침, 템플릿 아트 겹침, footer 줄 수·겹침, 잘림, 깨진 이미지, 본편 단어 수 + PNG + 슬라이드 글자 + 1:1 PDF |
+| 심사 리뷰 | 미감 QA agent 1개(90점) | 미감 QA는 그대로 + 채점 기준별 눈가림 심사 agent와 사실 확인 agent, `qa_judge_gate.py`(심사한 `deck.html`의 해시로 낡은 장부를 막음) |
+| 제출 직전 | 없음 | `qa_submission_gate.py`: 자리표시 잔여, PDF 크기·쪽수, 슬롯 순서·제목, 링크 HTTP 200 |
+| HTML guard | Reveal 설정 필수 | `data-deck="judged"` 덱은 Reveal 설정 대신 `@page` 크기 검사 |
+| 테스트 | 50개 | 132개 |
+
+### `paper-motion-taste` 브랜치
+
+기본 테마 덱의 동작은 그대로입니다.
 
 | 항목 | 이전 | 지금 |
 |---|---|---|

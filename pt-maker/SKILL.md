@@ -3,12 +3,15 @@ name: pt-maker
 description: >-
   Create polished 발표자료 from discussions, notes, sketches, web pages,
   documents, reference decks, URLs, or research. Always begin by asking the
-  user to choose one production format: HyperFrames animation, text-led, or
-  image-led; use image-led when the user explicitly skips the choice. Support
-  presentation mode (interactive Reveal HTML + PDF), animation mode
-  (deterministic HyperFrames composition + horizontally navigable animated
-  presentation HTML as the primary final artifact, with rendered video only
-  when explicitly requested), and both mode.
+  user to choose one production format: HyperFrames animation, text-led,
+  image-led, or judged (contest, investor, or grant submissions on a required
+  template with evidence checks); use image-led when the user explicitly skips
+  the choice. Support presentation mode (interactive Reveal HTML + PDF),
+  animation mode (deterministic HyperFrames composition + horizontally
+  navigable animated presentation HTML as the primary final artifact, with
+  rendered video only when explicitly requested), both mode, and judged mode
+  (fixed-size HTML slides at the template size + a 1:1 PDF, with facts-ledger,
+  layout, judge-panel, and submission gates).
   Require an isolated background browser-harness for preview, screenshot, and
   export QA, and bootstrap it automatically when missing. Use claim-led
   storytelling, purposeful finite motion, continuity contracts, speaker notes,
@@ -211,6 +214,7 @@ Apply this guardrail according to the selected production direction.
 
 - In `image`, concrete visual material is mandatory: cover, chapter opener, key concept, evidence/example, comparison, process/timeline, product, place, and closing slides must each have a planned visual asset. Every major text slide needs at least one directly relevant image, the deck must contain multiple distinct image assets, and the visual plan must record the exact `claim → image` match. Reject generic decoration that cannot explain or evidence the adjacent copy.
 - In `text`, title and copy may be the visual focus, but “줄글 위주” never means evenly distributed paragraphs. Give every slide one focal phrase, one supporting layer, and an explicit reading path. Use at least three typographic composition families across the deck—such as oversized statement, split contrast/quote, stepped phrase, metric-led copy, or editorial text grid—and never repeat the same block alignment for three consecutive slides. Emphasis must be visibly unequal: the focal phrase should dominate body copy through scale, weight, position, or color while preserving readable line lengths and whitespace.
+- In `judged`, the style is fixed: real product captures, claim-led text, and inline SVG diagrams. Evidence slots use only real captures (`capture_screens.py`) or official/public sources; generated images are never evidence. Every number comes from `facts.json`, and every slide that shows one carries a visible footer source line. See [reference/judged-deck.md](reference/judged-deck.md).
 - In `animation`, kinetic typography may be a scene's primary visual, but every scene still needs an explicit motion/composition plan and a stable readable pose. Use two or three deterministic slide-transition families and vary them by seam; for decks with 12 or more slides, default to three families unless performance or narrative continuity clearly favors two.
 - Acceptable visual assets: user/original image, official/public photo, screenshot, chart/data visualization, SVG diagram/timeline/map/card grid, or approved AI-generated illustration.
 - Before building an `image` deck, write a `visual plan` for every slide in the outline: asset type, source/generation path, crop/layout role, subject/focal-point safety, map-base source if relevant, and fallback. For `text`, write a layout/copy plan; for `animation`, write a motion/composition plan.
@@ -218,7 +222,7 @@ Apply this guardrail according to the selected production direction.
 - During QA, reject two consecutive text-only content slides only in `image`. In every format, reject a slide whose title promises a visual but the body does not show one.
 
 ## Overview
-사용자와 **같이 만드는** HTML-native 발표자료 스킬. `presentation`은 Reveal.js 라이브 덱과 PDF, `animation`은 HyperFrames 단일 타임라인과 가로 탐색 발표용 HTML을 기본 완성본으로 만들고, MP4/WebM/GIF는 사용자가 명시 요청한 경우에만 파생 산출물로 만든다. `both`는 정적/인터랙티브 덱과 애니메이션 HTML을 별도 QA로 만든다. 이미지 기반 `.pptx`도 사용자가 명시 요청한 경우에만 옵션으로 생성한다.
+사용자와 **같이 만드는** HTML-native 발표자료 스킬. `presentation`은 Reveal.js 라이브 덱과 PDF, `animation`은 HyperFrames 단일 타임라인과 가로 탐색 발표용 HTML을 기본 완성본으로 만들고, MP4/WebM/GIF는 사용자가 명시 요청한 경우에만 파생 산출물로 만든다. `both`는 정적/인터랙티브 덱과 애니메이션 HTML을 별도 QA로 만든다. `judged`(심사·제출용)는 지정 템플릿 크기의 고정 HTML 슬라이드와 화면과 1:1인 PDF를 만든다. 이미지 기반 `.pptx`도 사용자가 명시 요청한 경우에만 옵션으로 생성한다.
 
 핵심 흐름은 **.html을 장면 시스템으로 구성**하는 것이다. presentation은 고정 1280×720, print/reduced-motion 정지 포즈를 쓴다. animation은 고정 1920×1080, CSS 최종 포즈, composition별 paused GSAP timeline, 직접 자식 clip host, 절대 시간값과 deterministic seek를 계약으로 삼고, 같은 composition에서 발표용 HTML을 생성한다. 이미지 생성은 보조 기능이며 Codex에서는 생성·편집·연속 프레임이 필요할 때 `$imagegen` 스킬의 built-in `image_gen` 도구를 기본 경로로 사용한다.
 
@@ -229,7 +233,8 @@ Apply this guardrail according to the selected production direction.
 - 자동 재생 영상·MP4·WebM·GIF를 사용자가 명시 요청하면 `animation`의 선택적 render export를 추가한다.
 - Reveal 라이브 덱과 애니메이션 HTML이 모두 필요하면 `both`를 쓴다. 공유 영상은 별도 명시 요청이 있을 때만 추가한다.
 - animation은 여러 composition의 HyperFrames slideshow가 아니라 **한 개의 선형 master composition**이다. slideshow를 MP4 연결본으로 오해하지 않는다.
-- 생성은 `new_deck.py "<slug>" --production-direction animation|text|image [--mode presentation|animation|both]`로 시작한다. `--production-direction`은 필수다.
+- 심사·제출용(`judged`)은 Reveal도 HyperFrames도 아니다. 템플릿 크기의 고정 HTML 슬라이드(`.slide` 하나 = PDF 한 쪽)와 1:1 PDF를 만든다. 만들거나 검수할 때 [reference/judged-deck.md](reference/judged-deck.md)와 [reference/judge-panel.md](reference/judge-panel.md)를 반드시 읽는다.
+- 생성은 `new_deck.py "<slug>" --production-direction animation|text|image [--mode presentation|animation|both]` 또는 `new_deck.py "<slug>" --production-direction judged [--template 템플릿.pptx]`로 시작한다. `--production-direction`은 필수다. `judged`에는 `--mode`를 쓰지 않는다.
 - animation을 만들거나 검수할 때 [reference/hyperframes-animation-mode.md](reference/hyperframes-animation-mode.md)와 [reference/animation-quality-rubric.md](reference/animation-quality-rubric.md)를 반드시 읽는다.
 
 ## 시작 프로토콜: Grill Me + 자료 인테이크
@@ -237,7 +242,7 @@ Apply this guardrail according to the selected production direction.
 
 시작 게이트:
 
-1. **제작 포맷 선택** — `애니메이션 위주 / 줄글 위주 / 이미지 위주` 세 가지만 제시하고 하나를 고르게 한다. 사용자가 `그냥 진행`, `알아서`, `넘어가`, `상관없음`처럼 건너뛰면 `이미지 위주`를 기본값으로 확정한다.
+1. **제작 포맷 선택** — `애니메이션 위주 / 줄글 위주 / 이미지 위주 / 심사·제출용 (지정 템플릿 + 근거 검사)` 네 가지만 제시하고 하나를 고르게 한다. 사용자가 `그냥 진행`, `알아서`, `넘어가`, `상관없음`처럼 건너뛰면 `이미지 위주`를 기본값으로 확정한다. `심사·제출용`을 고르면 `judged`로 기록하고 [reference/intake.md](reference/intake.md) §0.2의 심사용 질문(지정 템플릿 → 채점 기준·가중치 → 제한 → 근거 출처)을 하나씩 바로 묻는다. 1~3을 고르면 이 질문은 없다.
 2. **참고자료 여부 확인** — 포맷이 정해진 뒤 "추가로 참고할 PPT/PDF/문서/스크린샷/URL/데이터가 있나요?"를 묻는다. 여기서 reference/참고자료는 사용자가 주는 원자료를 뜻한다.
 3. **목적별 분류** — 받은 자료를 `content`, `evidence`, `style`, `visual-asset`, `constraint` 중 하나 이상으로 분류하고, 어떤 용도로 쓸지 사용자에게 확인한다.
 4. **한 번에 하나씩 인터뷰** — 목적, 기획 방향, 타겟 독자/청중, 발표 상황, 한줄메시지, 근거/데이터, CTA를 순서대로 하나씩 좁힌다.
@@ -247,7 +252,7 @@ Apply this guardrail according to the selected production direction.
 사용자가 참고자료가 없다고 하면 그 사실을 인테이크 노트에 남기고 진행한다. 참고자료가 있을 것 같지만 아직 안 줬다면 `input/`에 넣거나 URL/파일명을 알려 달라고 요청한다. Color Hunt 같은 컬러 팔레트 사이트는 참고자료가 아니라 **palette source**로 별도 취급한다.
 
 ### 웹에서 찾아서 PT 만들기 모드
-사용자가 "웹에서 찾아서", "리서치해서", "요즘 자료로", "최신 근거로"처럼 말해도 제작 포맷 질문을 먼저 완료한다. 그다음 [reference/research.md](reference/research.md)를 따른다. 목적·청중·한줄메시지는 짧게 확인하되, 리서치가 필요한 사실/수치/사례를 명시적으로 소스 맵에 기록한다. 슬라이드에는 출처를 과하게 노출하지 말고, 작업 노트 또는 `assets/CREDITS.txt`에 URL·접속일·사용 사실을 남긴다. 최신성이 중요한 주장은 반드시 웹으로 확인하고, 근거가 약하면 슬라이드 문장을 낮은 확신 표현으로 바꾸거나 제외한다.
+사용자가 "웹에서 찾아서", "리서치해서", "요즘 자료로", "최신 근거로"처럼 말해도 제작 포맷 질문을 먼저 완료한다. 그다음 [reference/research.md](reference/research.md)를 따른다. 목적·청중·한줄메시지는 짧게 확인하되, 리서치가 필요한 사실/수치/사례를 명시적으로 소스 맵에 기록한다. 슬라이드에는 출처를 과하게 노출하지 말고(단 `judged`는 숫자가 있는 슬라이드마다 footer에 출처 줄을 보인다), 작업 노트 또는 `assets/CREDITS.txt`에 URL·접속일·사용 사실을 남긴다. 최신성이 중요한 주장은 반드시 웹으로 확인하고, 근거가 약하면 슬라이드 문장을 낮은 확신 표현으로 바꾸거나 제외한다.
 
 ## 파일 구조
 스킬이 동작하는 작업 공간 레이아웃(프로젝트 루트 기준):
@@ -259,11 +264,13 @@ output/NN_<slug>_<YYYYMMDD>/    ← 덱마다 폴더 (순번_주제_날짜)
   ├── animation/index.html + presentation.html + assets/  ← animation/both 기본
   ├── animation/renders/                                  ← 영상 명시 요청 시만
   ├── build-notes.md · motion-ledger.json
+  ├── deck.src.html · deck.html · deck.css · facts.json · judged.json · shots.json
+  │   template.json · template-layer.css · slides/ · <주제>v<N>.pdf · CHANGES.md · NOTES.md  ← judged
   └── animation/index.motion.json            ← HyperFrames assertions
 archive/                        ← 작업 스크래치 격리
 ```
 
-- 새 덱은 `python3 .codex/skills/pt-maker/scripts/new_deck.py "<slug>" --production-direction <animation|text|image> [--mode <mode>]`로 만든다(포맷 선택 필수, 순번=기존 최대+1, 날짜=오늘 자동).
+- 새 덱은 `python3 .codex/skills/pt-maker/scripts/new_deck.py "<slug>" --production-direction <animation|text|image> [--mode <mode>]` 또는 `--production-direction judged [--template 템플릿.pptx]`로 만든다(포맷 선택 필수, 순번=기존 최대+1, 날짜=오늘 자동).
 - 덱 산출물은 **항상 그 덱 폴더 안**에 둔다. 루트에 흩뿌리지 않는다.
 - 이미지는 각 runtime project의 `assets/...` 상대경로를 쓴다. `both`에서 asset을 공유하려고 project root 바깥을 참조하지 않는다.
 
@@ -281,7 +288,7 @@ archive/                        ← 작업 스크래치 격리
 ## Workflow
 덱을 만들기 전에 **`taste-profile.md`를 읽어** 톤·구조·브랜드 프리셋 기본값을 적용한다(없으면 빈 템플릿 생성). 슬라이드 품질 기준은 [reference/presentation-craft.md](reference/presentation-craft.md). 단계 순서는 상황에 맞게 바뀔 수 있다(예: 참고자료를 먼저 받으면 4가 앞당겨짐).
 
-0. **제작 포맷 첫 질문** → 어떤 파일이나 도구도 열기 전에 [reference/production-direction.md](reference/production-direction.md)의 세 가지 포맷만 묻는다. 사용자가 건너뛰면 `image`를 적용한다.
+0. **제작 포맷 첫 질문** → 어떤 파일이나 도구도 열기 전에 [reference/production-direction.md](reference/production-direction.md)의 네 가지 포맷만 묻는다. 사용자가 건너뛰면 `image`를 적용한다. `judged`면 이어서 심사용 질문 네 가지를 하나씩 묻고, 이후 단계는 [reference/judged-deck.md](reference/judged-deck.md)의 흐름(템플릿 → 메시지 → 숫자 장부 → 실제 캡처 → 빌드 → 검사 → 심사 패널 → 제출 검사)을 따른다.
 1. **브라우저 런타임 게이트** → 포맷 확정 뒤 `python3 .codex/skills/pt-maker/scripts/browser_harness_runtime.py --ensure`를 실행한다. 실패하면 browser-harness/Chrome 의존성을 복구하기 전까지 인테이크 이후 작업을 시작하지 않는다.
 2. **소스 확보** → `taste-profile.md`를 읽고 [reference/intake.md](reference/intake.md)를 따른다. 참고자료, 목적, 타겟 독자/청중, 한줄메시지, 발표 상황, 근거/데이터, CTA, 기획 방향, 분위기/톤, 색상 팔레트를 **한 번에 하나씩** 묻는다. 받은 자료는 목적별로 분류하고, 손글씨·스케치·이미지는 활용 방식((a) 내용 재구성 vs (b) 원본 임베드)을 물어본 뒤 진행한다. → 산출물: 포맷이 기록된 인테이크 노트 + 자료 맵 + 비주얼 방향.
 3. **웹 리서치** → [reference/research.md](reference/research.md). 근거가 빈 항목·최신 데이터를 웹으로 보강하고, 사용자가 웹에서 찾아서 만들라고 한 경우에는 이 단계를 생략하지 않는다. 리서치 결과는 `claim / source / date / slide-use` 형태로 소스 맵에 남긴다.
@@ -313,12 +320,22 @@ archive/                        ← 작업 스크래치 격리
 - 최종 산출물과 발표용 HTML 검수가 끝나면 반드시 `hyperframes_mode.py stop animation --target all`을 실행하고 `status`에서 모든 managed job의 `alive:false`를 확인한다. HyperFrames Studio/preview 서버를 최종 납품 뒤 계속 띄워 두지 않는다.
 
 ### paper-motion 스타일 (종이 질감 모션그래픽 + 화자 캐릭터)
-- `애니메이션 위주` 포맷 안에서 고를 수 있는 스타일이다. 첫 포맷 3지선다 질문은 바꾸지 않는다. 포맷이 `animation`으로 정해진 뒤 비주얼 방향 질문에서 사용자가 종이 질감 모션그래픽이나 화자 캐릭터를 원하면 `paper-motion`으로 인테이크 노트와 build-notes에 기록한다.
+- `애니메이션 위주` 포맷 안에서 고를 수 있는 스타일이다. 첫 포맷 4지선다 질문은 바꾸지 않는다. 포맷이 `animation`으로 정해진 뒤 비주얼 방향 질문에서 사용자가 종이 질감 모션그래픽이나 화자 캐릭터를 원하면 `paper-motion`으로 인테이크 노트와 build-notes에 기록한다.
 - 고르면 빌드 전에 `taste-profile.md`와 함께 [paper-motion-taste-profile.md](paper-motion-taste-profile.md), [reference/motion-graphics-grammar.md](reference/motion-graphics-grammar.md), [assets/speaker-character/README.md](assets/speaker-character/README.md)를 읽는다. 두 프로필이 부딪히면 paper-motion 덱 안에서는 `paper-motion-taste-profile.md`가 이긴다. 리뷰에서 나온 paper-motion 취향은 같은 diff 제안·확인 절차로 이 파일에 반영한다.
 - [reference/hyperframes-animation-mode.md](reference/hyperframes-animation-mode.md) 계약이 우선한다. motion-graphics-grammar.md는 그 안에서 hero object, persistent frame, accent payoff, 사물이 시선을 넘겨주는 장면 전환, 의미를 연기하는 kinetic typography, 박자 격자, 시간만으로 계산하는 카메라를 정한다. 발표용 HTML이 기본 산출물이고 영상은 명시 요청 시만 만드는 규칙은 그대로다.
 - 화자 캐릭터는 `assets/speaker-character/`의 코드로 그린 부엉이 SVG와 `PtSpeaker` 헬퍼를 쓴다. 이미지 생성 결과가 아니라 SVG라서 같은 시각에 언제나 같은 포즈가 나온다. 포즈는 트윈 없이 즉시 바뀌고 깜빡임·립싱크는 기본으로 꺼져 있다.
 - 발표용 HTML은 `build_animated_presentation.py animation --theme paper -o animation/<주제>-발표용-vN.html`로 만든다. paper 테마는 네온·플래시 없이 하드컷(match cut)을 기본 seam으로 쓰고, 세계가 바뀌는 seam만 clip host의 `data-transition="paper"`로 짧은 종이 밀기를 쓴다.
 - Claude Code에는 이미지 생성 도구가 없다. Claude Code에서 실행할 때는 `$imagegen` 대신 SVG/CSS로 캐릭터·일러스트·도식·질감을 만든다.
+
+### 심사·제출용 모드 (judged)
+- 공모전·투자 심사·지원사업·입찰처럼 채점 기준이 있거나 지정 템플릿에 맞춰 PDF를 내는 자리용이다. 첫 포맷 질문의 4번이다. 1~3 포맷에는 이 모드의 질문이나 검사가 붙지 않는다.
+- 스타일은 고정이다: 실제 제품 캡처 + 주장형 문장 + 인라인 SVG 도식. 줄글/이미지를 다시 고르지 않고 애니메이션은 쓰지 않는다.
+- 이 모드에서 바뀌는 규칙 두 가지: (1) 출처를 보인다 — 숫자가 있는 슬라이드마다 footer에 `Details: …` 출처 줄(3줄 이하). (2) 생성 이미지는 근거가 아니다 — 근거 슬롯은 `capture_screens.py`로 찍은 실제 화면이나 공식·공개 자료만 쓴다.
+- `new_deck.py "<slug>" --production-direction judged --template 템플릿.pptx` → `import_template.py`가 `template.json`(슬라이드 크기, 배경, 템플릿 아트 영역, 슬롯 제목과 제목 상자, 최소 글자 px, 글꼴)과 `template-layer.css`, `assets/template/`을 만들고, 읽은 내용과 건너뛴 것(warning)을 출력하고, 슬롯마다 한 페이지씩 `deck.src.html`을 채운다. warning이 있으면 렌더 PNG에서 빠진 아트를 확인한다. 인테이크 답은 `judged.json`에 적는다.
+- 숫자는 모두 `facts.json`에 `id / value / unit / claim / source / checked`로 적고 `{{fact:id}}`로 넣는다. 빌드가 fact를 `data-fact`로 표시하고, `qa_facts_gate.py`는 표시 없는 숫자를 본편·부록 어디서든 막는다(쪽 번호, 템플릿 문구 `.nowc`, `.nofact`, 링크 글자, footer 출처 줄의 날짜·연도만 예외). 링크는 `{{link:NAME}}`(빌드 때 환경 변수), 비율 그림은 `{{dots:fact-id}}`, 아이콘은 `{{icon:name}}`(`assets/icons/`), QR은 `{{qr:url}}`(선택 패키지 `segno`).
+- 빌드와 검사 순서: `build_judged_deck.py deck.src.html` → `qa_layout_gate.py deck.html --pdf <주제>v<N>.pdf`(실제 글줄 기준 글자 크기·가장자리·넘침, 템플릿 아트 겹침, footer, 잘림, 깨진 이미지, 본편 단어 수 + `slides/NN.png` + `slides/text.txt` + 템플릿 실제 쪽 크기의 1:1 PDF) → `qa_facts_gate.py deck.html` → `qa_html_guard.py`·`qa_media_guard.py` → 렌더 PNG 직접 확인 → 기존 90점 미감 QA(`qa_score_gate.py`) → 심사 패널([reference/judge-panel.md](reference/judge-panel.md), `qa_judge_gate.py`) → `qa_submission_gate.py deck.html <주제>v<N>.pdf --config judged.json`.
+- 제출 PDF는 `qa_layout_gate.py`가 만든 PDF다. Reveal용 `export_pdf.py`/`export_pdf_shots.py`는 쓰지 않는다.
+- 패스마다 `CHANGES.md`에 무엇을 왜 바꿨는지와 검사 결과를 남기고, `NOTES.md`에 슬라이드 지도(페이지 ↔ 템플릿 슬롯 ↔ 헤드라인), 직접 채울 항목, 피한 주장을 유지한다.
 
 ## 취향 학습 루프
 `taste-profile.md`가 취향 정본(구조·스토리 / 비주얼·브랜드 프리셋 / 어투·톤 / 안티-취향, 각 항목 `[conf:]`). 3지점에서 동작:
@@ -410,8 +427,16 @@ Codex의 `$imagegen` built-in 경로에는 API 키가 필요하지 않다. API �
 ## 빠른 사용법
 | 하고 싶은 것 | 방법 |
 |---|---|
-| 제작 시작 | 첫 질문으로 `애니메이션 위주 / 줄글 위주 / 이미지 위주` 중 하나를 묻는다. 사용자가 선택을 넘기면 `image` |
+| 제작 시작 | 첫 질문으로 `애니메이션 위주 / 줄글 위주 / 이미지 위주 / 심사·제출용` 중 하나를 묻는다. 사용자가 선택을 넘기면 `image` |
 | 새 덱 | `new_deck.py "<slug>" --production-direction <animation\|text\|image>` → 포맷별 산출물 채우기 |
+| 심사용 새 덱 | `new_deck.py "<slug>" --production-direction judged --template 템플릿.pptx` → `judged.json`에 기준·제한·근거 기록 |
+| 템플릿만 다시 읽기 | `import_template.py 템플릿.pptx output/NN_...` |
+| 실제 화면 캡처 | `capture_screens.py output/NN_.../shots.json` → `assets/img/<name>.jpg` + CREDITS |
+| 심사용 빌드 | `GITHUB_URL=… build_judged_deck.py output/NN_.../deck.src.html` |
+| 심사용 레이아웃 검사 + PNG + PDF | `qa_layout_gate.py output/NN_.../deck.html --pdf output/NN_.../<주제>v<N>.pdf` |
+| 숫자·출처·금지 표현 검사 | `qa_facts_gate.py output/NN_.../deck.html` |
+| 심사 패널 | `reference/judge-panel.md` → `qa_judge_gate.py output/NN_.../judge_ledger.json` |
+| 제출 검사 | `qa_submission_gate.py output/NN_.../deck.html output/NN_.../<주제>v<N>.pdf --config output/NN_.../judged.json` |
 | 웹에서 찾아 PT | 포맷 확정 → `reference/research.md`로 소스 맵 작성 → 개요 합의 → 해당 `--production-direction`으로 `new_deck.py` |
 | 사용자 그림 넣기 | `input/`→덱 `assets/` 복사 후 `s-image` polaroid `<img src>`에 임베드 |
 | 일러스트 생성·편집 | `image` 포맷이면 예상 장수·용도를 알린 뒤 `$imagegen` built-in을 적극 호출하고 선택본을 덱 `assets/`에 저장 |
@@ -454,9 +479,13 @@ Codex의 `$imagegen` built-in 경로에는 API 키가 필요하지 않다. API �
 - 브랜드 색·폰트 변경 → ❌. 토큰 고정.
 - `.env`를 cat/Read로 열기 → ❌. Codex built-in 경로에는 필요도 없고 키가 대화에 노출될 수 있음.
 - `browser-harness`가 없다고 `browse`/Playwright/DeckTape/Codex Browser로 우회하거나 사용자의 보이는 Chrome에 붙기 → ❌. bootstrap으로 설치·등록하고 격리 background만 사용.
-- `$pt-maker ... 만들어줘` 요청에서 포맷 3지선다를 첫 질문으로 묻지 않거나, 여러 Grill Me 질문을 한 메시지에 묶거나, 포맷 확정 전에 참고자료·리서치·개요·스캐폴딩을 시작하기 → ❌. 사용자가 선택을 건너뛰면 `image`로 기록한 뒤 다음 질문 하나만 한다.
+- `$pt-maker ... 만들어줘` 요청에서 포맷 4지선다를 첫 질문으로 묻지 않거나, 여러 Grill Me 질문을 한 메시지에 묶거나, 포맷 확정 전에 참고자료·리서치·개요·스캐폴딩을 시작하기 → ❌. 사용자가 선택을 건너뛰면 `image`로 기록한 뒤 다음 질문 하나만 한다.
 - 애니메이션 모드의 기본 결과물을 MP4로 간주하거나, 선형 HyperFrames `index.html`만 납품하고 좌우 탐색 발표용 HTML을 만들지 않거나, 슬라이드 재진입 시 모션이 재생되지 않음 → ❌. 기본은 같은 composition으로 생성한 발표 HTML이며, 영상은 사용자의 명시 요청이 있을 때만 추가한다.
 - HyperFrames preview/Studio를 최종 QA 뒤 계속 실행해 둠 → ❌. `stop --target all` 후 `status`의 `alive:false`를 확인한다.
+- 1~3 포맷에 심사용 질문이나 검사를 붙이거나, `judged`에서 줄글/이미지를 다시 고르게 하기 → ❌. 심사용 흐름은 4번을 고른 경우에만 쓴다.
+- `judged` 덱에 숫자를 손으로 치거나(장부 없이), 숫자가 있는 슬라이드의 출처 footer를 빼기 → ❌. `facts.json` + `{{fact:id}}` + `Details:` 줄. `qa_facts_gate.py`가 막는다.
+- `judged` 근거 슬롯에 생성 이미지를 쓰거나, 제품이 바뀌었는데 예전 캡처를 그대로 두기 → ❌. `capture_screens.py`로 다시 찍고 캡션·CREDITS에 버전과 시각을 남긴다.
+- `judged` PDF를 Reveal `export_pdf.py`로 만들거나, 템플릿 아트 위에 글자를 올리거나, 템플릿 최소 글자보다 작은 footer를 쓰기 → ❌. `qa_layout_gate.py`가 PDF를 만들고 막는다.
 - 레거시 direct API에서 vip 모델에 `quality` 전송 → ❌. official 전용.
 - deck.html을 작업공간 밖에 두고 브라우저 호출 → 열리지 않을 수 있음.
 - 세로로 긴 스샷을 폴라로이드(가로)에 → 빈 공간. `object-fit:cover` 썸네일 카드로.
