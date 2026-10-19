@@ -79,6 +79,28 @@ class FactsGateTests(unittest.TestCase):
         result = gate.run_checks(self.root / "deck.html", self.facts, {})
         self.assertEqual(result["qa_facts_gate"], "pass", result["errors"])
 
+    def test_credit_lines_and_words_with_digits(self):
+        result = self.check(
+            page(
+                '<section class="slide" data-main><p>제3자 검증은 없었다.</p>'
+                '<footer class="ft"><div class="src">Photo: CC BY 2.0 · screen: CC BY-SA 4.0 · icon: CC0 · '
+                "wiki oldid=1234567. Details: data/credits.txt</div></footer></section>"
+            )
+        )
+        self.assertEqual(result["qa_facts_gate"], "pass", result["errors"])
+        body = self.check(page('<section class="slide" data-main><p>Licensed CC BY 4.0, 3개 시제품.</p></section>'))
+        self.assertEqual(self.codes(body), ["untagged-number"])
+        self.assertIn("['4.0', '3']", body["errors"][0]["message"])
+
+    def test_status_is_one_of_four_labels(self):
+        data = json.loads(json.dumps(FACTS))
+        data["facts"][0]["status"] = "reported"
+        data["facts"][1]["status"] = "rumoured"
+        self.facts.write_text(json.dumps(data), encoding="utf-8")
+        result = self.check(page('<section class="slide"></section>'))
+        self.assertEqual(self.codes(result), ["fact-status-invalid"])
+        self.assertIn("latency", result["errors"][0]["message"])
+
     def test_untagged_numbers_fail_on_every_slide(self):
         main = self.check(page(f'<section class="slide" data-main><p>We saved 42 hours.</p>{FOOTER}</section>'))
         self.assertEqual(self.codes(main), ["untagged-number"])

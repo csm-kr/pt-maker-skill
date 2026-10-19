@@ -17,12 +17,14 @@ facts.json, judged.json을 생략하면 deck.html 옆의 파일을 쓴다.
   facts-without-source  fact를 보여 주는 슬라이드에 footer 출처 줄("Details: …")이 없다.
   empty-source          footer의 "Details:" 뒤가 비어 있다.
   banned-phrase         금지 표현(기본: first, only, any, 100%, 최초, 유일)이 주장으로 쓰였다.
-  fact-…                장부 항목이 id/value/claim/source/checked를 갖추지 않았다.
+  fact-…                장부 항목이 id/value/claim/source/checked를 갖추지 않았거나, status가
+                        claimed/demonstrated/verified/reported(주장/시연/검증/보도) 밖의 값이다.
 
 숫자로 세지 않는 것 (이유는 test_qa_facts_gate.py에 있다):
   .pg(쪽 번호), .nowc(템플릿 문구), .nofact(근거가 아닌 번호: 단계, 슬라이드 참조), 링크 글자(<a>),
   footer 출처 줄(.ft .src) 안의 날짜(YYYY-MM-DD, YYYY-MM)·연도·쪽/표/그림 참조(p. 4, pp. 3–5, Table 2, Fig. 1,
-  표 2, 그림 1, 12쪽), fact 안의 단위 글자(of 100, per 1,000 beds), 영문자 바로 뒤(또는 영문자 + -/_ 뒤)의
+  표 2, 그림 1, 12쪽)·라이선스 이름(CC BY 2.0, CC BY-SA 4.0, CC0)·위키 판 번호(oldid=123),
+  fact 안의 단위 글자(of 100, per 1,000 beds), 앞뒤가 모두 한글인 숫자(제3자), 영문자 바로 뒤(또는 영문자 + -/_ 뒤)의
   숫자(A3, CO2, run-7: 이름이지 수량이 아님), .tart, <script>, <style>, <title>, <desc>.
 금지 표현 검사는 .nowc와 .tart를 빼고 footer까지 본다. allowed_phrases 안의 사용은 통과한다.
 
@@ -47,7 +49,12 @@ REQUIRED_FIELDS = ("id", "value", "claim", "source", "checked")
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 SOURCE_DATE_RE = re.compile(r"^(?:\d{4}-\d{2}(?:-\d{2})?|(?:19|20)\d{2})$")
 # Page, table and figure references in a footer source line point into the source; they are not claims.
-SOURCE_REF_RE = re.compile(r"(?:\bpp?\.\s*|\b(?:Table|Tab\.|Figure|Fig\.)\s*|표\s*|그림\s*)\d+(?:\s*[–-]\s*\d+)?|\d+(?:\s*[–-]\s*\d+)?\s*쪽")
+# License names (CC BY 2.0, CC BY-SA 4.0, CC0) and wiki revision ids (oldid=123) in credits are not claims either.
+SOURCE_REF_RE = re.compile(
+    r"(?:\bpp?\.\s*|\b(?:Table|Tab\.|Figure|Fig\.)\s*|표\s*|그림\s*)\d+(?:\s*[–-]\s*\d+)?|\d+(?:\s*[–-]\s*\d+)?\s*쪽"
+    r"|\bCC(?:0|\s*BY(?:-(?:SA|NC|ND))*(?:\s+\d+(?:\.\d+)?)?)(?![\w.])|\boldid=\d+"
+)
+STATUS_LABELS = {"claimed": "주장", "demonstrated": "시연", "verified": "검증", "reported": "보도"}
 TOKEN_RE = re.compile(r"(?<![A-Za-z0-9.,])(?<![A-Za-z][-_])(\d{4}-\d{2}(?:-\d{2})?(?![\d-])|\d+(?:[.,]\d+)*)")
 VOID_TAGS = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"}
 SKIP_TAGS = {"script", "style", "title", "desc", "template", "noscript"}
@@ -56,7 +63,12 @@ PHRASE_SKIP_CLASSES = {"nowc", "tart"}
 
 
 def tokens(text: str) -> list[str]:
-    return TOKEN_RE.findall(text)
+    """Number tokens; a digit with Hangul directly on both sides (제3자) is part of a word, not a number."""
+    return [
+        m.group(1)
+        for m in TOKEN_RE.finditer(text)
+        if not (re.match(r"[가-힣]", text[m.start() - 1: m.start()]) and re.match(r"[가-힣]", text[m.end(): m.end() + 1]))
+    ]
 
 
 def token_key(token: str) -> Any:
@@ -177,6 +189,9 @@ def validate_ledger(facts_path: Path, add) -> dict[str, dict[str, Any]]:
         checked = str(fact.get("checked", "")).strip()
         if checked and not DATE_RE.match(checked):
             add("fact-checked-date-invalid", f"Fact {label} has checked={checked!r}.", "Use the date the source was last read, as YYYY-MM-DD.")
+        status = fact.get("status")
+        if status is not None and status not in STATUS_LABELS:
+            add("fact-status-invalid", f"Fact {label} has status={status!r}.", f"Use one of {sorted(STATUS_LABELS)} (shown as 주장, 시연, 검증, 보도).")
         if not tokens(str(fact.get("value", ""))):
             add("fact-value-no-number", f"Fact {label} value {fact.get('value')!r} has no number.", "The ledger holds numbers; put words in claim.")
         ledger[label] = fact
