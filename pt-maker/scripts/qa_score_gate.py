@@ -62,6 +62,33 @@ RUBRIC_WEIGHTS = {
     "technical_delivery": 12,
 }
 
+# A judged deck (<html data-deck="judged">) is static: fixed pages, no motion, no transitions, no navigation.
+# Those items are not applicable there, and the rubric is renormalized from 86 to 100 points.
+JUDGED_NOT_APPLICABLE = [
+    "motion_purposeful",
+    "continuity_seams",
+    "reduced_motion_accessibility",
+    "interactive_navigation",
+]
+JUDGED_RE = re.compile(r"""\bdata-deck\s*=\s*["']judged["']""")
+
+
+def is_judged(html: str) -> bool:
+    return bool(JUDGED_RE.search(html))
+
+
+def checklist_keys(html: str) -> list[str]:
+    if not is_judged(html):
+        return REQUIRED_CHECKLIST_KEYS
+    return [key for key in REQUIRED_CHECKLIST_KEYS if key not in JUDGED_NOT_APPLICABLE]
+
+
+def rubric_weights(html: str) -> dict[str, int]:
+    if not is_judged(html):
+        return RUBRIC_WEIGHTS
+    return {key: weight for key, weight in RUBRIC_WEIGHTS.items() if key != "motion_continuity"}
+
+
 REQUIRED_FULL_SIZE_BUCKETS = [
     "cover",
     "final",
@@ -187,7 +214,7 @@ def template_for(html_path: Path) -> dict[str, Any]:
     media_result = media.run_checks(html_path)
     diagrams = detect_custom_diagrams(html)
     diagram_slides = sorted({int(d["slide"]) for d in diagrams})
-    return {
+    template = {
         "pt_qa_result": "pending",
         "score": 0,
         "p0_count": html_result["p0_count"] + media_result["p0_count"],
@@ -214,14 +241,14 @@ def template_for(html_path: Path) -> dict[str, Any]:
             "activities_quizzes": [],
             "final": [],
         },
-        "checklist": {key: "pending" for key in REQUIRED_CHECKLIST_KEYS},
+        "checklist": {key: "pending" for key in checklist_keys(html)},
         "rubric": {
             key: {
                 "score": 0,
                 "max": weight,
                 "notes": "",
             }
-            for key, weight in RUBRIC_WEIGHTS.items()
+            for key, weight in rubric_weights(html).items()
         },
         "diagram_checks": [
             {
@@ -237,6 +264,10 @@ def template_for(html_path: Path) -> dict[str, Any]:
         ],
         "notes": "Fill this ledger only after inspecting the rendered PDF/contact sheet and full-size PNGs.",
     }
+    if is_judged(html):
+        template["deck_kind"] = "judged"
+        template["notes"] += " Static judged deck: motion, transition and navigation items do not apply; score = rubric total x 100 / 86."
+    return template
 
 
 def validate(html_path: Path, ledger_path: Path, min_score: int) -> dict[str, Any]:
@@ -327,7 +358,8 @@ def validate(html_path: Path, ledger_path: Path, min_score: int) -> dict[str, An
         rubric = {}
 
     rubric_total = 0.0
-    for key, expected_max in RUBRIC_WEIGHTS.items():
+    weights = rubric_weights(html)
+    for key, expected_max in weights.items():
         entry = rubric.get(key)
         if not isinstance(entry, dict):
             add_error(
@@ -360,11 +392,13 @@ def validate(html_path: Path, ledger_path: Path, min_score: int) -> dict[str, An
                 "Record a short page-specific or artifact-specific reason for the score.",
             )
 
-    if score is not None and abs(rubric_total - score) > 0.001:
+    expected_score = rubric_total * 100 / sum(weights.values())
+    if score is not None and abs(expected_score - score) > (0.05 if is_judged(html) else 0.001):
         add_error(
             "rubric-total-mismatch",
-            f"Rubric category total {rubric_total:g} does not equal top-level score {score:g}.",
-            "Make the top-level score equal the sum of the seven fixed-weight rubric categories.",
+            f"Rubric category total {rubric_total:g} gives {expected_score:g}, not the top-level score {score:g}.",
+            "Make the top-level score equal the sum of the rubric categories"
+            + (" times 100 / 86 for a judged deck." if is_judged(html) else "."),
         )
 
     for field in ("rendered_pdf", "contact_sheet_reviewed"):
@@ -461,7 +495,7 @@ def validate(html_path: Path, ledger_path: Path, min_score: int) -> dict[str, An
         )
         checklist = {}
 
-    for key in REQUIRED_CHECKLIST_KEYS:
+    for key in checklist_keys(html):
         if not is_pass(checklist.get(key)):
             add_error(
                 f"checklist-{key}-not-pass",
