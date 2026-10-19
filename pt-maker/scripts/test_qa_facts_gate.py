@@ -92,6 +92,21 @@ class FactsGateTests(unittest.TestCase):
         self.assertEqual(self.codes(body), ["untagged-number"])
         self.assertIn("['4.0', '3']", body["errors"][0]["message"])
 
+    def test_licence_version_may_end_a_sentence(self):
+        def footer(text: str) -> dict:
+            return self.check(
+                page(f'<section class="slide"><p>Hi</p><footer class="ft"><div class="src">{text} Details: data/credits.txt</div></footer></section>')
+            )
+
+        for text in ("Photo: CC BY-SA 4.0.", "Photo: CC BY 2.0. Screen: CC0."):
+            with self.subTest(text=text):
+                self.assertEqual(footer(text)["qa_facts_gate"], "pass", footer(text)["errors"])
+        for text, number in (("Photo: CC BY 4.0.1.", "4.0.1"), ("Photo: CC BY 4.05.", "4.05")):
+            with self.subTest(text=text):
+                result = footer(text)
+                self.assertEqual(self.codes(result), ["untagged-number"])
+                self.assertIn(number, result["errors"][0]["message"])
+
     def test_status_is_one_of_four_labels(self):
         data = json.loads(json.dumps(FACTS))
         data["facts"][0]["status"] = "reported"

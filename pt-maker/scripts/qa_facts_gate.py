@@ -52,7 +52,9 @@ SOURCE_DATE_RE = re.compile(r"^(?:\d{4}-\d{2}(?:-\d{2})?|(?:19|20)\d{2})$")
 # License names (CC BY 2.0, CC BY-SA 4.0, CC0) and wiki revision ids (oldid=123) in credits are not claims either.
 SOURCE_REF_RE = re.compile(
     r"(?:\bpp?\.\s*|\b(?:Table|Tab\.|Figure|Fig\.)\s*|표\s*|그림\s*)\d+(?:\s*[–-]\s*\d+)?|\d+(?:\s*[–-]\s*\d+)?\s*쪽"
-    r"|\bCC(?:0|\s*BY(?:-(?:SA|NC|ND))*(?:\s+\d+(?:\.\d+)?)?)(?![\w.])|\boldid=\d+"
+    # A CC version is one digit, a dot and one digit (2.0, 2.5, 4.0); a period after it may end the sentence,
+    # but 4.0.1 or 4.05 is not a licence version.
+    r"|\bCC(?:0|\s*BY(?:-(?:SA|NC|ND))*(?:\s+\d\.\d)?)(?!\w|\.\d)|\boldid=\d+"
 )
 STATUS_LABELS = {"claimed": "주장", "demonstrated": "시연", "verified": "검증", "reported": "보도"}
 TOKEN_RE = re.compile(r"(?<![A-Za-z0-9.,])(?<![A-Za-z][-_])(\d{4}-\d{2}(?:-\d{2})?(?![\d-])|\d+(?:[.,]\d+)*)")
