@@ -53,6 +53,21 @@ class HtmlGuardTests(unittest.TestCase):
         self.assertIn("sequence-label-missing", codes)
         self.assertIn("image-file-missing", codes)
 
+    def test_judged_deck_uses_its_page_size_instead_of_reveal_settings(self):
+        judged = """<!doctype html><html data-deck="judged"><head><link rel="stylesheet" href="deck.css"></head>
+<body><section class="slide" data-main><h1>A complete claim</h1></section></body></html>"""
+        passed = self.run_html(judged, {"deck.css": b"@page { size: 1920px 1080px; margin: 0; }"})
+        self.assertEqual(passed["html_guard_result"], "pass", passed["findings"])
+        missing = self.run_html(judged, {"deck.css": b".slide { width: 1920px; }"})
+        codes = {item["code"] for item in missing["findings"]}
+        self.assertEqual(codes & {"canvas-not-1280x720", "print-bleed-contract-missing"}, set())
+        self.assertIn("judged-page-size-missing", codes)
+
+    def test_reveal_checks_still_apply_without_the_judged_marker(self):
+        result = self.run_html("<!doctype html><html><body><section><h1>x</h1></section></body></html>")
+        codes = {item["code"] for item in result["findings"]}
+        self.assertIn("canvas-not-1280x720", codes)
+
 
 if __name__ == "__main__":
     unittest.main()

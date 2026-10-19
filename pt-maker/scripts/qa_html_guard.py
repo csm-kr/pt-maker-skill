@@ -135,11 +135,21 @@ def run_checks(html_path: Path) -> dict[str, Any]:
     def add(level: str, code: str, message: str, fix: str) -> None:
         findings.append(issue(level, code, message, fix))
 
-    if not re.search(r"\bwidth\s*:\s*1280\b", html) or not re.search(r"\bheight\s*:\s*720\b", html):
-        add("P0", "canvas-not-1280x720", "Reveal canvas is not explicitly fixed at 1280×720.", "Set Reveal.initialize({width:1280,height:720}).")
+    if re.search(r"""\bdata-deck\s*=\s*["']judged["']""", html):
+        # Judged decks are fixed-size .slide pages, not Reveal: the page size is their print contract.
+        styles = html
+        for href in re.findall(r"""<link\b[^>]*\bhref\s*=\s*["']([^"']+\.css)["']""", html, re.I):
+            path = local_asset(href, html_path)
+            if path is not None and path.is_file():
+                styles += path.read_text(encoding="utf-8", errors="ignore")
+        if not re.search(r"@page\s*\{[^}]*\bsize\s*:\s*\d+(?:\.\d+)?px\s+\d+(?:\.\d+)?px", styles):
+            add("P0", "judged-page-size-missing", "Judged deck has no @page size in px.", "Declare @page { size: <width>px <height>px; margin: 0; } (template-layer.css or deck.css).")
+    else:
+        if not re.search(r"\bwidth\s*:\s*1280\b", html) or not re.search(r"\bheight\s*:\s*720\b", html):
+            add("P0", "canvas-not-1280x720", "Reveal canvas is not explicitly fixed at 1280×720.", "Set Reveal.initialize({width:1280,height:720}).")
 
-    if "pdfPageHeightOffset" not in html or not re.search(r"\bcenter\s*:\s*false\b", html):
-        add("P0", "print-bleed-contract-missing", "PDF bleed prevention settings are incomplete.", "Use center:false and pdfPageHeightOffset:0.")
+        if "pdfPageHeightOffset" not in html or not re.search(r"\bcenter\s*:\s*false\b", html):
+            add("P0", "print-bleed-contract-missing", "PDF bleed prevention settings are incomplete.", "Use center:false and pdfPageHeightOffset:0.")
 
     duplicates = sorted({item for item in parser.ids if parser.ids.count(item) > 1})
     if duplicates:
