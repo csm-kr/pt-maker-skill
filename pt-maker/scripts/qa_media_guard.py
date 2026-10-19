@@ -108,13 +108,29 @@ MAP_WORDS = {
     "음식권",
     "역사",
     "스위스",
-    "주",
     "칸톤",
     "경로",
     "위치",
     "지점",
-    "핀",
 }
+
+# Map words count as whole words only: English with a plural ending, Korean as its own Hangul word with an
+# optional particle (지도를, 경로에서). Substrings such as 주장, 경로당, capacity or roadmap are not map words.
+KOREAN_PARTICLES = "은|는|이|가|을|를|에서|에|의|으로|로|와|과|도|만|까지|부터"
+
+
+def _map_word_pattern(word: str) -> str:
+    if re.search(r"[가-힣]", word):
+        return rf"(?<![가-힣]){re.escape(word)}(?:{KOREAN_PARTICLES})?(?![가-힣])"
+    stem = re.escape(word[:-1]) + "(?:y|ies)" if word.endswith("y") else re.escape(word) + "(?:s|es)?"
+    return rf"(?<![a-z]){stem}(?![a-z])"
+
+
+MAP_WORD_RE = re.compile("|".join(_map_word_pattern(w) for w in sorted(MAP_WORDS, key=len, reverse=True)))
+
+
+def has_map_word(text: str) -> bool:
+    return bool(MAP_WORD_RE.search(text.lower()))
 
 DIAGRAM_CLASS_EXACT = {
     "class-flow",
@@ -445,7 +461,7 @@ def check_diagram_rendered_qa(html: str) -> list[Finding]:
 def svg_is_map(svg: str, surrounding: str) -> bool:
     head = svg[:500]
     text = norm(" ".join([head, surrounding[-500:]]))
-    return any(w in text for w in MAP_WORDS)
+    return has_map_word(text)
 
 
 def svg_is_allowed_schematic(svg: str) -> bool:
@@ -501,7 +517,7 @@ def check_maps(html: str, html_path: Path) -> list[Finding]:
     for idx, section in enumerate(SECTION_RE.findall(html), start=1):
         slide = section_number(section, idx)
         section_text = norm(section[:1600])
-        section_map_words = any(w in section_text for w in MAP_WORDS)
+        section_map_words = has_map_word(section_text)
         sources = map_base_sources(section)
         has_verified_base = credits_match_map_sources(sources, credits_text)
         for svg in SVG_RE.findall(section):
@@ -535,7 +551,7 @@ def check_maps(html: str, html_path: Path) -> list[Finding]:
             a = attrs(tag)
             src = a.get("src", "")
             joined = norm(" ".join([src, a.get("alt", ""), class_attr(tag), section_text]))
-            if section_map_words and src.lower().endswith(".svg") and any(w in joined for w in MAP_WORDS):
+            if section_map_words and src.lower().endswith(".svg") and has_map_word(joined):
                 classes = set(class_attr(tag).lower().split())
                 if "map-base" not in classes and not has_verified_base:
                     findings.append(
