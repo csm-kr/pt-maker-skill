@@ -18,7 +18,8 @@
                         template.json 슬라이드의 "match"로 제목 비교 방식을 정한다:
                         exact(기본, 제목 전체), prefix(첫 '(' ':' '—' 앞 부분만, 안내문이 붙은 제목용),
                         skip(제목 비교 안 함, "Click to add title" 같은 자리표시 제목용)
-  link-not-200          deck.html의 http(s) 링크가 최종 HTTP 200이 아님 (--offline이면 건너뜀)
+  link-not-ok           deck.html의 http(s) 링크가 2xx/3xx로 답하지 않음 (브라우저처럼 Accept와
+                        Accept-Language를 보내 HEAD, 안 되면 GET; --offline이면 건너뜀)
 표준 라이브러리만 사용.
 """
 
@@ -40,7 +41,17 @@ PROTECTED_RE = re.compile(r"<(script|style)\b[\s\S]*?</\1\s*>", re.I)
 LEFTOVER_RE = re.compile(r"\{\{[^{}]*\}\}")
 MARKER_RE = re.compile(r"\b(TODO|TBD|FIXME)\b|lorem ipsum", re.I)
 VOID_TAGS = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"}
-USER_AGENT = "Mozilla/5.0 (pt-maker submission check)"
+# Some sites refuse requests that do not look like a browser (403 from bot rules, which also refused a
+# made-up "Mozilla/5.0 (tool name)" agent), so ask the way a desktop browser does.
+LINK_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+}
+
+
+def link_ok(status: int | None) -> bool:
+    return status is not None and 200 <= status < 400
 
 
 class DeckText(HTMLParser):
@@ -89,7 +100,7 @@ def norm(text: str) -> str:
 def check_link(url: str, timeout: float = 15) -> dict[str, Any]:
     last: dict[str, Any] = {"url": url, "status": None}
     for method in ("HEAD", "GET"):
-        request = urllib.request.Request(url, method=method, headers={"User-Agent": USER_AGENT})
+        request = urllib.request.Request(url, method=method, headers=LINK_HEADERS)
         try:
             with urllib.request.urlopen(request, timeout=timeout) as response:
                 last = {"url": url, "status": response.status}
@@ -98,7 +109,7 @@ def check_link(url: str, timeout: float = 15) -> dict[str, Any]:
             exc.close()
         except (urllib.error.URLError, OSError, ValueError) as exc:
             last = {"url": url, "status": None, "error": str(getattr(exc, "reason", exc))}
-        if last["status"] == 200:
+        if link_ok(last["status"]):
             return last
     return last
 
@@ -184,8 +195,8 @@ def run_checks(deck: Path, pdf: Path, config: dict[str, Any], *, config_dir: Pat
     if not offline:
         links = [check_link(url) for url in parser.links]
         for link in links:
-            if link["status"] != 200:
-                add("link-not-200", f"{link['url']} → {link['status'] or link.get('error')}", "Fix the URL or make the page public, then rebuild.")
+            if not link_ok(link["status"]):
+                add("link-not-ok", f"{link['url']} → {link['status'] or link.get('error')}", "Fix the URL or make the page public, then rebuild.")
 
     return {
         "qa_submission_gate": "fail" if errors else "pass",

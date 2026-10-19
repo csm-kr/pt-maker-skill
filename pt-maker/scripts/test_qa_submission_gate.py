@@ -28,12 +28,37 @@ TEMPLATE = {
 
 
 class Handler(BaseHTTPRequestHandler):
-    def do_HEAD(self):
-        self.send_response(200 if self.path == "/ok" else 404)
+    """/ok: 200. /picky: 403 unless the request looks like a browser, as some sites behind bot rules
+    require: Accept with text/html, an Accept-Language, and a browser User-Agent (a made-up
+    "Mozilla/5.0 (tool name)" string was refused by real sites). /get-only: HEAD not allowed, GET is
+    picky. Anything else: 404."""
+
+    def browser_like(self) -> bool:
+        agent = self.headers.get("User-Agent", "")
+        return (
+            "text/html" in self.headers.get("Accept", "")
+            and bool(self.headers.get("Accept-Language"))
+            and "AppleWebKit" in agent
+            and "Chrome/" in agent
+        )
+
+    def answer(self, method: str) -> None:
+        if self.path == "/ok":
+            code = 200
+        elif self.path == "/picky":
+            code = 200 if self.browser_like() else 403
+        elif self.path == "/get-only":
+            code = 405 if method == "HEAD" else (200 if self.browser_like() else 403)
+        else:
+            code = 404
+        self.send_response(code)
         self.end_headers()
 
+    def do_HEAD(self):
+        self.answer("HEAD")
+
     def do_GET(self):
-        self.do_HEAD()
+        self.answer("GET")
 
     def log_message(self, *args):
         pass
@@ -136,10 +161,17 @@ class SubmissionGateTests(unittest.TestCase):
         self.assertEqual(self.check(pages)["qa_submission_gate"], "pass")
         self.assertIn("slot-title-mismatch", self.codes(self.check([slide(1, "Cover"), slide(2, "Idea"), slide(3, "x")])))
 
+    def test_links_send_browser_like_headers(self):
+        for path in ("/picky", "/get-only"):
+            with self.subTest(path=path):
+                self.assertEqual(gate.check_link(f"{self.base}{path}")["status"], 200)
+        result = self.check(self.good(f'<a href="{self.base}/picky">a</a> <a href="{self.base}/get-only">b</a>'), offline=False)
+        self.assertEqual(result["qa_submission_gate"], "pass", result["errors"])
+
     def test_broken_link_fails_and_offline_skips(self):
         slides = self.good(f'<a href="{self.base}/missing">repo</a>')
         online = self.check(slides, offline=False)
-        self.assertIn("link-not-200", self.codes(online))
+        self.assertIn("link-not-ok", self.codes(online))
         offline = self.check(slides, offline=True)
         self.assertEqual(offline["qa_submission_gate"], "pass", offline["errors"])
         self.assertEqual(offline["links"], "skipped (--offline)")
