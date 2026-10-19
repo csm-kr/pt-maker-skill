@@ -314,41 +314,64 @@ python3 $S/qa_submission_gate.py $D/deck.html $D/topic-v1.pdf --config $D/judged
 
 ## 예시 모음
 
-같은 주제(2026-10-15 Tesla Roadster 발표)를 네 포맷으로 각각 만든 샘플입니다. 모두 같은 리서치 장부의 숫자만 썼고, 숫자마다 주장·시연·검증 같은 꼬리표가 붙어 있습니다. 썸네일은 각 덱의 contact sheet(모든 쪽을 한 장에 줄여 모은 이미지)입니다. 기본 경로는 [`examples/tesla-roadster/`](examples/tesla-roadster/)입니다.
+같은 주제(2026-10-15 Tesla Roadster 발표)를 네 포맷으로 하나씩 만든 샘플입니다. 네 덱 모두 같은 리서치 장부의 숫자만 쓰고, 같은 이야기를 합니다. **"보여준 것은 진짜였지만, 가격·출시일·성능은 아직 약속이다."** 달라지는 것은 그 이야기를 전하는 방식입니다. 기본 경로는 [`examples/tesla-roadster/`](examples/tesla-roadster/)입니다.
 
-### 1. 애니메이션 위주: `1-animation/`
+| 포맷 | 컨셉 | 이런 자리에 | 품질 점수 |
+|---|---|---|---|
+| 1. 애니메이션 위주 | 차가 직접 이야기를 끌고 가는 발표 무대 | 화면을 넘기며 말로 하는 발표 | 90/100 |
+| 2. 줄글 위주 | 제목만 읽어도 이야기가 끝나는 잡지 기사 | 논리를 전하는 발표, 읽히는 자료 | 92/100 |
+| 3. 이미지 위주 | 모든 문장에 증거 그림이 붙는 시각 해설서 | 처음 보는 사람에게 한눈에 설명 | 91/100 |
+| 4. 심사·제출용 | 심사위원이 사실을 확인해도 버티는 보고서 | 대회·투자·지원사업처럼 채점받는 자리 | 심사 7.75/10 |
 
-[![애니메이션 위주 샘플 contact sheet](examples/tesla-roadster/1-animation/qa/contact-sheet.png)](examples/tesla-roadster/1-animation/qa/contact-sheet.png)
+1~3번 점수는 독립 리뷰 agent의 100점 품질 채점이고, 4번은 눈가림 심사 패널의 가중 점수(목표 8.0)입니다.
 
-- 발표용 HTML: [`animation/tesla-roadster-발표용-v2.html`](examples/tesla-roadster/1-animation/animation/tesla-roadster-발표용-v2.html)
-- HyperFrames 프로젝트: [`animation/index.html`](examples/tesla-roadster/1-animation/animation/index.html), 장면 [`animation/compositions/`](examples/tesla-roadster/1-animation/animation/compositions/)
-- 작업 노트: [`build-notes.md`](examples/tesla-roadster/1-animation/build-notes.md)
+### 1. 애니메이션 위주: 차가 직접 이야기를 끌고 가는 발표 무대
 
-### 2. 줄글 위주: `2-text/`
+<p>
+<img src="examples/tesla-roadster/1-animation/preview/01-cover.jpg" width="49%" alt="애니메이션 샘플 표지">
+<img src="examples/tesla-roadster/1-animation/preview/02-delay-chart.jpg" width="49%" alt="애니메이션 샘플 지연 그래프 장면">
+</p>
 
-[![줄글 위주 샘플 contact sheet](examples/tesla-roadster/2-text/TeslaRoadster2026v2_contact.png)](examples/tesla-roadster/2-text/TeslaRoadster2026v2_contact.png)
+- **제목:** "Roadster, 다시 나타나다: 날았지만, 아직 살 수는 없다"
+- **보이는 모습:** 검은 무대에 은은한 격자가 깔리고, 직접 그린 SVG 차 한 대가 12장면 내내 등장합니다. 지연 그래프의 선을 따라 달리고(오른쪽 장면), 막대 위를 타고, 마지막에는 "아직 생산 전"이라는 점선 윤곽으로 바뀝니다. 장면에 들어올 때마다 그 장면의 빌드가 처음부터 재생됩니다.
+- **이런 자리에:** 화면을 넘기며 말로 하는 발표. 움직임이 장면마다 시선을 붙잡습니다.
+- **파일:** 발표용 HTML [`tesla-roadster-발표용-v2.html`](examples/tesla-roadster/1-animation/animation/tesla-roadster-발표용-v2.html), HyperFrames 프로젝트 [`animation/`](examples/tesla-roadster/1-animation/animation/), 전체 장면 [contact sheet](examples/tesla-roadster/1-animation/qa/contact-sheet.png), [작업 노트](examples/tesla-roadster/1-animation/build-notes.md)
 
-- PDF: [`TeslaRoadster2026v2.pdf`](examples/tesla-roadster/2-text/TeslaRoadster2026v2.pdf)
-- HTML: [`TeslaRoadster2026v2.html`](examples/tesla-roadster/2-text/TeslaRoadster2026v2.html)
-- 작업 노트: [`build-notes.md`](examples/tesla-roadster/2-text/build-notes.md)
+### 2. 줄글 위주: 제목만 읽어도 이야기가 끝나는 잡지 기사
 
-### 3. 이미지 위주: `3-image/`
+<p>
+<img src="examples/tesla-roadster/2-text/preview/01-cover.jpg" width="49%" alt="줄글 샘플 표지">
+<img src="examples/tesla-roadster/2-text/preview/02-split-contrast.jpg" width="49%" alt="줄글 샘플 대비 구성 슬라이드">
+</p>
 
-[![이미지 위주 샘플 contact sheet](examples/tesla-roadster/3-image/테슬라로드스터발표v2_contact.png)](examples/tesla-roadster/3-image/테슬라로드스터발표v2_contact.png)
+- **제목:** "떠오르긴 했다. 살 수는 아직 없다."
+- **보이는 모습:** 크림색 종이 위에서 글자가 주인공입니다. 큰 한 문장, 좌우 대비(오른쪽 슬라이드), 계단식 문구, 큰 숫자, 잡지식 글 격자 같은 글자 배치 다섯 가지를 번갈아 써서 글 벽이 되지 않게 했습니다. 사진은 한 장뿐입니다.
+- **이런 자리에:** 생각과 논리를 전하는 발표, 또는 회의 전에 미리 읽히는 자료.
+- **파일:** [PDF](examples/tesla-roadster/2-text/TeslaRoadster2026v2.pdf), [HTML](examples/tesla-roadster/2-text/TeslaRoadster2026v2.html), 전체 쪽 [contact sheet](examples/tesla-roadster/2-text/TeslaRoadster2026v2_contact.png), [작업 노트](examples/tesla-roadster/2-text/build-notes.md)
 
-- PDF: [`테슬라로드스터발표v2.pdf`](examples/tesla-roadster/3-image/테슬라로드스터발표v2.pdf)
-- HTML: [`테슬라로드스터발표v2.html`](examples/tesla-roadster/3-image/테슬라로드스터발표v2.html)
-- Claude Code에서 만들었기 때문에 생성 이미지가 없습니다. Commons 사진 외의 그림은 모두 직접 그린 SVG/CSS입니다.
+### 3. 이미지 위주: 모든 문장에 증거 그림이 붙는 시각 해설서
 
-### 4. 심사·제출용: `4-judged/`
+<p>
+<img src="examples/tesla-roadster/3-image/preview/01-cover.jpg" width="49%" alt="이미지 샘플 표지">
+<img src="examples/tesla-roadster/3-image/preview/02-four-demos.jpg" width="49%" alt="이미지 샘플 시연 네 장면 슬라이드">
+</p>
 
-[![심사·제출용 샘플 contact sheet](examples/tesla-roadster/4-judged/TeslaRoadsterJudgedv3_contact.png)](examples/tesla-roadster/4-judged/TeslaRoadsterJudgedv3_contact.png)
+- **제목:** "9년 만에 나타난 Roadster / 잠깐 떠올랐지만, 아직 살 수는 없다"
+- **보이는 모습:** 슬라이드마다 그 문장을 증명하는 그림이 붙습니다. 2017년 시제품 실물 사진(공개 라이선스), 시연 네 장면 그림(오른쪽), 세 등급 비교, 0-60 막대 차트, "아직 비어 있다"는 빈 체크박스 세 개가 그 예입니다. Claude Code에서 만들어 생성 이미지는 없고, 사진 외의 그림은 모두 직접 그린 SVG/CSS입니다.
+- **이런 자리에:** 처음 보는 사람에게 한눈에 이해시켜야 하는 자리.
+- **파일:** [PDF](examples/tesla-roadster/3-image/테슬라로드스터발표v2.pdf), [HTML](examples/tesla-roadster/3-image/테슬라로드스터발표v2.html), 전체 쪽 [contact sheet](examples/tesla-roadster/3-image/테슬라로드스터발표v2_contact.png)
 
-- 제출용 PDF: [`TeslaRoadsterJudgedv3.pdf`](examples/tesla-roadster/4-judged/TeslaRoadsterJudgedv3.pdf)
-- 근거 장부: [`facts.json`](examples/tesla-roadster/4-judged/facts.json)
-- 심사 패널 장부: [`judge_ledger.json`](examples/tesla-roadster/4-judged/judge_ledger.json)
-- 샘플 템플릿: [`template/sample-judged-template.pptx`](examples/tesla-roadster/4-judged/template/sample-judged-template.pptx)
-- 라운드별 수정 기록: [`CHANGES.md`](examples/tesla-roadster/4-judged/CHANGES.md)
+### 4. 심사·제출용: 심사위원이 사실을 확인해도 버티는 보고서
+
+<p>
+<img src="examples/tesla-roadster/4-judged/preview/01-cover.jpg" width="49%" alt="심사용 샘플 표지">
+<img src="examples/tesla-roadster/4-judged/preview/02-step-chart.jpg" width="49%" alt="심사용 샘플 일정 계단 차트">
+</p>
+
+- **제목:** "보여준 것은 진짜 묘기, 남은 것은 약속"
+- **보이는 모습:** 정해진 템플릿(여기서는 직접 만든 "샘플 심사 템플릿")을 그대로 따릅니다. 위쪽 띠에 "① 보여준 것 / ② 남은 약속" 구간 표시가 있고, 숫자마다 주장(주황)·시연(파랑)·검증(초록)·보도(회색) 꼬리표가 붙으며, 모든 쪽 아래에 날짜가 붙은 출처가 있습니다. 오른쪽 일정 차트는 계단 ①~⑥마다 출처를 따로 답니다. 마무리 질문은 "숫자를 들으면 물어보세요: 누가 말했고, 무엇으로 확인했나?"입니다.
+- **이런 자리에:** 대회, 투자 심사, 지원사업처럼 채점받는 자리. 눈가림 심사 세 라운드(7.0 → 7.4 → 7.75)를 거쳤고, 목표 8.0에 못 미친 채로 그대로 공개했습니다(위 "예시로 따라가기" 참고).
+- **파일:** 제출용 [PDF](examples/tesla-roadster/4-judged/TeslaRoadsterJudgedv3.pdf), 근거 장부 [`facts.json`](examples/tesla-roadster/4-judged/facts.json), 심사 패널 장부 [`judge_ledger.json`](examples/tesla-roadster/4-judged/judge_ledger.json), 샘플 템플릿 [`sample-judged-template.pptx`](examples/tesla-roadster/4-judged/template/sample-judged-template.pptx), 전체 쪽 [contact sheet](examples/tesla-roadster/4-judged/TeslaRoadsterJudgedv3_contact.png), 라운드별 [`CHANGES.md`](examples/tesla-roadster/4-judged/CHANGES.md)
 
 > **샘플에 대해**
 > - 비공식 요약이며 Tesla와 제휴·후원 관계가 없습니다.
