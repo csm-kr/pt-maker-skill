@@ -150,7 +150,7 @@ def page_layout(entry: dict, height: int) -> tuple[str, str]:
         top = box.get("text_y") or (max(top_art) + 40 if top_art else 96)
     style = f"--top:{top:g}px"
     if box.get("text_x"):
-        style += f";--left:{box['text_x']:g}px"
+        style += f";--side:{box['text_x']:g}px"  # the same margin left and right
     if box.get("font_px"):
         style += f";--tt-size:{box['font_px']:g}px"
     if bottom_art:

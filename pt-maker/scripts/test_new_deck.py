@@ -205,6 +205,12 @@ class NewDeckTests(unittest.TestCase):
             # Findings puts its title on a band: the slot title sits in the band, the content starts below it.
             self.assertIn('<div class="tt nowc on-art" style="left:86.4px;top:31.2px;color:#FFFFFF">Findings</div>', source)
             self.assertIn("--top:176px", source)
+            # One side margin, taken from the template title, for the left and right of the page and the footer.
+            self.assertIn("--side:86.4px", source)
+            self.assertNotIn("--left:", source)
+            css = (deck / "deck.css").read_text(encoding="utf-8")
+            self.assertIn("padding: var(--top, 96px) var(--side, 96px) 0 var(--side, 96px);", css)
+            self.assertIn("left: var(--side, 96px); right: var(--side, 96px);", css)
             build = subprocess.run(
                 ["python3", str(SCRIPT.with_name("build_judged_deck.py")), str(deck / "deck.src.html")],
                 capture_output=True,
