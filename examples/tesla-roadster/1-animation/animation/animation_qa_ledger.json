@@ -1,0 +1,101 @@
+{
+  "animation_qa_result": "pass",
+  "score": 90,
+  "p0_count": 0,
+  "p2_count": 5,
+  "animation_guard_result": "pass",
+  "hyperframes_lint_result": "pass",
+  "hyperframes_check_result": "pass",
+  "motion_assertions_result": "pass",
+  "snapshots_reviewed": true,
+  "preview_reviewed": true,
+  "user_render_approved": false,
+  "artifacts": {
+    "html": "index.html",
+    "motion_sidecar": "index.motion.json",
+    "hyperframes_check_report": ".pt-maker-runtime/logs/check-20261019-161701.log",
+    "snapshot_dir": "snapshots",
+    "presentation_html": "tesla-roadster-발표용-v2.html",
+    "contact_sheet": "../qa/contact-sheet.png",
+    "pose_strips": [
+      "../qa/poses/scene-04-pose-strip.png",
+      "../qa/poses/scene-08-pose-strip.png",
+      "../qa/poses/scene-10-pose-strip.png"
+    ],
+    "presenter_qa": [
+      "../qa/presenter-qa-run1.json",
+      "../qa/presenter-qa-run2.json"
+    ],
+    "preview_review_notes": "Reviewed in pt-maker's isolated headless browser, not HyperFrames Studio: every scene of the presenter HTML captured at its resolved pose, 53 mid-build frames across all scenes, and t=0 / build start / mid-build / resolved for chart scenes 4, 8 and 10. The 5 HyperFrames check snapshots of the linear film match the presenter. Live playback at normal and 0.25x speed was not watched by a person.",
+    "render": ""
+  },
+  "checklist": {
+    "one_claim_per_scene": "pass",
+    "evidence_matches_claim": "pass",
+    "dominant_visual_per_scene": "pass",
+    "static_end_states_complete": "pass",
+    "motion_has_purpose": "pass",
+    "transition_vocabulary_limited": "pass",
+    "exit_entry_vectors_reviewed": "pass",
+    "reading_time_sufficient": "pass",
+    "safe_area_no_collisions": "pass",
+    "image_identity_continuity": "pass",
+    "no_infinite_or_wall_clock_motion": "pass",
+    "motion_assertions_pass": "pass",
+    "hero_snapshots_reviewed": "pass",
+    "full_timeline_previewed": "pass",
+    "audio_media_rights_checked": "pass"
+  },
+  "checklist_notes": {
+    "image_identity_continuity": "No image sequences. One photo (scene 3). The SVG roadster uses the same path data in every scene.",
+    "audio_media_rights_checked": "No audio. The photo is CC BY-SA 4.0, credited on the slide and in assets/CREDITS.txt. GSAP is vendored under the GreenSock standard license. No Tesla logos, press photos or stream frames.",
+    "full_timeline_previewed": "Covered by captures at many time points plus the presenter QA traversal, not by watching it live."
+  },
+  "rubric": {
+    "narrative_claims": {
+      "score": 15,
+      "max": 16,
+      "notes": "The titles alone form a 기승전결 arc with one claim per scene; errata E1–E20 applied (E14 Nevera 검증, E17 Electrek for 2027~28, E18 production-slip count, E20 Plaid conditions), and every chip matches the ledger. The cover's '날았지만' leans on the hop qualifier given later in scene 6."
+    },
+    "frame_design": {
+      "score": 13,
+      "max": 14,
+      "notes": "Consistent kicker, status rail and source line; varied layouts; charts drawn to scale; contrast 144/144 WCAG AA. Scene 10's measurement conditions now sit inside the green bars, so every row is one line. Scene 12 has an empty area top-left, and the ghost poses in scene 6 are thin."
+    },
+    "motion_craft": {
+      "score": 18,
+      "max": 20,
+      "notes": "Six signature build families, each with a purpose (the car draws the delay line, stops halfway on range, rides the 0.81 s bar; the dial sweep; the fade to a dashed outline). prism/curtain/aperture all used, with neutral washes. Judged from pose captures, not watched live."
+    },
+    "seam_continuity": {
+      "score": 11,
+      "max": 14,
+      "notes": "One right-facing SVG car and a left-to-right current, with the same family on reverse seams. The car's scale jumps between scenes (0.04–0.28 of frame width), and scenes 3 and 9 have no carrier (hard-resolve seams)."
+    },
+    "timing_readability": {
+      "score": 11,
+      "max": 12,
+      "notes": "Titles land before evidence (assertions pass). Builds end by 4–7 s, and dense scenes run 10–11 s in the 117 s film. Scenes 6 and 10 are still tight for film playback; in the live deck the presenter sets the pace."
+    },
+    "accessibility_safe_content": {
+      "score": 8,
+      "max": 8,
+      "notes": "Unofficial / not-affiliated notice on the cover; every number has a text status chip (not colour only); photo credited on the slide and in CREDITS.txt; no audio dependence; reduced motion resolves to the final pose."
+    },
+    "technical_determinism": {
+      "score": 14,
+      "max": 16,
+      "notes": "Static guard P0=0, lint 0, check --snapshots pass (runtime, layout, motion, contrast). Presenter QA passed twice (forward and reverse, jump, replay, keyboard, touch; max frame 16.8 ms). GSAP loads from the template's CDN (needs a network connection), and fonts are local() only."
+    }
+  },
+  "remaining_p2": [
+    "GSAP loads only from the CDN (template default), so the deck needs a network connection; offline it shows an error and does not start.",
+    "Fonts are local() only; long two-line titles (scenes 5, 6, 10) may rewrap on machines without Pretendard, Apple SD Gothic Neo or Noto Sans KR.",
+    "The hero car's size jumps at seams 1→2 and 11→12; scenes 3 and 9 have no hero.",
+    "Scene 12: empty area top-left above the quote.",
+    "Scene 6: thin ghost poses in panel 1; scenes 6 and 10 are dense for linear film playback."
+  ],
+  "review": "Independent reviewer passes: 74 (first draft, gates pending), 87 (after E1–E13), 91 (vendored GSAP, fixes), 90 (v2: E14–E20, GSAP back on the CDN). After that last score, scene 10's two-line label stacks were moved inside the bars; the score was not raised for that. Manual score: 90.",
+  "notes": "No video render was requested, so user_render_approved stays false; the score gate treats that as a render-gate item.",
+  "version": "v2 (2026-10-19): errata E14–E20 applied, GSAP loads from the template CDN"
+}

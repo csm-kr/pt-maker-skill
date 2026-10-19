@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "duration": 117,
+  "assertions": [
+    {
+      "kind": "appearsBy",
+      "selector": "#s1-title",
+      "bySec": 1.2
+    },
+    {
+      "kind": "before",
+      "a": "#s1-title",
+      "b": "#s1-car"
+    },
+    {
+      "kind": "staysInFrame",
+      "selector": "#s1-title"
+    },
+    {
+      "kind": "before",
+      "a": "#s4-title",
+      "b": "#s4-p8"
+    },
+    {
+      "kind": "staysInFrame",
+      "selector": "#s4-chart"
+    },
+    {
+      "kind": "before",
+      "a": "#s10-title",
+      "b": "#s10-foot"
+    },
+    {
+      "kind": "staysInFrame",
+      "selector": "#s12-cta"
+    },
+    {
+      "kind": "keepsMoving",
+      "withinSelector": "#root",
+      "maxStaticSec": 1.5
+    }
+  ]
+}

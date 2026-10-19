@@ -1,0 +1,27 @@
+{
+  "template": "template.json",
+  "criteria": [
+    {"id": "accuracy", "name": "사실 정확성", "weight": 40},
+    {"id": "clarity", "name": "메시지 명확성", "weight": 25},
+    {"id": "transparency", "name": "근거 투명성", "weight": 25},
+    {"id": "design", "name": "디자인", "weight": 10}
+  ],
+  "target": 8.0,
+  "limits": {
+    "max_pages": 15,
+    "max_mb": 5,
+    "max_words_per_slide": 80
+  },
+  "layout": {
+    "min_font_px": null,
+    "max_footer_lines": 3
+  },
+  "facts": {
+    "source_label": "Details:",
+    "banned_phrases": ["first", "only", "any", "100%", "최초", "유일"],
+    "allowed_phrases": []
+  },
+  "slots": {
+    "skip": []
+  }
+}

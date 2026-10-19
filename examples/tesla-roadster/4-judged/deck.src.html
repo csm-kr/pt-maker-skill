@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="ko" data-deck="judged">
+<head>
+<meta charset="utf-8">
+<title>Tesla Roadster 발표 비공식 정리 (심사·제출용 샘플 v3)</title>
+<link rel="stylesheet" href="deck.css">
+<style>:root { --tpl: "Arial", var(--sans); }</style>
+</head>
+<body>
+<!-- Rules: one claim per slide; every number from facts.json via {{fact:id}} with a footer "Details:" line; evidence pictures are real captures (capture_screens.py) or public sources, never generated; comments stay in this source only.
+     One label system (same words on p3 and p6): 주장 = 회사나 발표자가 말한 값 · 시연 = 관객 앞에서 보여 준 장면 · 검증 = 독립 측정이나 공식 기록 · 보도 = 언론 보도나 집계.
+     Labels sit right after the number they qualify, never on a heading or a question. Calculated values (basis: calculated) carry no label.
+     Fixed phrases: "생산 일정 최소 6번 연기 (Electrek 집계)" (p3, p8) and "독립 계측 찾지 못함 (2026-10-19 기준)" (p3, p5, p9).
+     Story: ① 보여준 것 (p4–p6), ② 남은 약속 (p7–p9). Word limit: 80 per page incl. footer, every whitespace token counted. -->
+
+<!-- 01 · slot 1 표지 (slot title not drawn: match = skip) -->
+<section class="slide" data-tpl="1" data-slot="1" data-main style="--top:152px;--side:110.4px;--tt-size:40px;--ft-bottom:40px">
+  <header class="hd"></header>
+  <div class="stage center">
+  <div class="cover">
+    <div>
+      <div class="kicker">Tesla Roadster 발표 비공식 정리</div>
+      <h1>보여준 것은 진짜 묘기,<br>남은 것은 약속</h1>
+      <p class="sub">이번 행사의 숫자를 주장·시연·검증·보도로 나눠 읽습니다.</p>
+      <p class="meta">첫 공개({{fact:hist-unveil-2017-date}})에서 이번 행사({{fact:event-date}})까지 <b>{{fact:days-unveil-to-event:value}}일</b></p>
+      <p class="note">Tesla와 관계없는 비공식 정리입니다</p>
+    </div>
+    <figure>
+      <img class="photo" src="assets/img/roadster-2017-prototype-side.jpg" alt="빨간색 Roadster 시제품의 옆모습. 처음 공개된 시제품이며 이번에 공개된 차가 아니다.">
+      <figcaption>처음 공개된 시제품({{fact:hist-unveil-2017-date}}). 이번 행사의 차가 아닙니다.</figcaption>
+    </figure>
+  </div>
+  </div>
+  <footer class="ft"><div class="src">사진: Editor928111, <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/wiki/File:NextGenTeslaRoadster_(cropped).jpg">Wikimedia Commons</a>, 2019-06-11 촬영. Details: <a href="https://www.npr.org/sections/thetwo-way/2017/11/17/564777998/tesla-unveils-its-electric-semi-truck-and-adds-a-roadster">NPR 2017-11-17</a>, <a href="https://www.youtube.com/watch?v=qt5p-_tE8d0">Tesla 녹화본 2026-10-16</a></div><div class="pg"><b>01</b></div></footer>
+</section>
+
+<!-- 02 · slot 2 문제 -->
+<section class="slide" data-tpl="2" data-slot="2" data-main style="--top:152px;--side:110.4px;--tt-size:40px;--ft-bottom:40px">
+  <header class="hd"><div class="tt nowc on-art" style="left:110.4px;top:37.2px;color:#F4F6F8">문제</div><h1>{{fact:production-promise-2017:value}}년 출시 약속은 지나갔고, 새 약속은 {{fact:production-2028:value}}년 생산이다</h1></header>
+  <div class="stage">
+  <div class="flow" data-fullsize-qa="true" data-rendered-qa="true">
+    <div class="card">
+      <div class="when">{{fact:hist-unveil-2017-date}}</div>
+      <h3>시제품 첫 공개</h3>
+      <p>{{fact:production-promise-2017:value}}년 출시 약속 <span class="chip c-claim">주장</span></p>
+    </div>
+    <div class="arrow" aria-hidden="true"></div>
+    <div class="card now">
+      <div class="when">{{fact:event-date}}</div>
+      <h3>Roadster Event</h3>
+      <p>관객 앞에서 새 차 시연</p>
+    </div>
+    <div class="arrow" aria-hidden="true"></div>
+    <div class="card">
+      <div class="when">다음 약속</div>
+      <h3>생산 시작</h3>
+      <p>{{fact:production-2028:value}}년 <span class="chip c-claim">주장</span>, 가격·인도일은 발표 없음</p>
+    </div>
+  </div>
+  <div class="gap">
+    <div class="num">{{fact:years-promise-gap:value}}년</div>
+    <p>{{fact:production-promise-2017:value}}년 출시 약속에서 {{fact:production-2028:value}}년 생산 시작까지, 두 해를 뺀 값</p>
+  </div>
+  </div>
+  <footer class="ft"><div class="src">Details: <a href="https://www.cnbc.com/2017/11/16/tesla-ceo-elon-musk-unveils-a-surprise-new-car-a-new-roadster.html">CNBC 2017-11-17</a>, <a href="https://finance.yahoo.com/news/tesla-set-unveil-next-generation-100401819.html">Reuters 2026-10-16</a>, <a href="https://www.nbcnews.com/tech/tech-news/elon-musk-shows-flying-tesla-roadster-years-delays-rcna603905">NBC News 2026-10-16</a></div><div class="pg"><b>02</b></div></footer>
+</section>
+
+<!-- 03 · slot 3 핵심 주장 -->
+<section class="slide s03" data-tpl="3" data-slot="3" data-main style="--top:152px;--side:110.4px;--tt-size:40px;--ft-bottom:40px">
+  <header class="hd"><div class="tt nowc on-art" style="left:110.4px;top:37.2px;color:#F4F6F8">핵심 주장</div><h1>보여준 것은 진짜 묘기, 남은 것은 약속이다</h1></header>
+  <div class="stage">
+  <div class="labels">
+    <div class="card"><span class="chip c-claim">주장</span><p>회사나 발표자가 말한 값</p><p class="eg">{{fact:production-2028:value}}년 생산 시작</p></div>
+    <div class="card"><span class="chip c-demo">시연</span><p>관객 앞에서 보여 준 장면</p><p class="eg">차 {{fact:demo-kickflip-cars:value}}대 뛰어넘기</p></div>
+    <div class="card"><span class="chip c-ver">검증</span><p>독립 측정이나 공식 기록</p><p class="eg">Model S Plaid <span class="nofact">0-60</span><br>{{fact:cmp-plaid-0-60:value}}초<br>(MotorTrend 측정)</p></div>
+    <div class="card"><span class="chip c-rep">보도</span><p>언론 보도나 집계</p><p class="eg">생산 일정 최소 {{fact:production-slips-count:value}}번 연기 (Electrek 집계)</p><p class="eg">독립 계측 찾지 못함 <span class="nofact">(2026-10-19 기준)</span></p></div>
+  </div>
+  <div class="cta"><p>숫자를 들으면 물어보세요: 누가 말했고, 무엇으로 확인했나?</p></div>
+  </div>
+  <footer class="ft"><div class="src">Details: <a href="https://finance.yahoo.com/news/tesla-set-unveil-next-generation-100401819.html">Reuters 2026-10-16</a>, <a href="https://www.theverge.com/transportation/1012552/tesla-roadster-next-gen-reveal-elon-musk">The Verge 2026-10-16(행사)</a>, <a href="https://insideevs.com/news/514719/tesla-models-accleration-test-motortrend/">InsideEVs 2021-06-17</a>, <a href="https://electrek.co/2026/10/13/tesla-roadster-event-thursday-nine-years-delays/">Electrek 2026-10-13</a>, <a href="https://www.theverge.com/transportation/1012783/tesla-roadster-flying-stunt-production-reality-musk">The Verge 2026-10-16(분석)</a></div><div class="pg"><b>03</b></div></footer>
+</section>
+
+<!-- 04 · slot 4 무엇을 보여줬나 (half 1) -->
+<section class="slide" data-tpl="4" data-slot="4" data-main style="--top:152px;--side:110.4px;--tt-size:40px;--ft-bottom:40px">
+  <header class="hd"><div class="tt nowc on-art" style="left:110.4px;top:37.2px;color:#F4F6F8">무엇을 보여줬나</div><div class="half">① 보여준 것</div><h1>관객 앞에서 {{fact:demo-count-live:value}}가지를 보여줬다: 매달리기, 차 {{fact:demo-kickflip-cars:value}}대 넘기, 가속, 수직 이륙</h1></header>
+  <div class="stage">
+  <div class="panels2">
+    <div class="card">
+      <svg viewBox="0 0 500 260" data-fullsize-qa="true" data-rendered-qa="true" role="img" aria-label="도식: 경사로를 타고 올라 천장에 거꾸로 붙었다가 뒤집어 착지">
+        <line x1="20" y1="238" x2="480" y2="238" stroke="#C3CBD3" stroke-width="5"/>
+        <path d="M30 238 C150 238 205 205 218 125 C228 62 268 34 330 34 L388 34" fill="none" stroke="#22303C" stroke-width="12" stroke-linecap="round"/>
+        <g transform="translate(286 70) scale(1 -1)"><path d="M0 22 L4 14 Q20 6 40 4 Q58 3 72 10 L80 16 L80 22 Z" fill="#2E5A73"/><circle cx="16" cy="22" r="7" fill="#22303C"/><circle cx="64" cy="22" r="7" fill="#22303C"/></g>
+        <path d="M394 60 C446 74 462 140 452 196" fill="none" stroke="#1F5F8B" stroke-width="5" stroke-dasharray="12 9"/>
+        <path d="M438 186 L452 206 L466 186" fill="none" stroke="#1F5F8B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <g transform="translate(396 209)"><path d="M0 22 L4 14 Q20 6 40 4 Q58 3 72 10 L80 16 L80 22 Z" fill="#2E5A73"/><circle cx="16" cy="22" r="7" fill="#22303C"/><circle cx="64" cy="22" r="7" fill="#22303C"/></g>
+      </svg>
+      <p>경사로 천장에 매달렸다가 뒤집어 착지</p>
+    </div>
+    <div class="card">
+      <svg viewBox="0 0 500 260" data-fullsize-qa="true" data-rendered-qa="true" role="img" aria-label="도식: 줄지어 선 차 다섯 대 위를 포물선으로 뛰어넘으며 회전">
+        <line x1="20" y1="238" x2="480" y2="238" stroke="#C3CBD3" stroke-width="5"/>
+        <rect x="110" y="206" width="52" height="32" rx="8" fill="#C9D1DA"/>
+        <rect x="170" y="204" width="52" height="34" rx="8" fill="#C9D1DA"/>
+        <rect x="230" y="198" width="52" height="40" rx="8" fill="#C9D1DA"/>
+        <rect x="290" y="188" width="52" height="50" rx="6" fill="#C9D1DA"/>
+        <rect x="350" y="208" width="52" height="30" rx="10" fill="#C9D1DA"/>
+        <path d="M40 228 Q256 -128 470 228" fill="none" stroke="#1F5F8B" stroke-width="5" stroke-dasharray="12 9"/>
+        <path d="M452 208 L468 228 L476 204" fill="none" stroke="#1F5F8B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <g transform="translate(216 30) rotate(150 40 14)"><path d="M0 22 L4 14 Q20 6 40 4 Q58 3 72 10 L80 16 L80 22 Z" fill="#2E5A73"/><circle cx="16" cy="22" r="7" fill="#22303C"/><circle cx="64" cy="22" r="7" fill="#22303C"/></g>
+      </svg>
+      <p>테슬라 차 {{fact:demo-kickflip-cars:value}}대 <span class="chip c-demo">시연</span> 위를 뛰어넘으며 회전</p>
+    </div>
+    <div class="card">
+      <svg viewBox="0 0 500 260" data-fullsize-qa="true" data-rendered-qa="true" role="img" aria-label="도식: 테슬라 타이머 스톱워치">
+        <circle cx="150" cy="140" r="104" fill="#FFFFFF" stroke="#C88A2C" stroke-width="12"/>
+        <rect x="132" y="14" width="36" height="22" rx="4" fill="#C88A2C"/>
+        <text x="150" y="162" text-anchor="middle" font-size="68" font-weight="800" fill="#1C1F23">{{fact:demo-zero60-live:value}}</text>
+        <text x="150" y="206" text-anchor="middle" font-size="36" fill="#5E6670">초</text>
+        <path d="M290 140 H470 M448 120 L472 140 L448 160" fill="none" stroke="#1F5F8B" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="290" y="100" font-size="36" fill="#5E6670">정지</text>
+        <text x="476" y="210" text-anchor="end" font-size="36" fill="#1C1F23">시속 {{fact:conv-60mph-kmh:value}} km</text>
+      </svg>
+      <p><span class="nofact">0-60 mph</span> 주행은 관객 앞에서. 시간은 테슬라 타이머 {{fact:demo-zero60-live:value}}초 <span class="chip c-claim">주장</span></p>
+    </div>
+    <div class="card">
+      <svg viewBox="0 0 500 260" data-fullsize-qa="true" data-rendered-qa="true" role="img" aria-label="도식: 이륙, 공중 회전, 착지의 세 단계">
+        <line x1="20" y1="238" x2="480" y2="238" stroke="#C3CBD3" stroke-width="5"/>
+        <g transform="translate(22 209)"><path d="M0 22 L4 14 Q20 6 40 4 Q58 3 72 10 L80 16 L80 22 Z" fill="#9AA3AE"/><circle cx="16" cy="22" r="7" fill="#5E6670"/><circle cx="64" cy="22" r="7" fill="#5E6670"/></g>
+        <path d="M62 196 V84 M46 104 L62 82 L78 104" fill="none" stroke="#1F5F8B" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M250 206 C196 196 196 176 250 168 C304 160 304 140 250 132 C196 124 196 104 250 96 C304 88 304 76 250 70" fill="none" stroke="#1F5F8B" stroke-width="5" stroke-dasharray="12 9"/>
+        <g transform="translate(210 116) rotate(-60 40 14)"><path d="M0 22 L4 14 Q20 6 40 4 Q58 3 72 10 L80 16 L80 22 Z" fill="#2E5A73"/><circle cx="16" cy="22" r="7" fill="#22303C"/><circle cx="64" cy="22" r="7" fill="#22303C"/></g>
+        <path d="M438 84 V190 M422 170 L438 192 L454 170" fill="none" stroke="#1F5F8B" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <g transform="translate(398 209)"><path d="M0 22 L4 14 Q20 6 40 4 Q58 3 72 10 L80 16 L80 22 Z" fill="#2E5A73"/><circle cx="16" cy="22" r="7" fill="#22303C"/><circle cx="64" cy="22" r="7" fill="#22303C"/></g>
+        <text x="62" y="56" text-anchor="middle" font-size="36" font-weight="700" fill="#1C1F23">이륙</text>
+        <text x="250" y="56" text-anchor="middle" font-size="36" font-weight="700" fill="#1C1F23">회전</text>
+        <text x="438" y="56" text-anchor="middle" font-size="36" font-weight="700" fill="#1C1F23">착지</text>
+      </svg>
+      <p>제자리 이륙, 회전, 착지. 이륙은 녹화 {{fact:demo-final-corkscrew:value}} <span class="chip c-demo">시연</span></p>
+    </div>
+  </div>
+  <p class="strip">탑승한 사람 {{fact:demo-autonomous:value}}명 <span class="chip c-rep">보도</span> (Electrek, CNN)</p>
+  </div>
+  <footer class="ft"><div class="src">도식은 설명용. Details: <a href="https://gizmodo.com/teslas-new-roadster-can-somehow-do-corkscrews-in-the-air-without-exploding-yet-2000826761">Gizmodo 2026-10-15</a>, <a href="https://www.theverge.com/transportation/1012552/tesla-roadster-next-gen-reveal-elon-musk">The Verge 2026-10-16(행사)</a>, <a href="https://www.nbcnews.com/tech/tech-news/elon-musk-shows-flying-tesla-roadster-years-delays-rcna603905">NBC News 2026-10-16</a>, <a href="https://electrek.co/2026/10/15/an-updated-technical-look-at-teslas-kick-flipping-0-60-in-1s-next-gen-roadster/">Electrek 2026-10-15(기술)</a>, <a href="https://www.cnn.com/2026/10/15/business/tesla-unveils-what-it-says-is-a-flying-car">CNN 2026-10-15</a></div><div class="pg"><b>04</b></div></footer>
+</section>
+
+<!-- 05 · slot 5 숫자 검증 (half 1): no independent timing -->
+<section class="slide" data-tpl="5" data-slot="5" data-main style="--top:152px;--side:110.4px;--tt-size:40px;--ft-bottom:40px">
+  <header class="hd"><div class="tt nowc on-art" style="left:110.4px;top:37.2px;color:#F4F6F8">숫자 검증</div><div class="half">① 보여준 것</div><h1>이번 성능 숫자는 모두 테슬라가 낸 값이다</h1></header>
+  <div class="stage">
+  <div class="verdict-row">
+    <div class="verdict">
+      <p class="vbig">독립 계측<br>찾지 못함</p>
+      <p class="vsub"><span class="nofact">(2026-10-19 기준)</span> <span class="chip c-rep">보도</span></p>
+      <p class="vsrc">The Verge: “독립 시험으로 확인될 때까지 기다려야 한다”</p>
+    </div>
+    <div class="card tick">
+      <p class="kv">{{fact:demo-zero60-live:value}}초 <span class="chip c-claim">주장</span></p>
+      <p>생중계 주행 시간도 테슬라 타이머 값</p>
+      <p class="srcq">NBC News: “according to Tesla”<br>The Verge: “the company claimed”</p>
+    </div>
+  </div>
+  <figure class="cap-small">
+    <div class="cap-wrap"><div class="crop"><img src="assets/img/wiki-roadster-not-timed.jpg" alt="영어 Wikipedia 원문 한 줄: 행사 중 0.81초 주행은 독립적으로 재지 않았다는 문장"></div><span class="hl" aria-hidden="true"></span></div>
+    <figcaption>영어 Wikipedia도 ‘독립적으로 재지 않았다’고 적는다</figcaption>
+  </figure>
+  </div>
+  <footer class="ft"><div class="src">화면: 영어 Wikipedia(oldid=1380953030, CC BY-SA 4.0) Details: <a href="https://www.nbcnews.com/tech/tech-news/elon-musk-shows-flying-tesla-roadster-years-delays-rcna603905">NBC News 2026-10-16</a>, <a href="https://www.theverge.com/transportation/1012783/tesla-roadster-flying-stunt-production-reality-musk">The Verge 2026-10-16(분석)</a></div><div class="pg"><b>05</b></div></footer>
+</section>
+
+<!-- 06 · slot 5 숫자 검증 (half 1): 0-60 comparison -->
+<section class="slide" data-tpl="5" data-slot="5" data-main style="--top:152px;--side:110.4px;--tt-size:40px;--ft-bottom:40px">
+  <header class="hd"><div class="tt nowc on-art" style="left:110.4px;top:37.2px;color:#F4F6F8">숫자 검증</div><div class="half">① 보여준 것</div><h1>테슬라 <span class="nofact">0-60</span> 값은 더 빠르지만, 독립 측정 기록은 다른 차의 것뿐이다</h1></header>
+  <div class="stage">
+  <svg class="chart" viewBox="0 0 1700 560" data-fullsize-qa="true" data-rendered-qa="true" role="img" aria-label="막대그래프: 정지에서 시속 60마일까지 걸린 시간. 위는 테슬라가 낸 Roadster 값, 구분선 아래는 다른 차의 독립 측정 기록">
+    <line x1="640" y1="44" x2="640" y2="204" stroke="#AEB8C2" stroke-width="2"/>
+    <rect x="640" y="54" width="836" height="36" rx="4" fill="#E0A04A"/>
+    <rect x="641.5" y="109.5" width="258" height="33" rx="4" fill="#FCEFD8" stroke="#C88A2C" stroke-width="3" stroke-dasharray="10 6"/>
+    <path d="M886 116 L872 126 L886 136" fill="none" stroke="#8F5300" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="640" y="162" width="356" height="36" rx="4" fill="#E0A04A"/>
+    <line x1="0" y1="238" x2="1700" y2="238" stroke="#22303C" stroke-width="3"/>
+    <line x1="640" y1="280" x2="640" y2="520" stroke="#AEB8C2" stroke-width="2"/>
+    <rect x="640" y="292" width="871" height="36" rx="4" fill="#3F9C82"/>
+    <rect x="640" y="372" width="766" height="36" rx="4" fill="#3F9C82"/>
+    <rect x="640" y="452" width="616" height="36" rx="4" fill="#3F9C82"/>
+    <text x="0" y="32" font-size="28" font-weight="700" fill="#5E6670">테슬라가 낸 값</text>
+    <text x="610" y="82" text-anchor="end" font-size="28" fill="#1C1F23">첫 공개 때</text>
+    <text x="1490" y="82" font-size="28" font-weight="700" fill="#8F5300">{{fact:zero60-claim-2017:value}}초</text>
+    <text x="610" y="136" text-anchor="end" font-size="28" fill="#1C1F23">Rocket</text>
+    <text x="914" y="136" font-size="28" font-weight="700" fill="#8F5300">{{fact:zero60-rocket-2026:value}}초 미만</text>
+    <text x="610" y="190" text-anchor="end" font-size="28" fill="#1C1F23">생중계 타이머</text>
+    <text x="1010" y="190" font-size="28" font-weight="700" fill="#8F5300">{{fact:demo-zero60-live:value}}초</text>
+    <text x="0" y="272" font-size="28" font-weight="700" fill="#5E6670">다른 차: 조건이 달라 순위가 아니다</text>
+    <text x="610" y="314" text-anchor="end" font-size="28" fill="#1C1F23">Model S Plaid (MotorTrend)</text>
+    <text x="610" y="346" text-anchor="end" font-size="25" fill="#5E6670" class="nofact">1-ft rollout·준비된 노면</text>
+    <text x="1525" y="320" font-size="28" font-weight="700" fill="#0B6E5A">{{fact:cmp-plaid-0-60:value}}초</text>
+    <text x="610" y="394" text-anchor="end" font-size="28" fill="#1C1F23">Rimac Nevera</text>
+    <text x="610" y="426" text-anchor="end" font-size="25" fill="#5E6670" class="nofact">1-ft rollout</text>
+    <text x="1420" y="400" font-size="28" font-weight="700" fill="#0B6E5A">{{fact:cmp-nevera-0-60:value}}초</text>
+    <text x="610" y="480" text-anchor="end" font-size="28" fill="#1C1F23">McMurtry 시제품 (Carwow)</text>
+    <text x="1270" y="480" font-size="28" font-weight="700" fill="#0B6E5A">{{fact:cmp-mcmurtry-0-60-carwow:value}}초</text>
+  </svg>
+  <p class="legend" style="margin-top:12px"><span><span class="chip c-claim">주장</span>회사나 발표자가 말한 값</span><span><span class="chip c-ver">검증</span>독립 측정이나 공식 기록</span></p>
+  </div>
+  <footer class="ft"><div class="src">Details: <a href="https://web.archive.org/web/20171117051903/https://www.tesla.com/roadster/">Tesla 페이지 2017-11-17</a>, <a href="https://x.com/Tesla/status/2110905588402295283">Tesla X 2026-10-16</a>, <a href="https://www.nbcnews.com/tech/tech-news/elon-musk-shows-flying-tesla-roadster-years-delays-rcna603905">NBC News 2026-10-16</a>, <a href="https://insideevs.com/news/514719/tesla-models-accleration-test-motortrend/">InsideEVs 2021-06-17</a>, <a href="https://www.rimac-newsroom.com/press-releases/rimac-automobili/rimac-nevera-sets-23-performance-records-in-a-single-day">Rimac 2023-05-17</a>, <a href="https://www.motor1.com/news/626865/mcmurty-speirling-0-to-60-acceleration-video/">Motor1 2022-12-15</a></div><div class="pg"><b>06</b></div></footer>
+</section>
+
+<!-- 07 · slot 6 무엇을 약속했나 (half 2) -->
+<section class="slide" data-tpl="6" data-slot="6" data-main style="--top:152px;--side:110.4px;--tt-size:40px;--ft-bottom:40px">
+  <header class="hd"><div class="tt nowc on-art" style="left:110.4px;top:37.2px;color:#F4F6F8">무엇을 약속했나</div><div class="half">② 남은 약속</div><h1>첫 약속과 비교하면 주행거리와 좌석은 절반 수준, 가격은 아직 없다</h1></header>
+  <div class="stage">
+  <p class="legend" style="margin-bottom:14px"><span>모두 테슬라 발표 <span class="chip c-claim">주장</span></span></p>
+  <table class="cmp">
+    <tr><th>항목</th><th>첫 공개 때</th><th>이번 발표</th></tr>
+    <tr><td>버전</td><td>기본형, Founders Series</td><td>Performance, Thrust, Rocket</td></tr>
+    <tr class="hot"><td>주행거리</td><td>{{fact:range-claim-2017:value}}마일</td><td>{{fact:range-2026:value}}마일 이상</td></tr>
+    <tr class="hot"><td>좌석</td><td>{{fact:seats-claim-2017:value}}인승</td><td>{{fact:seats-2026:value}}인승 <span class="small">(Rocket <span class="fact" data-fact="seats-2026">1</span>인승)</span></td></tr>
+    <tr><td>최고 속도</td><td>{{fact:topspeed-claim-2017:value}} mph 이상</td><td>{{fact:topspeed-2026:value}} mph 이상 <span class="small">(Rocket, Tesla X 기준)</span></td></tr>
+    <tr><td><span class="nofact">0-60 mph</span></td><td>{{fact:zero60-claim-2017:value}}초</td><td>{{fact:zero60-performance-2026:value}}초 미만 <span class="small">(Performance)</span></td></tr>
+    <tr class="hot"><td>가격</td><td>${{fact:price-base-2017:value}}</td><td>발표 없음</td></tr>
+  </table>
+  </div>
+  <footer class="ft"><div class="src">Details: <a href="https://web.archive.org/web/20171117051903/https://www.tesla.com/roadster/">Tesla 페이지 2017-11-17</a>, <a href="https://x.com/Tesla/status/2110905588402295283">Tesla X 2026-10-16</a>, <a href="https://web.archive.org/web/20261016023617/https://www.tesla.com/roadster">Tesla 페이지 2026-10-16</a>, <a href="https://www.nbcnews.com/tech/tech-news/elon-musk-shows-flying-tesla-roadster-years-delays-rcna603905">NBC News 2026-10-16</a></div><div class="pg"><b>07</b></div></footer>
+</section>
+
+<!-- 08 · slot 7 일정 (half 2): Electrek's six production slips, one step each -->
+<section class="slide" data-tpl="7" data-slot="7" data-main style="--top:152px;--side:110.4px;--tt-size:40px;--ft-bottom:40px">
+  <header class="hd"><div class="tt nowc on-art" style="left:110.4px;top:37.2px;color:#F4F6F8">일정</div><div class="half">② 남은 약속</div><h1>{{fact:production-promise-2017:value}}년 약속은 {{fact:production-2028:value}}년이 됐다: 생산 일정 최소 {{fact:production-slips-count:value}}번 연기</h1></header>
+  <div class="stage">
+  <svg class="chart" viewBox="0 0 1700 580" data-fullsize-qa="true" data-rendered-qa="true" role="img" aria-label="계단 그래프: 처음 약속 뒤 생산 일정이 여섯 번 연기되고 이번 행사에서 새 약속이 나온 모습">
+    <g stroke="#E6EAEE" stroke-width="2">
+      <line x1="150" y1="470" x2="1640" y2="470"/><line x1="150" y1="422" x2="1640" y2="422"/><line x1="150" y1="374" x2="1640" y2="374"/>
+      <line x1="150" y1="326" x2="1640" y2="326"/><line x1="150" y1="278" x2="1640" y2="278"/><line x1="150" y1="230" x2="1640" y2="230"/>
+      <line x1="150" y1="182" x2="1640" y2="182"/><line x1="150" y1="134" x2="1640" y2="134"/><line x1="150" y1="86" x2="1640" y2="86"/>
+    </g>
+    <rect x="1270" y="86" width="175" height="48" fill="#FCEFD8"/>
+    <path d="M220 470 H395 V422 H570 V374 H745 V326 H920 V278 H1095 V230 H1270 V110 H1445 V86" fill="none" stroke="#C88A2C" stroke-width="5" stroke-linejoin="round"/>
+    <line x1="1270" y1="86" x2="1270" y2="134" stroke="#8F5300" stroke-width="6"/>
+    <g fill="#8F5300">
+      <circle cx="220" cy="470" r="10"/><circle cx="395" cy="422" r="10"/><circle cx="570" cy="374" r="10"/><circle cx="745" cy="326" r="10"/>
+      <circle cx="920" cy="278" r="10"/><circle cx="1095" cy="230" r="10"/><circle cx="1270" cy="110" r="10"/><circle cx="1445" cy="86" r="15"/>
+    </g>
+    <line x1="150" y1="530" x2="1640" y2="530" stroke="#5E6670" stroke-width="2"/>
+    <text x="150" y="50" font-size="26" font-weight="700" fill="#5E6670">약속한 해 ↑</text>
+    <text x="1640" y="568" font-size="26" font-weight="700" fill="#5E6670" text-anchor="end">말한 때 →</text>
+    <g font-size="28" font-weight="700" fill="#8F5300" text-anchor="end">
+      <text x="204" y="480">처음 약속 {{fact:production-promise-2017:value}}</text>
+      <text x="379" y="432">① {{fact:delay-2020-07:value}}</text>
+      <text x="554" y="384">② {{fact:delay-2021-01:value}}</text>
+      <text x="729" y="336">③ {{fact:delay-2021-09:value}}</text>
+      <text x="904" y="288">④ {{fact:delay-2023-05:value}}</text>
+      <text x="1079" y="240">⑤ {{fact:delay-2024-02:value}}</text>
+      <text x="1254" y="120">⑥ {{fact:delay-2025-11:value}}</text>
+    </g>
+    <text x="1445" y="58" font-size="30" font-weight="800" fill="#8F5300" text-anchor="end">새 약속: {{fact:production-2028:value}} 생산</text>
+    <g font-size="25" fill="#5E6670">
+      <a href="https://www.cnbc.com/2017/11/16/tesla-ceo-elon-musk-unveils-a-surprise-new-car-a-new-roadster.html"><text x="234" y="504">CNBC 2017-11-17</text></a>
+      <a href="https://insideevs.com/news/435447/tesla-q2-2020-earnings-call-key-details/"><text x="409" y="456">InsideEVs 2020-07-23</text></a>
+      <a href="https://electrek.co/2021/01/28/elon-musk-tesla-roadster-delayed-2022/"><text x="584" y="408">Electrek 2021-01-28</text></a>
+      <a href="https://electrek.co/2021/09/01/tesla-delays-new-roadster-2023/"><text x="759" y="360">Electrek 2021-09-01</text></a>
+      <a href="https://insideevs.com/news/667648/tesla-roadster-hopefully-entering-production-2024-elon-musk/"><text x="934" y="312">InsideEVs 2023-05-17</text></a>
+      <a href="https://electrek.co/2024/02/28/tesla-unveil-new-roadster-this-year-elon-rockets-spacex-collab/"><text x="1109" y="264">Electrek 2024-02-28</text></a>
+      <a href="https://electrek.co/2026/10/13/tesla-roadster-event-thursday-nine-years-delays/"><text x="1284" y="162">Electrek 2026-10-13</text></a>
+      <a href="https://finance.yahoo.com/news/tesla-set-unveil-next-generation-100401819.html"><text x="1459" y="120">Reuters 2026-10-16</text></a>
+    </g>
+  </svg>
+  <p class="legend" style="margin-top:10px"><span><span class="chip c-claim">주장</span>점: 약속한 해</span><span>생산 일정 최소 {{fact:production-slips-count:value}}번 연기 (Electrek 집계) <span class="chip c-rep">보도</span></span></p>
+  </div>
+  <footer class="ft"><div class="src">Details: <a href="https://electrek.co/2026/10/13/tesla-roadster-event-thursday-nine-years-delays/">Electrek 2026-10-13</a></div><div class="pg"><b>08</b></div></footer>
+</section>
+
+<!-- 09 · slot 8 한계 (half 2) -->
+<section class="slide" data-tpl="8" data-slot="8" data-main style="--top:152px;--side:110.4px;--tt-size:40px;--ft-bottom:40px">
+  <header class="hd"><div class="tt nowc on-art" style="left:110.4px;top:37.2px;color:#F4F6F8">한계</div><div class="half">② 남은 약속</div><h1>가격, 인도일, 독립 계측은 아직 확인할 수 없다</h1></header>
+  <div class="stage">
+  <div class="open4">
+    <div class="card"><h3>가격</h3><p>발표 없음</p></div>
+    <div class="card"><h3>인도일</h3><p>미발표, 생산만 {{fact:production-2028:value}}년 <span class="chip c-claim">주장</span></p></div>
+    <div class="card"><h3>도로 주행</h3><p>Rocket은 ‘공공도로 사용 승인 안 됨’</p></div>
+    <div class="card"><h3>성능 숫자</h3><p>독립 계측 찾지 못함 <span class="nofact">(2026-10-19 기준)</span> <span class="chip c-rep">보도</span></p></div>
+  </div>
+  <div class="quote wide">
+    <p class="ko">“전통 자동차 회사를 민망하게 만든 것 말고는 상업적 가치가 없는 엔지니어링 과시”</p>
+    <p class="by">Gene Munster(Reuters 인용) <span class="orig">“an engineering flex with no commercial value beyond embarrassing traditional car makers”</span></p>
+  </div>
+  </div>
+  <footer class="ft"><div class="src">Details: <a href="https://www.nbcnews.com/tech/tech-news/elon-musk-shows-flying-tesla-roadster-years-delays-rcna603905">NBC News 2026-10-16</a>, <a href="https://finance.yahoo.com/news/tesla-set-unveil-next-generation-100401819.html">Reuters 2026-10-16</a>, <a href="https://web.archive.org/web/20261016023617/https://www.tesla.com/roadster">Tesla 페이지 2026-10-16</a>, <a href="https://www.theverge.com/transportation/1012783/tesla-roadster-flying-stunt-production-reality-musk">The Verge 2026-10-16(분석)</a></div><div class="pg"><b>09</b></div></footer>
+</section>
+
+<!-- 10 · slot 9 결론 -->
+<section class="slide" data-tpl="9" data-slot="9" data-main style="--top:152px;--side:110.4px;--tt-size:40px;--ft-bottom:40px">
+  <header class="hd"><div class="tt nowc on-art" style="left:110.4px;top:37.2px;color:#F4F6F8">결론</div><h1>보여준 것은 진짜 묘기, 남은 것은 약속이다</h1><p class="sub">다음 소식에서는 세 가지를 확인하면 된다.</p></header>
+  <div class="stage">
+  <ol class="watch3">
+    <li class="card"><h3>가격</h3><p>세 버전의 차값이 나오는가</p></li>
+    <li class="card"><h3>독립 계측</h3><p>다른 곳이 다시 재는가</p></li>
+    <li class="card"><h3>생산</h3><p>말한 대로 {{fact:production-2028:value}}년에 시작하는가</p></li>
+  </ol>
+  <div class="close2">
+    <div class="cta"><p>숫자를 들으면 물어보세요: 누가 말했고, 무엇으로 확인했나?</p></div>
+    <div class="quote"><p class="ko">“이번 엔지니어링은 진짜다.”</p><p class="by">Fred Lambert, Electrek <span class="orig">“The engineering here is real.”</span></p></div>
+  </div>
+  </div>
+  <footer class="ft"><div class="src">Details: <a href="https://finance.yahoo.com/news/tesla-set-unveil-next-generation-100401819.html">Reuters 2026-10-16</a>, <a href="https://electrek.co/2026/10/15/tesla-unveils-cyberfied-new-roadster-kickflip/">Electrek 2026-10-15(공개)</a></div><div class="pg"><b>10</b></div></footer>
+</section>
+
+<!-- 11 · slot 10 출처: every source the slides use, same names as the footers -->
+<section class="slide" data-tpl="10" data-slot="10" data-main style="--top:152px;--side:110.4px;--tt-size:40px;--ft-bottom:40px">
+  <header class="hd"><div class="tt nowc on-art" style="left:110.4px;top:37.2px;color:#F4F6F8">출처</div><h1>슬라이드의 출처는 모두 열어 볼 수 있다</h1></header>
+  <div class="stage">
+  <div class="srcgrid">
+    <div class="grp"><h3>테슬라</h3><ul>
+      <li><a href="https://www.youtube.com/watch?v=qt5p-_tE8d0">Tesla 녹화본 2026-10-16</a></li>
+      <li><a href="https://x.com/Tesla/status/2110905588402295283">Tesla X 2026-10-16</a></li>
+      <li><a href="https://web.archive.org/web/20171117051903/https://www.tesla.com/roadster/">Tesla 페이지 2017-11-17</a></li>
+      <li><a href="https://web.archive.org/web/20261016023617/https://www.tesla.com/roadster">Tesla 페이지 2026-10-16</a></li>
+    </ul><h3>측정·공개 자료</h3><ul>
+      <li><a href="https://insideevs.com/news/514719/tesla-models-accleration-test-motortrend/">InsideEVs 2021-06-17</a></li>
+      <li><a href="https://www.rimac-newsroom.com/press-releases/rimac-automobili/rimac-nevera-sets-23-performance-records-in-a-single-day">Rimac 2023-05-17</a></li>
+      <li><a href="https://www.motor1.com/news/626865/mcmurty-speirling-0-to-60-acceleration-video/">Motor1 2022-12-15</a></li>
+      <li><a href="https://en.wikipedia.org/w/index.php?title=Tesla_Roadster_(second_generation)&amp;oldid=1380953030">영어 Wikipedia</a></li>
+      <li><a href="https://commons.wikimedia.org/wiki/File:NextGenTeslaRoadster_(cropped).jpg">Wikimedia Commons</a></li>
+    </ul></div>
+    <div class="grp"><h3>언론</h3><ul class="two-col">
+      <li><a href="https://finance.yahoo.com/news/tesla-set-unveil-next-generation-100401819.html">Reuters 2026-10-16</a></li>
+      <li><a href="https://www.nbcnews.com/tech/tech-news/elon-musk-shows-flying-tesla-roadster-years-delays-rcna603905">NBC News 2026-10-16</a></li>
+      <li><a href="https://www.cnbc.com/2017/11/16/tesla-ceo-elon-musk-unveils-a-surprise-new-car-a-new-roadster.html">CNBC 2017-11-17</a></li>
+      <li><a href="https://www.theverge.com/transportation/1012552/tesla-roadster-next-gen-reveal-elon-musk">The Verge 2026-10-16(행사)</a></li>
+      <li><a href="https://www.theverge.com/transportation/1012783/tesla-roadster-flying-stunt-production-reality-musk">The Verge 2026-10-16(분석)</a></li>
+      <li><a href="https://gizmodo.com/teslas-new-roadster-can-somehow-do-corkscrews-in-the-air-without-exploding-yet-2000826761">Gizmodo 2026-10-15</a></li>
+      <li><a href="https://www.npr.org/sections/thetwo-way/2017/11/17/564777998/tesla-unveils-its-electric-semi-truck-and-adds-a-roadster">NPR 2017-11-17</a></li>
+      <li><a href="https://www.cnn.com/2026/10/15/business/tesla-unveils-what-it-says-is-a-flying-car">CNN 2026-10-15</a></li>
+      <li><a href="https://www.youtube.com/watch?v=JdkIOhFmbKI">Top Gear 2026-10-16</a></li>
+      <li><a href="https://electrek.co/2021/01/28/elon-musk-tesla-roadster-delayed-2022/">Electrek 2021-01-28</a></li>
+      <li><a href="https://electrek.co/2021/09/01/tesla-delays-new-roadster-2023/">Electrek 2021-09-01</a></li>
+      <li><a href="https://electrek.co/2024/02/28/tesla-unveil-new-roadster-this-year-elon-rockets-spacex-collab/">Electrek 2024-02-28</a></li>
+      <li><a href="https://electrek.co/2026/10/13/tesla-roadster-event-thursday-nine-years-delays/">Electrek 2026-10-13</a></li>
+      <li><a href="https://electrek.co/2026/10/15/an-updated-technical-look-at-teslas-kick-flipping-0-60-in-1s-next-gen-roadster/">Electrek 2026-10-15(기술)</a></li>
+      <li><a href="https://electrek.co/2026/10/15/tesla-unveils-cyberfied-new-roadster-kickflip/">Electrek 2026-10-15(공개)</a></li>
+      <li><a href="https://insideevs.com/news/435447/tesla-q2-2020-earnings-call-key-details/">InsideEVs 2020-07-23</a></li>
+      <li><a href="https://insideevs.com/news/667648/tesla-roadster-hopefully-entering-production-2024-elon-musk/">InsideEVs 2023-05-17</a></li>
+    </ul></div>
+  </div>
+  <p class="big ledger">숫자 장부 전체: {{link:REPO_URL}}</p>
+  </div>
+  <footer class="ft"><div class="src"></div><div class="pg"><b>11</b></div></footer>
+</section>
+
+<!-- 12 · slot 11 감사 (slot title not drawn: match = skip); mirrors the cover -->
+<section class="slide thanks" data-tpl="11" data-slot="11" data-main style="--top:152px;--side:110.4px;--tt-size:40px;--ft-bottom:40px">
+  <header class="hd"></header>
+  <div class="stage center">
+  <div class="cover">
+    <div>
+      <h1 style="font-size:80px;line-height:1.15">감사합니다</h1>
+      <div class="cta" style="margin-top:34px"><p>숫자를 들으면 물어보세요: 누가 말했고, 무엇으로 확인했나?</p></div>
+      <p class="note">Tesla와 관계없는 비공식 정리입니다</p>
+    </div>
+    <figure>
+      <img class="photo" src="assets/img/roadster-2017-prototype-side.jpg" alt="빨간색 Roadster 시제품의 옆모습. 처음 공개된 시제품이며 이번에 공개된 차가 아니다.">
+      <figcaption>처음 공개된 시제품({{fact:hist-unveil-2017-date}})</figcaption>
+    </figure>
+  </div>
+  <p class="repo-line">숫자 장부와 원본: {{link:REPO_URL}}</p>
+  </div>
+  <footer class="ft"><div class="src">사진 Editor928111, 화면 영어 Wikipedia, 둘 다 <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. Details: <a href="https://www.npr.org/sections/thetwo-way/2017/11/17/564777998/tesla-unveils-its-electric-semi-truck-and-adds-a-roadster">NPR 2017-11-17</a></div><div class="pg"><b>12</b></div></footer>
+</section>
+
+<!-- A1 · appendix (no template slot): expected questions -->
+<section class="slide" data-tpl="10" style="--top:152px;--side:110.4px;--tt-size:40px;--ft-bottom:40px">
+  <header class="hd"><div class="tt on-art" style="left:110.4px;top:37.2px;color:#F4F6F8">부록 A1: 예상 질문</div><h1>질문 네 가지</h1></header>
+  <div class="stage">
+  <div class="qa">
+    <div class="card"><h3>날 수 있나?</h3><p>짧은 점프·회전·착지뿐, 오래 날지 않았다.</p><p class="muted">공기 추진 약 {{fact:tg-thrust-burst:value}}초 <span class="chip c-claim">주장</span>: Thrust 버전 쿼터마일 주행</p></div>
+    <div class="card"><h3>최고 속도는?</h3><p>{{fact:topspeed-2026:value}} mph 이상 <span class="chip c-claim">주장</span>: Rocket 버전만</p><p>엔지니어: ‘지금은 {{fact:tg-topspeed-now:value}} mph’ <span class="chip c-claim">주장</span></p></div>
+    <div class="card"><h3>차값이 ${{fact:reservation-thrust-2026:value}}인가?</h3><p>행사({{fact:event-date}}) 기준 아니다: Thrust 예약금 <span class="chip c-rep">보도</span></p><p class="muted">첫 공개 때 Founders Series 가격 ${{fact:price-founders-2017:value}} <span class="chip c-claim">주장</span></p></div>
+    <div class="card"><h3>배터리와 출력은?</h3><p>배터리 용량 미공개. 출력 {{fact:tg-power:value}} MW 이상(<span class="fact" data-fact="tg-power">1,500</span>마력) <span class="chip c-claim">주장</span></p></div>
+  </div>
+  </div>
+  <footer class="ft"><div class="src">Details: <a href="https://www.cnn.com/2026/10/15/business/tesla-unveils-what-it-says-is-a-flying-car">CNN 2026-10-15</a>, <a href="https://www.youtube.com/watch?v=JdkIOhFmbKI">Top Gear 2026-10-16</a>, <a href="https://x.com/Tesla/status/2110905588402295283">Tesla X 2026-10-16</a>, <a href="https://finance.yahoo.com/news/tesla-set-unveil-next-generation-100401819.html">Reuters 2026-10-16</a>, <a href="https://web.archive.org/web/20171117051903/https://www.tesla.com/roadster/">Tesla 페이지 2017-11-17</a></div><div class="pg"><b>A1</b></div></footer>
+</section>
+</body>
+</html>

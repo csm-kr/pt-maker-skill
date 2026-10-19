@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tesla Roadster 발표, 비공식 정리</title>
+  <style>
+    @font-face {
+      font-family: "Pretendard Local";
+      src: local("Pretendard"), local("Pretendard Variable"), local("Apple SD Gothic Neo"), local("Noto Sans KR");
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: block;
+    }
+
+    :root {
+      /* dark taste profile: near-black stage, warm-white ink, five meaning colours */
+      --paper: #0b0d12;          /* presenter shell reads this as the slide background */
+      --bg: #0b0d12;
+      --ink: #f3f1ec;
+      --soft: #c3c9d5;
+      --muted: #8f98aa;
+      --hair: rgba(255, 255, 255, .1);
+      --claim: #ffb547;          /* 주장: Tesla or Musk said it */
+      --demo: #35d4c7;           /* 시연: shown live */
+      --ver: #a7e15b;            /* 검증: independently recorded or measured */
+      --rep: #8db0ff;            /* 보도: outlet reporting */
+      --alert: #ff6b5d;          /* still missing, still a promise */
+      --safe-x: 96px;
+      --safe-y: 84px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    body {
+      background: #050608;
+      color: var(--ink);
+      font-family: "Pretendard Local", system-ui, sans-serif;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .scene { position: absolute; inset: 0; overflow: hidden; }
+
+    .comp {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      color: var(--ink);
+      font-family: "Pretendard Local", system-ui, sans-serif;
+      word-break: keep-all;
+      font-variant-numeric: tabular-nums;
+    }
+    .comp p { margin: 0; }
+
+    .stage-bg {
+      position: absolute;
+      inset: 0;
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse 58% 52% at 80% 18%, rgba(53, 212, 199, .075), transparent 72%),
+        radial-gradient(ellipse 46% 46% at 6% 96%, rgba(255, 181, 71, .05), transparent 72%),
+        linear-gradient(rgba(255, 255, 255, .038) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .038) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+      background-position: 0 0, 0 0, 0 -1px, -1px 0;
+    }
+
+    .scene-content { position: absolute; inset: 0; }
+
+    /* persistent frame: same coordinates in every scene */
+    .kicker {
+      position: absolute;
+      left: 96px;
+      top: 62px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: var(--soft);
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: .03em;
+      line-height: 1.2;
+    }
+    .kbar { display: block; width: 40px; height: 4px; border-radius: 2px; background: var(--k, var(--soft)); }
+    .pill-alert {
+      padding: 8px 18px 7px;
+      border: 2px solid var(--alert);
+      border-radius: 999px;
+      color: var(--alert);
+      background: rgba(255, 107, 93, .1);
+      font-weight: 800;
+      letter-spacing: .02em;
+    }
+    .status-rail {
+      position: absolute;
+      right: 96px;
+      top: 56px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .rail-label { margin-right: 8px; color: var(--muted); font-size: 26px; font-weight: 600; }
+    .st {
+      padding: 9px 17px 8px;
+      border: 2px solid rgba(255, 255, 255, .2);
+      border-radius: 999px;
+      color: rgba(255, 255, 255, .44);
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .st.on.st-claim { color: var(--claim); border-color: var(--claim); background: rgba(255, 181, 71, .12); }
+    .st.on.st-demo { color: var(--demo); border-color: var(--demo); background: rgba(53, 212, 199, .12); }
+    .st.on.st-ver { color: var(--ver); border-color: var(--ver); background: rgba(167, 225, 91, .12); }
+    .st.on.st-rep { color: var(--rep); border-color: var(--rep); background: rgba(141, 176, 255, .12); }
+
+    .src {
+      position: absolute;
+      left: 96px;
+      right: 96px;
+      bottom: 92px;
+      color: var(--muted);
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.42;
+    }
+    .src b { color: var(--soft); font-weight: 700; }
+
+    /* type */
+    .title {
+      position: absolute;
+      margin: 0;
+      color: var(--ink);
+      font-size: 70px;
+      font-weight: 800;
+      line-height: 1.16;
+      letter-spacing: -.025em;
+    }
+    .title .ln { display: block; white-space: nowrap; }
+    .cover-title { font-weight: 850; letter-spacing: -.035em; line-height: 1.12; }
+    .dek {
+      position: absolute;
+      left: 96px;
+      color: var(--soft);
+      font-size: 32px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .dek-quote { color: var(--muted); font-style: normal; }
+    .factline {
+      position: absolute;
+      left: 96px;
+      color: var(--ink);
+      font-size: 34px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .c-claim { color: var(--claim); }
+    .c-demo { color: var(--demo); }
+    .c-ver { color: var(--ver); }
+    .c-rep { color: var(--rep); }
+    .c-alert { color: var(--alert); }
+    .nw { white-space: nowrap; }
+
+    .tag {
+      display: inline-block;
+      position: relative;
+      top: -.12em;
+      margin-left: 12px;
+      padding: 5px 11px 4px;
+      border: 2px solid currentColor;
+      border-radius: 999px;
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+    .t-claim { color: var(--claim); background: rgba(255, 181, 71, .1); }
+    .t-demo { color: var(--demo); background: rgba(53, 212, 199, .1); }
+    .t-ver { color: var(--ver); background: rgba(167, 225, 91, .1); }
+    .t-rep { color: var(--rep); background: rgba(141, 176, 255, .1); }
+    .t-calc { color: var(--muted); background: rgba(255, 255, 255, .05); }
+
+    /* the roadster */
+    .car { position: absolute; overflow: visible; }
+    .car .cs, .carg .cs { fill: rgba(255, 255, 255, .07); }
+    .car .cb, .carg .cb { fill: #1c2231; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+    .car .cg, .carg .cg { fill: rgba(53, 212, 199, .24); stroke: var(--ink); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+    .car .cw, .carg .cw { fill: #0b0d12; stroke: var(--ink); stroke-width: 2.5; vector-effect: non-scaling-stroke; }
+    .car .ch, .carg .ch { fill: var(--soft); }
+    .car .cl, .carg .cl { fill: var(--demo); }
+    .car .ct, .carg .ct { fill: var(--alert); }
+    .ghost .cb, .ghost .cw {
+      fill: none;
+      stroke: rgba(243, 241, 236, .55);
+      stroke-width: 2;
+      stroke-dasharray: 9 7;
+    }
+    .ghost-solid .cb, .ghost-solid .cw { stroke: rgba(243, 241, 236, .7); stroke-width: 2.5; stroke-dasharray: none; }
+    .car.dim { opacity: .55; }
+    .ghost .cg, .ghost .ch, .ghost .cl, .ghost .ct, .ghost .cs { display: none; }
+    .puff { fill: var(--demo); opacity: 0; }
+    .jet { fill: var(--claim); }
+    .jet-dim { fill: rgba(255, 181, 71, .6); }
+
+    .agenda {
+      position: absolute;
+      display: flex;
+      gap: 34px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: var(--soft);
+      font-size: 28px;
+      font-weight: 650;
+      line-height: 1.3;
+    }
+    .agenda li { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+    .agenda b {
+      display: inline-grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+      font-size: 22px;
+      font-weight: 850;
+    }
+    .road-dash { height: 0 !important; background: none !important; border-top: 3px dashed rgba(243, 241, 236, .35); }
+    .road {
+      position: absolute;
+      height: 3px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, rgba(243, 241, 236, .08), rgba(243, 241, 236, .5) 40%, rgba(243, 241, 236, .2));
+    }
+
+    /* scene 2 */
+    .diagram { position: absolute; overflow: visible; }
+    .road-solid { fill: none; stroke: var(--ink); stroke-width: 5; stroke-linecap: round; }
+    .road-dash { fill: none; stroke: var(--claim); stroke-width: 5; stroke-dasharray: 16 14; stroke-linecap: round; }
+    .road-dot { fill: var(--claim); stroke: var(--bg); stroke-width: 4; }
+    .dot-demo { fill: var(--demo); }
+    .dot-open { fill: var(--bg); stroke: var(--claim); stroke-width: 4; }
+    .post { stroke: rgba(255, 255, 255, .24); stroke-width: 2; }
+    .post-dash { stroke-dasharray: 6 6; }
+    .brace { fill: none; stroke: var(--claim); stroke-width: 3; stroke-linejoin: round; }
+    .node {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 30px 34px;
+      border: 2px solid rgba(255, 255, 255, .14);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .02));
+    }
+    .node-future { border-style: dashed; border-color: rgba(255, 181, 71, .55); }
+    .node-lab { color: var(--muted); font-size: 30px; font-weight: 700; }
+    .node-big { margin-top: 12px; font-size: 76px; font-weight: 850; letter-spacing: -.03em; line-height: 1.05; }
+    .node-sub { margin-top: 16px; color: var(--soft); font-size: 30px; font-weight: 650; }
+    .brace-label {
+      position: absolute;
+      color: var(--soft);
+      font-size: 30px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    /* metric cards (scenes 3, 5) */
+    .mcard {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      padding: 26px 30px;
+      border: 1.5px solid rgba(255, 255, 255, .12);
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .02));
+    }
+    .mcard-lab { color: var(--soft); font-size: 28px; font-weight: 700; line-height: 1.3; }
+    .mcard-big { margin-top: 14px; font-size: 76px; font-weight: 850; letter-spacing: -.03em; line-height: 1.05; }
+    .mcard-note { margin-top: auto; color: var(--muted); font-size: 26px; font-weight: 600; line-height: 1.4; }
+    .mcard-s .mcard-big { margin-top: 12px; font-size: 46px; }
+
+    /* scene 3 photo */
+    .photo {
+      position: absolute;
+      margin: 0;
+      overflow: hidden;
+      border-radius: 18px;
+      background: #000;
+      box-shadow: 0 0 0 1.5px rgba(255, 255, 255, .12);
+    }
+    .photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .photo-cap { position: absolute; color: var(--soft); font-size: 30px; font-weight: 700; line-height: 1.4; }
+    .photo-credit { position: absolute; color: var(--muted); font-size: 24px; font-weight: 500; line-height: 1.4; }
+    .pricebar { position: absolute; color: var(--ink); font-size: 36px; font-weight: 750; line-height: 1.4; }
+
+    /* scene 4 chart */
+    .chart { position: absolute; overflow: visible; }
+    .chart .grid { stroke: rgba(255, 255, 255, .07); stroke-width: 1.5; }
+    .chart .axis { stroke: rgba(255, 255, 255, .35); stroke-width: 2; }
+    .chart .tick { stroke: rgba(255, 255, 255, .35); stroke-width: 2; }
+    .chart .axis-lab { fill: var(--muted); font-size: 24px; font-weight: 600; }
+    .chart .axis-lab-y { fill: var(--claim); font-size: 26px; font-weight: 700; }
+    .chart .axis-title { fill: var(--soft); font-size: 24px; font-weight: 700; }
+    .chart .step { fill: none; stroke: var(--claim); stroke-width: 5; stroke-linejoin: round; stroke-linecap: round; }
+    .chart .line-ext { fill: none; stroke: var(--claim); stroke-width: 4; stroke-dasharray: 8 8; }
+    .chart .pt { fill: var(--claim); stroke: var(--bg); stroke-width: 4; }
+    .chart .range { fill: rgba(255, 181, 71, .35); stroke: var(--claim); stroke-width: 3; }
+    .chart .pt-note { fill: var(--soft); font-size: 24px; font-weight: 600; }
+    .chart .pt-ann { fill: var(--soft); font-size: 26px; font-weight: 700; }
+    .chart .pt-new-lab { fill: var(--alert); font-size: 28px; font-weight: 800; }
+    .side { position: absolute; display: flex; flex-direction: column; gap: 34px; }
+    .side-lab { color: var(--soft); font-size: 28px; font-weight: 700; line-height: 1.3; }
+    .side-big { margin-top: 6px; font-size: 40px; font-weight: 850; letter-spacing: -.02em; line-height: 1.1; white-space: nowrap; }
+    .side-note { margin-top: 8px; color: var(--muted); font-size: 24px; font-weight: 600; }
+    .side-note .tag { margin-left: 0; margin-right: 8px; }
+
+    /* scene 5 timeline */
+    .band { fill: none; stroke: rgba(243, 241, 236, .55); stroke-width: 4; stroke-linecap: round; }
+    .band-dot { fill: var(--rep); stroke: var(--bg); stroke-width: 4; }
+    .dot-alert { fill: var(--alert); }
+    .strike { fill: none; stroke: var(--alert); stroke-width: 5; stroke-linecap: round; }
+    .mk { position: absolute; text-align: center; }
+    .mk-date { color: var(--ink); font-size: 36px; font-weight: 800; line-height: 1.3; }
+    .mk-desc { margin-top: 8px; color: var(--soft); font-size: 28px; font-weight: 600; line-height: 1.4; }
+    .mk.strike .mk-date { color: var(--muted); }
+    .mk.big .mk-date { color: var(--demo); font-size: 40px; }
+    .kst { position: absolute; color: var(--soft); font-size: 30px; font-weight: 700; text-align: right; }
+    .mk-up { text-align: left; }
+    .mk-right { text-align: right; }
+    .day-tick { stroke: rgba(243, 241, 236, .35); stroke-width: 2; }
+    .scale-note { position: absolute; color: var(--muted); font-size: 26px; font-weight: 600; }
+
+    /* scene 6 panels */
+    .panel {
+      position: absolute;
+      border: 1.5px solid rgba(255, 255, 255, .12);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, .015));
+    }
+    .panel-head {
+      position: absolute;
+      left: 26px;
+      top: 26px;
+      display: flex;
+      align-items: center;
+      color: var(--ink);
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+    .panel-num {
+      display: inline-grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      margin-right: 14px;
+      border-radius: 50%;
+      background: var(--demo);
+      color: var(--bg);
+      font-size: 24px;
+      font-weight: 900;
+    }
+    .panel-svg { position: absolute; overflow: visible; }
+    .panel-cap {
+      position: absolute;
+      left: 26px;
+      right: 22px;
+      bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      color: var(--soft);
+      font-size: 30px;
+      font-weight: 650;
+      line-height: 1.42;
+    }
+    .panel-cap2 { color: var(--muted); font-size: 28px; }
+    .ground { stroke: rgba(243, 241, 236, .4); stroke-width: 3; }
+    .ramp { fill: none; stroke: var(--ink); stroke-width: 6; stroke-linecap: round; }
+    .arrowhead { fill: var(--demo); }
+    .traj { fill: none; stroke: var(--demo); stroke-width: 4; stroke-dasharray: 10 10; stroke-linecap: round; }
+    .blk { fill: #232a3a; stroke: rgba(243, 241, 236, .45); stroke-width: 2; }
+    .dg-lab { fill: var(--claim); font-size: 26px; font-weight: 800; }
+    .dial-track { fill: none; stroke: rgba(255, 255, 255, .1); stroke-width: 16; }
+    .dial-arc { fill: none; stroke: var(--demo); stroke-width: 16; stroke-linecap: butt; }
+    .dial-tick { stroke: rgba(255, 255, 255, .3); stroke-width: 3; }
+    .dial-claim { fill: var(--claim) !important; }
+    .dial-val { fill: var(--demo); font-size: 50px; font-weight: 850; letter-spacing: -.02em; }
+    .dial-sub { fill: var(--muted); font-size: 24px; font-weight: 600; }
+
+    /* scene 7 trims */
+    .trim {
+      position: absolute;
+      padding: 28px 30px;
+      border: 1.5px solid rgba(255, 255, 255, .12);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .015));
+    }
+    .trim-hot { border-color: rgba(255, 181, 71, .5); background: linear-gradient(180deg, rgba(255, 181, 71, .09), rgba(255, 255, 255, .015)); }
+    .trim-name { color: var(--ink); font-size: 44px; font-weight: 850; letter-spacing: -.02em; line-height: 1.2; }
+    .trim-sub { margin-top: 8px; color: var(--soft); font-size: 28px; font-weight: 650; }
+    .trows { position: absolute; left: 30px; right: 30px; top: 152px; }
+    .trow {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 15px 0 14px;
+      border-top: 1.5px solid rgba(255, 255, 255, .09);
+    }
+    .trow-lab { color: var(--muted); font-size: 28px; font-weight: 650; }
+    .trow-val { font-size: 34px; font-weight: 800; letter-spacing: -.01em; }
+    .trim-foot { position: absolute; left: 30px; bottom: 26px; color: var(--muted); font-size: 26px; font-weight: 600; }
+    .badge {
+      position: absolute;
+      padding: 10px 20px 9px;
+      border: 2px solid var(--claim);
+      border-radius: 14px;
+      color: var(--claim);
+      background: #1b1710;
+      font-size: 26px;
+      font-weight: 800;
+      transform: rotate(-2deg);
+    }
+
+    /* scene 8 bars */
+    .legend {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--soft);
+      font-size: 26px;
+      font-weight: 650;
+    }
+    .lg { display: inline-block; width: 34px; height: 18px; border-radius: 5px; }
+    .lg-old { border: 2.5px solid var(--claim); }
+    .lg-new { margin-left: 14px; background: var(--claim); }
+    .rowlab { position: absolute; width: 300px; }
+    .rowlab-t { color: var(--ink); font-size: 34px; font-weight: 800; line-height: 1.2; }
+    .rowlab-s { margin-top: 6px; color: var(--muted); font-size: 26px; font-weight: 600; }
+    .bar { position: absolute; height: 34px; border-radius: 8px; }
+    .bar-old { border: 3px solid var(--claim); background: rgba(255, 181, 71, .06); }
+    .bar-new { background: linear-gradient(90deg, rgba(255, 181, 71, .75), var(--claim)); }
+    .bar-empty {
+      display: grid;
+      place-items: center;
+      border: 3px dashed var(--alert);
+      color: var(--alert);
+      font-size: 26px;
+      font-weight: 900;
+    }
+    .cell {
+      position: absolute;
+      display: grid;
+      place-items: center;
+      height: 40px;
+      border-radius: 10px;
+      font-size: 28px;
+      font-weight: 800;
+    }
+    .cell-old { border: 3px solid var(--claim); color: var(--claim); background: rgba(255, 181, 71, .08); }
+    .cell-empty { border: 3px dashed var(--alert); color: var(--alert); }
+    .bval { position: absolute; color: var(--soft); font-size: 30px; font-weight: 750; line-height: 1.45; white-space: nowrap; }
+    .bval-sub { display: block; color: var(--muted); font-size: 26px; font-weight: 600; line-height: 1.3; }
+    .seat {
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      border-radius: 10px 10px 6px 6px;
+    }
+    .seat-old { border: 3px solid var(--claim); }
+    .seat-new { background: var(--claim); }
+
+    /* scene 9 columns */
+    .vcol {
+      position: absolute;
+      padding: 30px 34px;
+      border: 1.5px solid rgba(255, 255, 255, .12);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, .015));
+    }
+    .vcol-demo { border-top: 5px solid var(--demo); }
+    .vcol-alert { border-top: 5px solid var(--alert); }
+    .vhead { font-size: 40px; font-weight: 850; line-height: 1.2; }
+    .vitem {
+      display: grid;
+      grid-template-columns: 190px 1fr;
+      gap: 22px;
+      align-items: start;
+      margin-top: 22px;
+    }
+    .vbig { font-size: 44px; font-weight: 850; letter-spacing: -.02em; line-height: 1.15; white-space: nowrap; }
+    .vdesc { color: var(--soft); font-size: 32px; font-weight: 600; line-height: 1.4; }
+
+    /* scene 10 horizontal bars */
+    .hlab { position: absolute; color: var(--soft); font-size: 30px; font-weight: 650; line-height: 1.3; white-space: nowrap; }
+    .hcond { position: absolute; height: 34px; margin: 0; color: #0b0d12; font-size: 24px; font-weight: 750; line-height: 34px; white-space: nowrap; }
+    .hbar { position: absolute; height: 34px; border-radius: 0 8px 8px 0; }
+    .hb-claim { background: var(--claim); }
+    .hb-demo { background: var(--demo); }
+    .hb-ver { background: var(--ver); }
+    .hb-rep { background: var(--rep); }
+    .hbar.lt { background: linear-gradient(90deg, var(--claim) 70%, rgba(255, 181, 71, .25)); }
+    .hval { position: absolute; font-size: 30px; font-weight: 800; line-height: 1.4; white-space: nowrap; }
+    .vgrid { position: absolute; width: 0; border-left: 1.5px dashed rgba(255, 255, 255, .14); }
+    .vgrid-lab { position: absolute; width: 80px; color: var(--muted); font-size: 24px; font-weight: 600; text-align: center; }
+    .sep { position: absolute; height: 0; border-top: 1.5px solid rgba(255, 255, 255, .14); }
+    .footnote { position: absolute; color: var(--muted); font-size: 26px; font-weight: 600; line-height: 1.4; }
+
+    /* scene 11 checklist */
+    .cbox { position: absolute; overflow: visible; }
+    .cbox rect { fill: none; stroke: var(--alert); stroke-width: 4; }
+    .cbox text { fill: var(--alert); font-size: 40px; font-weight: 900; }
+    .crow { position: absolute; }
+    .crow-head { color: var(--ink); font-size: 44px; font-weight: 850; line-height: 1.25; }
+    .crow-desc { margin-top: 10px; color: var(--soft); font-size: 30px; font-weight: 600; line-height: 1.45; }
+    .ghost-cap { position: absolute; text-align: center; color: var(--muted); font-size: 26px; font-weight: 700; }
+    .quote {
+      position: absolute;
+      padding: 24px 30px 24px 34px;
+      border-left: 6px solid var(--rep);
+      border-radius: 6px 18px 18px 6px;
+      background: rgba(141, 176, 255, .06);
+    }
+    .quote-t { color: var(--ink); font-size: 32px; font-weight: 700; line-height: 1.5; }
+    .quote-a { margin-top: 12px; color: var(--muted); font-size: 26px; font-weight: 600; line-height: 1.4; }
+    .quote-note { display: block; margin-top: 6px; font-size: 24px; color: var(--muted); }
+    .quote-note .tag { font-size: 22px; }
+    .trow-lab .tag { font-size: 22px; margin-left: 10px; }
+    .quote-big .quote-t { font-size: 54px; font-weight: 850; line-height: 1.25; letter-spacing: -.02em; }
+
+    /* scene 12 close */
+    .cta { position: absolute; }
+    .cta-lead { color: var(--soft); font-size: 34px; font-weight: 700; line-height: 1.4; }
+    .cta-chips { display: flex; gap: 18px; margin-top: 22px; }
+    .cta-chip {
+      padding: 14px 28px 13px;
+      border: 3px solid currentColor;
+      border-radius: 999px;
+      font-size: 42px;
+      font-weight: 850;
+      line-height: 1.1;
+    }
+    .watch { position: absolute; color: var(--soft); font-size: 30px; font-weight: 800; }
+    .flag { position: absolute; display: flex; flex-direction: column; align-items: center; }
+    .flag-lab {
+      padding: 10px 20px 9px;
+      border: 2px solid rgba(255, 255, 255, .22);
+      border-radius: 14px;
+      background: #141924;
+      color: var(--ink);
+      font-size: 30px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .flag-pole { display: block; width: 3px; height: 70px; background: rgba(255, 255, 255, .3); }
+
+    /* parent-owned film progress rail (HyperFrames render only) */
+    #progress-clip { position: absolute; inset: 0; }
+    #progress-track {
+      position: absolute;
+      left: 96px;
+      right: 96px;
+      bottom: 40px;
+      height: 6px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, .08);
+      overflow: hidden;
+    }
+    #progress-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--claim), var(--demo), var(--ver));
+      transform-origin: left center;
+    }
+
+    /* presenter shell: neutral transition washes so they never reuse the status colours */
+    #animated-presentation {
+      --show-a: #59606e !important;
+      --show-b: #8f98aa !important;
+      --show-c: #c3c9d5 !important;
+      --show-night: #06070a !important;
+    }
+    #scene-hud { mix-blend-mode: normal !important; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .puff { opacity: 0; }
+    }
+
+  </style>
+</head>
+<body>
+  <!-- Derived from the HyperFrames 0.7.70 blank composition contract (Apache-2.0). -->
+  <div id="root" data-composition-id="main" data-start="0" data-duration="117" data-width="1920" data-height="1080" data-fps="30" aria-label="Tesla Roadster 발표 비공식 정리 애니메이션">
+    <div id="scene-1" class="scene clip" data-composition-id="scene-1" data-composition-src="compositions/scene-1.html" data-start="0" data-duration="7" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080" data-chapter="기 · 2017년의 약속"></div>
+    <div id="scene-2" class="scene clip" data-composition-id="scene-2" data-composition-src="compositions/scene-2.html" data-start="7" data-duration="8" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080" data-chapter="기 · 2017년의 약속"></div>
+    <div id="scene-3" class="scene clip" data-composition-id="scene-3" data-composition-src="compositions/scene-3.html" data-start="15" data-duration="10" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080" data-chapter="기 · 2017년의 약속"></div>
+    <div id="scene-4" class="scene clip" data-composition-id="scene-4" data-composition-src="compositions/scene-4.html" data-start="25" data-duration="10" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080" data-chapter="기 · 2017년의 약속"></div>
+    <div id="scene-5" class="scene clip" data-composition-id="scene-5" data-composition-src="compositions/scene-5.html" data-start="35" data-duration="10" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080" data-chapter="승 · 2026년의 시연"></div>
+    <div id="scene-6" class="scene clip" data-composition-id="scene-6" data-composition-src="compositions/scene-6.html" data-start="45" data-duration="11" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080" data-chapter="승 · 2026년의 시연"></div>
+    <div id="scene-7" class="scene clip" data-composition-id="scene-7" data-composition-src="compositions/scene-7.html" data-start="56" data-duration="9" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080" data-chapter="승 · 2026년의 시연"></div>
+    <div id="scene-8" class="scene clip" data-composition-id="scene-8" data-composition-src="compositions/scene-8.html" data-start="65" data-duration="10" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080" data-chapter="전 · 숫자 검증"></div>
+    <div id="scene-9" class="scene clip" data-composition-id="scene-9" data-composition-src="compositions/scene-9.html" data-start="75" data-duration="11" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080" data-chapter="전 · 숫자 검증"></div>
+    <div id="scene-10" class="scene clip" data-composition-id="scene-10" data-composition-src="compositions/scene-10.html" data-start="86" data-duration="10" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080" data-chapter="전 · 숫자 검증"></div>
+    <div id="scene-11" class="scene clip" data-composition-id="scene-11" data-composition-src="compositions/scene-11.html" data-start="96" data-duration="11" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080" data-chapter="결 · 남은 약속"></div>
+    <div id="scene-12" class="scene clip" data-composition-id="scene-12" data-composition-src="compositions/scene-12.html" data-start="107" data-duration="10" data-playback-start="0" data-track-index="0" data-width="1920" data-height="1080" data-chapter="결 · 남은 약속"></div>
+
+    <div id="progress-clip" class="clip" data-start="0" data-duration="117" data-track-index="2" data-layout-ignore aria-hidden="true"><div id="progress-track"><div id="progress-fill"></div></div></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+
+    // The parent owns only the film progress rail. Each scene owns its local timeline.
+    tl.fromTo("#progress-fill", { scaleX: 0 }, { scaleX: 1, duration: 117, ease: "none" }, 0);
+
+    window.__timelines = window.__timelines || {};
+    window.__timelines["main"] = tl;
+  </script>
+</body>
+</html>

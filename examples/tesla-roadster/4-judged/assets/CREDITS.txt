@@ -1,0 +1,16 @@
+# asset | source/generation mode | URL or prompt note | accessed/generated date
+assets/img/roadster-2017-prototype-side.jpg | public photo (Wikimedia Commons, CC BY-SA 4.0, unmodified 1280 px rendition) | https://commons.wikimedia.org/wiki/File:NextGenTeslaRoadster_(cropped).jpg | 2026-10-19
+template/sample-judged-template.pptx | self-made synthetic template, 11 slots (template/make_template.py, zipfile only); not any real contest template | - | 2026-10-19
+deck.src.html inline SVG (pages 04, 07, 08) | self-drawn diagrams and charts; chart values come from facts.json | - | 2026-10-19
+
+# Attribution and licenses
+# roadster-2017-prototype-side.jpg: "NextGenTeslaRoadster (cropped).jpg" by Editor928111, CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/),
+#   via Wikimedia Commons. The 2017 prototype, photographed 2019-06-11 at the Computer History Museum. Not the car shown on 2026-10-15.
+#   Used as published by Commons (1280 px rendition), no edits. The car's small badge is not the subject; no wordmark is visible.
+# wiki-roadster-not-timed.jpg: one sentence of text from the English Wikipedia article "Tesla Roadster (second generation)",
+#   revision 1380953030 (2026-10-19), by Wikipedia contributors, CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/).
+#   Screenshot crop of text only (no images, no logos, no citation marks), captured with capture_screens.py; the slide adds a yellow
+#   highlight over "not independently timed". This crop is shared under CC BY-SA 4.0.
+# Generated images: none. Every picture is a real capture, an openly licensed photo, or an SVG drawn in deck.src.html.
+# No Tesla logos, wordmarks, press photos, livestream frames or news photos are used. This is an unofficial summary, not affiliated with Tesla.
+assets/img/wiki-roadster-not-timed.jpg | real capture (capture_screens.py) | https://en.wikipedia.org/w/index.php?title=Tesla_Roadster_(second_generation)&oldid=1380953030 | 2026-10-19T15:41:16+09:00

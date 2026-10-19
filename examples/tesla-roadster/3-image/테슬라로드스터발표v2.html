@@ -1,0 +1,975 @@
+<!doctype html>
+<!--
+  pt-maker sample deck · production direction: image (이미지 위주) · runtime: Reveal presentation
+  Topic: the 2026-10-15 Tesla Roadster event, as an unofficial, evidence-led summary.
+  Every number comes from research/facts.json and carries a chip: 주장 (claimed), 시연 (demonstrated), 검증 (verified).
+  Photos: two openly licensed Wikimedia Commons photos of the 2017 prototype (see assets/CREDITS.txt).
+  Everything else is self-made inline SVG/CSS. No logos, wordmarks, press photos or livestream frames.
+-->
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roadster 발표 비공식 정리 v2</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
+
+  <script>
+    (function () {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = /print-pdf/gi.test(window.location.search)
+        ? 'https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/css/print/pdf.css'
+        : 'https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/css/print/paper.css';
+      document.head.appendChild(link);
+    })();
+  </script>
+
+  <style>
+    :root {
+      --paper:      #FAF3DE;
+      --card:       #FFFCF1;
+      --ink:        #20174A;
+      --ink-soft:   #6c648f;
+      --cream-line: #E7DCB6;
+      --accent:     #C73463;
+      /* status colors: one meaning each, used for chips, bars and bins */
+      --claim:      #A65308;
+      --claim-bg:   #FBE7CC;
+      --demo:       #2456B5;
+      --demo-bg:    #DDE7FA;
+      --verify:     #1B7447;
+      --verify-bg:  #D8EFE2;
+      --stage-w:    1280px;
+      --stage-h:    720px;
+    }
+
+    .reveal { font-family: "Pretendard", system-ui, sans-serif; color: var(--ink); font-size: 28px; line-height: 1.56; word-break: keep-all; overflow-wrap: break-word; text-wrap: pretty; }
+    .reveal .slides { text-align: left; }
+    .reveal .slides section { height: 100%; isolation: isolate; padding: 0; }
+    .reveal .slides section:not(.present) { pointer-events: none; }
+    .reveal-viewport {
+      background-color: var(--paper);
+      background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 47px, rgba(32,23,74,0.045) 48px);
+    }
+    .reveal p { margin: 0; }
+    .reveal svg text { font-family: "Pretendard", system-ui, sans-serif; }
+    .abs { position: absolute; }
+    .nb { white-space: nowrap; }
+    .tnum { font-variant-numeric: tabular-nums; }
+
+    /* fixed header: kicker at the same place on every slide */
+    .reveal .s-head { position: absolute; top: 38px; left: 79px; z-index: 6; }
+    .kicker { font: 600 18px/1.4 "Pretendard", sans-serif; letter-spacing: .06em; color: var(--accent); }
+    .kicker .num { font-family: "JetBrains Mono", monospace; color: var(--ink-soft); letter-spacing: .04em; }
+
+    /* claim title */
+    .reveal h2.ttl { position: absolute; left: 79px; top: 74px; width: 1122px; margin: 0; font: 800 38px/1.42 "Pretendard", sans-serif; letter-spacing: -.012em; color: var(--ink); text-wrap: balance; text-transform: none; }
+    .ttl .hl { color: var(--accent); }
+
+    /* status chips */
+    .chip { display: inline-block; font: 700 18px/1 "Pretendard", sans-serif; color: #fff; padding: 5px 9px 6px; border-radius: 6px; vertical-align: .16em; margin-left: .3em; white-space: nowrap; letter-spacing: 0; }
+    .chip.c { background: var(--claim); }
+    .chip.d { background: var(--demo); }
+    .chip.v { background: var(--verify); }
+    .chip.first { margin-left: 0; }
+
+    /* source line */
+    .foot { position: absolute; left: 79px; bottom: 14px; width: 1010px; font: 400 15px/1.4 "Pretendard", sans-serif; color: var(--ink-soft); }
+
+    /* photo frames: whole photo, never cropped */
+    .photo { position: absolute; margin: 0; background: #fff; border: 1px solid var(--cream-line); border-radius: 10px; padding: 10px 10px 0; box-shadow: 4px 6px 0 rgba(32,23,74,0.10); box-sizing: border-box; }
+    .reveal .photo img { display: block; width: 100%; height: auto; object-fit: contain; margin: 0; max-width: none; max-height: none; border-radius: 4px; }
+    .photo figcaption { font: 400 15px/1.42 "Pretendard", sans-serif; color: var(--ink-soft); padding: 8px 2px 9px; }
+    .photo figcaption b { color: var(--ink); font-weight: 700; }
+
+    .note-card { background: var(--card); border: 1.5px solid var(--ink); border-radius: 16px; box-shadow: 5px 7px 0 rgba(32,23,74,0.08); box-sizing: border-box; }
+
+    /* 01 cover */
+    .s-cover .cover-bg { top: 0; bottom: 0; left: 40px; right: 40px; background: var(--card); border-left: 1.5px solid var(--cream-line); border-right: 1.5px solid var(--cream-line); }
+    .s-cover h1.cover-title { margin: 0; font: 800 54px/1.3 "Pretendard", sans-serif; letter-spacing: -.02em; color: var(--ink); text-transform: none; }
+    .s-cover h1.cover-title .hl { color: var(--accent); }
+    .cover-sub { font: 500 24px/1.5 "Pretendard", sans-serif; color: var(--ink); }
+    .cover-sub .chip { font-size: 17px; }
+    .cover-note { background: var(--ink); color: #FFFCF1; border-radius: 16px; padding: 24px 28px 22px; box-sizing: border-box; display: flex; flex-direction: column; }
+    .cover-note .cn-big { margin-top: auto !important; }
+    .cover-note .cn-h { font: 800 26px/1.3 "Pretendard", sans-serif; }
+    .cover-note .cn-t { font: 400 18px/1.55 "Pretendard", sans-serif; color: #e6e1f5; margin-top: 10px; }
+    .cover-note .cn-rule { height: 2px; background: rgba(255,252,241,.25); margin: 18px 0 16px; }
+    .cover-note .cn-s { font: 500 18px/1.5 "Pretendard", sans-serif; color: #e6e1f5; }
+    .cover-note .cn-big { font: 800 52px/1.2 "Pretendard", sans-serif; margin-top: 6px; }
+    .cover-note .cn-big .chip { font-size: 18px; vertical-align: .55em; }
+
+    /* 02 legend */
+    .legend3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .legend3 > div { background: var(--card); border: 1.5px solid var(--cream-line); border-radius: 12px; padding: 14px 16px; font: 500 21px/1.45 "Pretendard", sans-serif; white-space: nowrap; }
+    .legend3 .chip { margin: 0 .45em 0 0; }
+
+    /* 03 number cards */
+    .ncards { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .ncard { position: relative; height: 160px; padding: 18px 20px 0; }
+    .ncard .lab { font: 600 21px/1.4 "Pretendard", sans-serif; color: var(--ink-soft); }
+    .ncard .val { font: 800 44px/1.25 "Pretendard", sans-serif; margin-top: 6px; font-variant-numeric: tabular-nums; }
+    .ncard .sub { font: 500 20px/1.4 "Pretendard", sans-serif; color: var(--ink-soft); margin-top: 2px; }
+    .ncard .chip { position: absolute; top: 16px; right: 16px; margin: 0; }
+    .gloss { font: 400 20px/1.5 "Pretendard", sans-serif; color: var(--ink); text-wrap: pretty; }
+    .gloss b { font-weight: 700; }
+    .gloss .chip { font-size: 16px; }
+
+    /* 04 caption + quote */
+    .cap { font: 400 20px/1.5 "Pretendard", sans-serif; color: var(--ink); }
+    .cap .chip { font-size: 16px; }
+    .quote-card { background: var(--card); border-left: 6px solid var(--accent); border-radius: 0 12px 12px 0; padding: 14px 18px 14px 18px; box-shadow: 4px 6px 0 rgba(32,23,74,0.07); box-sizing: border-box; }
+    .quote-card q, .quote-card .q { display: block; font: 600 22px/1.5 "Pretendard", sans-serif; color: var(--ink); quotes: none; text-wrap: balance; }
+    .quote-card .who { display: block; font: 400 16px/1.45 "Pretendard", sans-serif; color: var(--ink-soft); margin-top: 8px; }
+
+    /* 05 info cards */
+    .info2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .info2 > div { padding: 16px 22px 18px; }
+    .info2 .lab { font: 700 20px/1.4 "Pretendard", sans-serif; color: var(--accent); }
+    .info2 .txt { font: 500 24px/1.5 "Pretendard", sans-serif; margin-top: 6px; }
+
+    /* 06 gloss row */
+    .gloss3 { display: grid; grid-template-columns: repeat(3, 354px); column-gap: 30px; }
+    .gloss3 > div { font: 400 20px/1.5 "Pretendard", sans-serif; text-wrap: balance; }
+    .gloss3 b { font-weight: 700; color: var(--demo); }
+    .gloss-band { box-sizing: border-box; grid-template-columns: 1fr 1.08fr 1fr; column-gap: 24px; background: var(--card); border: 1.5px solid var(--cream-line); border-radius: 12px; padding: 12px 22px; }
+    .gloss-band > div { white-space: nowrap; }
+
+    /* 07 trim cards */
+    .trims { display: grid; grid-template-columns: repeat(3, 354px); column-gap: 30px; align-items: stretch; }
+    .trim { padding: 16px 22px 16px; position: relative; }
+    .trim.rocket { border-color: var(--accent); border-width: 2.5px; }
+    .trim .nm { font: 800 28px/1.3 "Pretendard", sans-serif; }
+    .trim .role { font: 500 20px/1.4 "Pretendard", sans-serif; color: var(--ink-soft); margin-top: 2px; }
+    .trim .chip { position: absolute; top: 18px; right: 18px; margin: 0; }
+    .trim dl { margin: 10px 0 0; display: grid; grid-template-columns: 112px 1fr; row-gap: 6px; font: 500 23px/1.45 "Pretendard", sans-serif; }
+    .trim dt { color: var(--ink-soft); font-weight: 500; font-size: 20px; line-height: 1.6; }
+    .trim dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .trim .say { font: 600 19px/1.45 "Pretendard", sans-serif; color: var(--accent); margin-top: 8px; }
+
+    /* 08 + 10 bar charts */
+    .bar-legend { font: 500 20px/1.4 "Pretendard", sans-serif; color: var(--ink); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .sw { display: inline-block; width: 26px; height: 18px; border-radius: 4px; vertical-align: -2px; }
+    .sw17 { background: var(--claim-bg); border: 2px solid var(--claim); }
+    .sw26 { background: var(--claim); border: 2px solid var(--claim); }
+    .cmp-row { display: grid; grid-template-columns: 130px 1fr; column-gap: 14px; align-items: center; margin-top: 24px; }
+    .cmp-lab { font: 800 24px/1.3 "Pretendard", sans-serif; }
+    .cmp-bars { display: grid; row-gap: 10px; }
+    .bline { display: flex; align-items: center; gap: 12px; height: 42px; }
+    .bar { height: 42px; border-radius: 6px; box-sizing: border-box; flex: none; }
+    .bar.y17 { background: var(--claim-bg); border: 2px solid var(--claim); }
+    .bar.y26 { background: var(--claim); border: 2px solid var(--claim); }
+    .bar.none { background: transparent; border: 2.5px dashed var(--ink-soft); display: flex; align-items: center; justify-content: center; font: 700 21px/1 "Pretendard", sans-serif; color: var(--ink-soft); }
+    .bval { font: 700 22px/1.3 "Pretendard", sans-serif; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .bval small { font-size: 18px; font-weight: 500; color: var(--ink-soft); margin-left: .25em; }
+    .dep-card { padding: 20px 22px; }
+    .dep-card .h { font: 800 24px/1.35 "Pretendard", sans-serif; }
+    .dep-card .t { font: 500 21px/1.5 "Pretendard", sans-serif; color: var(--ink); margin-top: 6px; }
+    .dep-card .rule { height: 2px; background: var(--cream-line); margin: 14px 0; }
+    .dep-card .row { font: 600 21px/1.45 "Pretendard", sans-serif; margin-top: 8px; }
+    .dep-card .row .chip { font-size: 16px; }
+
+    .race { display: grid; grid-template-columns: 330px 560px 1fr; column-gap: 14px; row-gap: 6px; align-items: center; }
+    .race .grp { grid-column: 1 / -1; font: 700 19px/1.3 "Pretendard", sans-serif; color: var(--ink-soft); letter-spacing: .02em; margin-top: 4px; }
+    .race .grp.gap { margin-top: 14px; }
+    .race .lab { font: 500 21px/1.3 "Pretendard", sans-serif; text-align: right; }
+    .race .trk { height: 32px; position: relative; background: rgba(32,23,74,0.04); border-radius: 5px; }
+    .race .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 5px; }
+    .race .fill.c { background: var(--claim); }
+    .race .fill.d { background: var(--demo); }
+    .race .fill.v { background: var(--verify); }
+    .race .fill.lt::after { content: ""; position: absolute; right: -2px; top: -5px; bottom: -5px; border-right: 3px dashed var(--ink); }
+    .race .val { font: 700 22px/1.3 "Pretendard", sans-serif; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .race .val .chip { font-size: 16px; }
+    .fn { font: 400 16px/1.45 "Pretendard", sans-serif; color: var(--ink-soft); }
+
+    /* 09 right column */
+    .unk h3 { margin: 0; font: 800 26px/1.35 "Pretendard", sans-serif; color: var(--ink); }
+    .unk .it { margin-top: 18px; padding-left: 18px; border-left: 4px solid var(--cream-line); }
+    .unk .it .a { font: 700 23px/1.45 "Pretendard", sans-serif; }
+    .unk .it .a .chip { font-size: 16px; }
+    .unk .it .b { font: 400 20px/1.45 "Pretendard", sans-serif; color: var(--ink-soft); margin-top: 2px; }
+
+    /* 11 quotes */
+    .qcol { display: grid; row-gap: 22px; }
+
+    /* 12 closing */
+    .s-end h2.end-title { margin: 0; font: 800 44px/1.36 "Pretendard", sans-serif; letter-spacing: -.015em; color: var(--ink); text-transform: none; }
+    .s-end .end-title .hl { color: var(--accent); }
+    .cta-lead { font: 600 27px/1.5 "Pretendard", sans-serif; }
+    .ask { display: flex; gap: 14px; }
+    .ask span { font: 800 26px/1 "Pretendard", sans-serif; color: #fff; padding: 13px 18px 14px; border-radius: 10px; }
+    .ask .c { background: var(--claim); }
+    .ask .d { background: var(--demo); }
+    .ask .v { background: var(--verify); }
+    .sorter-panel { background: var(--ink); border-radius: 18px; box-sizing: border-box; overflow: hidden; }
+
+    .reveal .slide-number { background: transparent; color: var(--ink-soft); font-family: "JetBrains Mono", monospace; font-size: 18px; }
+    .reveal .slide-number a { color: inherit; text-decoration: none; }
+    .reveal .progress { background: rgba(32,23,74,0.10); color: var(--accent); }
+    [data-motion] { transform-origin: center; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 1ms !important;
+      }
+      [data-motion] { opacity: 1 !important; transform: none !important; clip-path: none !important; }
+    }
+
+    @media print {
+      [data-motion] { opacity: 1 !important; transform: none !important; clip-path: none !important; }
+    }
+  </style>
+</head>
+<body data-deck-title="Roadster 발표 비공식 정리" data-deck-version="v2">
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- ===== 01 cover ===== -->
+      <section class="s-cover">
+        <div class="cover-bg abs"></div>
+        <!-- frame: slide; xywh: 0.391 0.406 0.547 0.483; intent: right visual counterweight, whole car visible -->
+        <figure class="photo" style="left:501px;top:292px;width:700px;" data-motion="fade" data-motion-order="3">
+          <img src="assets/roadster-2017-prototype-side-2019.jpg" width="1920" height="792" alt="빨간색 2017년 Roadster 시제품을 옆에서 찍은 사진. 2019년 6월 주주총회 행사장 밖 보도 위">
+          <figcaption><b>2017년 공개 시제품</b>, 2019년 6월 촬영 · 2026년 새 디자인이 아닙니다<br>사진: Editor928111, CC BY-SA 4.0, via Wikimedia Commons</figcaption>
+        </figure>
+        <div class="s-head"><span class="kicker"><span class="num">01</span> / 비공식 정리</span></div>
+        <!-- frame: slide; xywh: 0.062 0.117 0.877 0.195; intent: headline on solid card, high contrast -->
+        <h1 class="cover-title abs" style="left:79px;top:84px;width:1122px;" data-motion="rise" data-motion-order="0">9년 만에 나타난 Roadster<br><span class="hl">잠깐 떠올랐지만, 아직 살 수는 없다</span></h1>
+        <p class="cover-sub abs" style="left:79px;top:234px;width:1122px;" data-motion="fade" data-motion-order="1">2026-10-15<span class="chip v">검증</span> Roadster 행사를 숫자마다 주장·시연·검증으로 나눠 읽습니다</p>
+        <!-- frame: slide; xywh: 0.062 0.406 0.311 0.483; intent: left anchor, mirrors the closing slide's right panel -->
+        <div class="cover-note abs" style="left:79px;top:292px;width:398px;height:348px;" data-motion="fade" data-motion-order="2">
+          <p class="cn-h">비공식 정리</p>
+          <p class="cn-t">Tesla와 관계없는 개인 요약입니다. 로고, 보도사진, 중계 화면은 쓰지 않았습니다.</p>
+          <div class="cn-rule"></div>
+          <p class="cn-s">2017-11-16 시제품 공개부터<br>2026-10-15 행사까지</p>
+          <p class="cn-big tnum">3,255일</p>
+        </div>
+        <p class="foot">자료: Tesla YouTube ‘Roadster Event’ 기록(2026-10-16), NPR(2017-11-17) · 자료 확인일 2026-10-19 · 비공식 정리 v2</p>
+        <aside class="notes">이 덱은 테슬라와 관계없는 비공식 정리입니다. 2017년 11월 16일에 공개된 시제품이 3,255일 뒤인 2026년 10월 15일 행사에서 다시 나왔습니다. 사진은 2017년 시제품이고, 2026년 새 디자인은 공개 라이선스 사진이 없어서 쓰지 않았습니다. 숫자마다 주장, 시연, 검증 표시를 붙였다는 점을 먼저 말합니다. 3,255일이나 8년처럼 두 날짜로 계산한 값은 표시 없이 두 날짜를 함께 적었습니다.</aside>
+      </section>
+
+      <!-- ===== 02 overview ===== -->
+      <section class="s-steps">
+        <!-- frame: slide; xywh: 0.062 0.250 0.877 0.458; intent: optical center, left-to-right reading -->
+        <figure class="abs" style="left:79px;top:180px;width:1122px;height:330px;margin:0;" data-motion="fade" data-motion-order="1">
+          <svg class="step-diagram" data-fullsize-qa="true" data-rendered-qa="true" viewBox="0 0 1122 330" width="1122" height="330" role="img" aria-label="2017년 약속에서 2026년 시연, 다시 2026년 새 약속으로 이어지는 세 단계 그림">
+            <defs>
+              <marker id="m2a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#20174A"/></marker>
+              <symbol id="car2" viewBox="0 0 320 110">
+                <path d="M18 84 C13 84 11 80 11 74 L12 64 C13 57 20 53 30 52 L70 47 C94 36 120 30 150 29 C172 28 190 31 206 38 L226 46 C250 47 276 52 294 60 C302 64 306 70 305 78 C304 82 300 84 294 84 L272 84 A24 24 0 0 0 224 84 L98 84 A24 24 0 0 0 50 84 Z" fill="currentColor"/>
+                <path d="M86 50 C104 40 126 34 150 33 C168 33 182 35 195 41 L206 47 Z" fill="#FFFCF1" opacity=".7"/>
+                <circle cx="74" cy="84" r="18" fill="#20174A"/><circle cx="248" cy="84" r="18" fill="#20174A"/>
+                <circle cx="74" cy="84" r="6" fill="#c9c2e0"/><circle cx="248" cy="84" r="6" fill="#c9c2e0"/>
+              </symbol>
+            </defs>
+            <rect x="6" y="8" width="300" height="236" rx="18" fill="rgba(32,23,74,.08)"/>
+            <rect x="417" y="8" width="300" height="236" rx="18" fill="rgba(32,23,74,.08)"/>
+            <rect x="828" y="8" width="294" height="236" rx="18" fill="rgba(32,23,74,.08)"/>
+            <rect x="1" y="1" width="298" height="234" rx="18" fill="#FFFCF1" stroke="#20174A" stroke-width="1.5"/>
+            <rect x="412" y="1" width="298" height="234" rx="18" fill="#FFFCF1" stroke="#20174A" stroke-width="1.5"/>
+            <rect x="823" y="1" width="292" height="234" rx="18" fill="#FFFCF1" stroke="#20174A" stroke-width="1.5"/>
+            <line x1="306" y1="118" x2="405" y2="118" stroke="#20174A" stroke-width="3" marker-end="url(#m2a)"/>
+            <line x1="717" y1="118" x2="816" y2="118" stroke="#20174A" stroke-width="3" marker-end="url(#m2a)"/>
+            <!-- calendar -->
+            <rect x="122" y="28" width="56" height="50" rx="7" fill="#FBE7CC" stroke="#A65308" stroke-width="3"/>
+            <line x1="122" y1="42" x2="178" y2="42" stroke="#A65308" stroke-width="3"/>
+            <line x1="136" y1="21" x2="136" y2="33" stroke="#A65308" stroke-width="4" stroke-linecap="round"/>
+            <line x1="164" y1="21" x2="164" y2="33" stroke="#A65308" stroke-width="4" stroke-linecap="round"/>
+            <rect x="132" y="50" width="8" height="8" fill="#A65308"/><rect x="146" y="50" width="8" height="8" fill="#A65308"/><rect x="160" y="50" width="8" height="8" fill="#A65308"/>
+            <rect x="132" y="62" width="8" height="8" fill="#A65308"/><rect x="146" y="62" width="8" height="8" fill="#A65308"/>
+            <!-- jump -->
+            <line x1="500" y1="80" x2="622" y2="80" stroke="#20174A" stroke-width="3"/>
+            <path d="M508 78 Q561 6 614 78" fill="none" stroke="#2456B5" stroke-width="3" stroke-dasharray="6 6"/>
+            <use href="#car2" x="531" y="26" width="60" height="21" style="color:#2456B5"/>
+            <!-- factory -->
+            <path d="M940 78 V50 L956 38 V50 L972 38 V50 L988 38 V50 H1004 V78 Z" fill="#FBE7CC" stroke="#A65308" stroke-width="3" stroke-linejoin="round"/>
+            <rect x="992" y="24" width="9" height="22" fill="#A65308"/>
+            <rect x="950" y="60" width="10" height="10" fill="#A65308"/><rect x="967" y="60" width="10" height="10" fill="#A65308"/><rect x="984" y="60" width="10" height="10" fill="#A65308"/>
+            <!-- bracket -->
+            <path d="M150 252 V270 H970 V252" fill="none" stroke="#6c648f" stroke-width="2.5"/>
+            <line x1="560" y1="270" x2="560" y2="282" stroke="#6c648f" stroke-width="2.5"/>
+            <!-- labels -->
+            <text x="150" y="124" text-anchor="middle" font-size="22" fill="#6c648f">2017년의 약속</text>
+            <text x="150" y="174" text-anchor="middle" font-size="40" font-weight="800" fill="#20174A">2020년 출시</text>
+            <rect x="120" y="192" width="60" height="30" rx="6" fill="#A65308"/>
+            <text x="150" y="213" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">주장</text>
+            <text x="561" y="124" text-anchor="middle" font-size="22" fill="#6c648f">2026-10-15 행사</text>
+            <text x="561" y="174" text-anchor="middle" font-size="40" font-weight="800" fill="#20174A">현장 시연</text>
+            <rect x="531" y="192" width="60" height="30" rx="6" fill="#2456B5"/>
+            <text x="561" y="213" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">시연</text>
+            <text x="969" y="124" text-anchor="middle" font-size="22" fill="#6c648f">2026년의 새 약속</text>
+            <text x="969" y="174" text-anchor="middle" font-size="40" font-weight="800" fill="#20174A">2028년 생산</text>
+            <rect x="939" y="192" width="60" height="30" rx="6" fill="#A65308"/>
+            <text x="969" y="213" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">주장</text>
+            <text x="560" y="318" text-anchor="middle" font-size="24" font-weight="600" fill="#20174A">2020년 → 2028년: 목표가 8년 뒤로 밀렸다</text>
+          </svg>
+        </figure>
+        <div class="s-head"><span class="kicker"><span class="num">02</span> / 한눈에</span></div>
+        <h2 class="ttl" data-motion="rise" data-motion-order="0">약속은 <span class="hl">2020년</span>, 시연은 2026년, 다음 약속은 <span class="hl">2028년</span></h2>
+        <!-- frame: slide; xywh: 0.062 0.744 0.877 0.090; intent: legend under the diagram, read once for the whole deck -->
+        <div class="legend3 abs" style="left:79px;top:536px;width:1122px;" data-motion="fade" data-motion-order="2">
+          <div><span class="chip c">주장</span>테슬라·Musk가 말한 것</div>
+          <div><span class="chip d">시연</span>생중계에서 보여 준 것</div>
+          <div><span class="chip v">검증</span>기록·독립 측정으로 확인</div>
+        </div>
+        <p class="fn abs" style="left:79px;top:614px;width:1122px;">칩 없는 숫자는 두 날짜나 단위로 계산한 값입니다(예: 3,255일, 8년, 시속 약 97 km). 언론이 전한 테슬라 발표도 주장입니다.</p>
+        <p class="foot">자료: CNBC(2017-11-17), Reuters(2026-10-16), Tesla YouTube ‘Roadster Event’ 기록</p>
+        <aside class="notes">한 장으로 요약하면 이렇습니다. 2017년에는 2020년 출시를 약속했고, 2026년 10월 15일에 처음으로 실제 시연을 했고, 같은 날 새로 2028년 생산을 약속했습니다. 테슬라와 언론에서 온 숫자에는 아래 세 표시 중 하나가 붙어 있고, 두 날짜나 단위로 계산한 숫자에는 표시가 없습니다.</aside>
+      </section>
+
+      <!-- ===== 03 the 2017 promise ===== -->
+      <section class="s-promise">
+        <!-- frame: slide; xywh: 0.062 0.256 0.422 0.581; intent: left visual, mirrors the cover photo side -->
+        <figure class="photo" style="left:79px;top:184px;width:540px;" data-motion="fade" data-motion-order="1">
+          <img src="assets/roadster-2017-prototype-interior-2019.jpg" width="1280" height="893" alt="2017년 Roadster 시제품의 실내. 요크 모양 핸들, 세로 화면, 흰 앞좌석이 보인다">
+          <figcaption><b>약속과 함께 공개된 2017년 시제품의 실내</b>, 2019년 촬영 · 2026년 차 아님<br>사진: Steve Jurvetson, CC BY 2.0, via Wikimedia Commons</figcaption>
+        </figure>
+        <div class="s-head"><span class="kicker"><span class="num">03</span> / 2017년의 약속</span></div>
+        <h2 class="ttl" data-motion="rise" data-motion-order="0">2017년 테슬라는 <span class="nb">1.9초,</span> <span class="nb">620마일,</span> <span class="nb">4인승,</span> <span class="hl nb">2020년 출시</span>를 약속했다</h2>
+        <!-- frame: slide; xywh: 0.507 0.256 0.431 0.462; intent: right counterweight, four equal cards -->
+        <div class="ncards abs" style="left:649px;top:184px;width:552px;" data-motion="rise" data-motion-order="2">
+          <div class="ncard note-card"><span class="chip c">주장</span><p class="lab">0-60 mph</p><p class="val">1.9초</p></div>
+          <div class="ncard note-card"><span class="chip c">주장</span><p class="lab">주행거리</p><p class="val">620마일</p><p class="sub">약 998 km(환산)</p></div>
+          <div class="ncard note-card"><span class="chip c">주장</span><p class="lab">좌석</p><p class="val">4인승</p><p class="sub">2+2</p></div>
+          <div class="ncard note-card"><span class="chip c">주장</span><p class="lab">출시</p><p class="val">2020년</p></div>
+        </div>
+        <p class="gloss abs" style="left:649px;top:540px;width:552px;"><b>0-60 mph</b>: 정지에서 시속 60마일까지 걸린 시간<br>이 덱의 가속 수치는 모두 이 기준 · <span class="nb">시속 60마일 ≈ 시속 97 km</span></p>
+        <p class="foot">자료: Tesla Roadster 페이지 2017-11-17 보관본(Wayback Machine), CNBC(2017-11-17), Reuters(97 km/h 환산)</p>
+        <aside class="notes">2017년 테슬라 홈페이지에 적힌 약속입니다. 0-60 mph 1.9초, 주행거리 620마일, 4인승, 그리고 2020년 출시. 왼쪽 사진은 그때 공개한 시제품의 실내이고, 사진은 2019년에 찍은 것입니다. 네 숫자 모두 테슬라가 말한 것, 즉 주장입니다.</aside>
+      </section>
+
+      <!-- ===== 04 delays (chart A) ===== -->
+      <section class="s-delay">
+        <!-- frame: slide; xywh: 0.062 0.217 0.877 0.583; intent: dominant chart, time reads left to right -->
+        <figure class="abs" style="left:79px;top:156px;width:1122px;height:420px;margin:0;" data-motion="fade" data-motion-order="1">
+          <svg class="delay-chart" data-fullsize-qa="true" data-rendered-qa="true" viewBox="0 0 1122 420" width="1122" height="420" role="img" aria-label="말한 날짜와 약속한 출시 연도를 잇는 계단 그래프. 2017년 11월 2020년에서 2026년 10월 2028년까지 올라간다">
+            <defs>
+              <marker id="m4a" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7"><circle cx="5" cy="5" r="4" fill="#A65308"/></marker>
+            </defs>
+            <g stroke="#E7DCB6" stroke-width="1.5">
+              <line x1="110" y1="346" x2="1100" y2="346"/><line x1="110" y1="312" x2="1100" y2="312"/>
+              <line x1="110" y1="278" x2="1100" y2="278"/><line x1="110" y1="244" x2="1100" y2="244"/>
+              <line x1="110" y1="210" x2="1100" y2="210"/><line x1="110" y1="176" x2="1100" y2="176"/>
+              <line x1="110" y1="142" x2="1100" y2="142"/><line x1="110" y1="108" x2="1100" y2="108"/>
+              <line x1="110" y1="74" x2="1100" y2="74"/>
+            </g>
+            <line x1="110" y1="380" x2="1100" y2="380" stroke="#20174A" stroke-width="2"/>
+            <g stroke="#20174A" stroke-width="2">
+              <line x1="110" y1="380" x2="110" y2="388"/><line x1="208" y1="380" x2="208" y2="388"/><line x1="306" y1="380" x2="306" y2="388"/>
+              <line x1="404" y1="380" x2="404" y2="388"/><line x1="502" y1="380" x2="502" y2="388"/><line x1="600" y1="380" x2="600" y2="388"/>
+              <line x1="698" y1="380" x2="698" y2="388"/><line x1="796" y1="380" x2="796" y2="388"/><line x1="894" y1="380" x2="894" y2="388"/>
+              <line x1="992" y1="380" x2="992" y2="388"/><line x1="1090" y1="380" x2="1090" y2="388"/>
+            </g>
+            <!-- grey diagonal: the year in which it was said -->
+            <line x1="306" y1="380" x2="1090" y2="108" stroke="#8f88ad" stroke-width="2.5" stroke-dasharray="8 7"/>
+            <!-- step line of promised years -->
+            <path d="M196 346 H458 V295 H509 V278 H567 V244 H734 V210 H812 V176 H977 V91 H1069 V74" fill="none" stroke="#A65308" stroke-width="4" stroke-linejoin="round"/>
+            <rect x="449" y="270" width="18" height="50" rx="9" fill="#FBE7CC" stroke="#A65308" stroke-width="3"/>
+            <rect x="968" y="66" width="18" height="50" rx="9" fill="#FBE7CC" stroke="#A65308" stroke-width="3"/>
+            <circle cx="196" cy="346" r="9" fill="#A65308"/>
+            <circle cx="509" cy="278" r="9" fill="#A65308"/>
+            <circle cx="567" cy="244" r="9" fill="#A65308"/>
+            <circle cx="734" cy="210" r="9" fill="#FFFCF1" stroke="#A65308" stroke-width="3.5"/>
+            <circle cx="812" cy="176" r="9" fill="#A65308"/>
+            <circle cx="1069" cy="74" r="11" fill="#A65308" stroke="#C73463" stroke-width="4"/>
+            <!-- axis labels -->
+            <g font-size="18" fill="#6c648f" text-anchor="end">
+              <text x="98" y="352">2020</text><text x="98" y="318">2021</text><text x="98" y="284">2022</text>
+              <text x="98" y="250">2023</text><text x="98" y="216">2024</text><text x="98" y="182">2025</text>
+              <text x="98" y="148">2026</text><text x="98" y="114">2027</text><text x="98" y="80">2028</text>
+            </g>
+            <g font-size="18" fill="#6c648f" text-anchor="middle">
+              <text x="110" y="410">2017</text><text x="208" y="410">2018</text><text x="306" y="410">2019</text>
+              <text x="404" y="410">2020</text><text x="502" y="410">2021</text><text x="600" y="410">2022</text>
+              <text x="698" y="410">2023</text><text x="796" y="410">2024</text><text x="894" y="410">2025</text>
+              <text x="992" y="410">2026</text><text x="1090" y="410">2027</text>
+            </g>
+            <text x="20" y="34" font-size="20" font-weight="700" fill="#20174A">약속한 해</text>
+            <text x="1100" y="370" font-size="20" font-weight="700" fill="#20174A" text-anchor="end">말한 해</text>
+            <!-- point labels -->
+            <g font-size="21" font-weight="800" fill="#A65308">
+              <text x="196" y="330" text-anchor="middle">2020년</text>
+              <text x="438" y="302" text-anchor="end">2021~22년</text>
+              <text x="509" y="262" text-anchor="middle">2022년</text>
+              <text x="567" y="228" text-anchor="middle">2023년</text>
+              <text x="734" y="194" text-anchor="middle">2024년*</text>
+              <text x="812" y="160" text-anchor="middle">2025년</text>
+              <text x="956" y="96" text-anchor="end">2027~28년</text>
+              <text x="1069" y="28" text-anchor="middle">2028년</text>
+            </g>
+            <text x="196" y="372" font-size="16" fill="#6c648f" text-anchor="middle">2017.11 공개 때</text>
+            <text x="1069" y="50" font-size="16" fill="#6c648f" text-anchor="middle">2026.10 행사</text>
+          </svg>
+        </figure>
+        <div class="s-head"><span class="kicker"><span class="num">04</span> / 밀린 날짜</span></div>
+        <h2 class="ttl" data-motion="rise" data-motion-order="0">출시·생산 목표는 <span class="hl">2020년</span>에서 <span class="hl">2028년</span>까지 계속 밀렸다</h2>
+        <!-- frame: slide; xywh: 0.172 0.278 0.320 0.222; intent: fills the empty top-left of the chart -->
+        <div class="quote-card abs" style="left:220px;top:200px;width:410px;" data-motion="fade" data-motion-order="2">
+          <span class="q">“…그 뒤 목표로 한 인도일을 모두 놓쳤다.”</span>
+          <span class="who">CNBC, 2026-10-15 행사 전 기사(번역)</span>
+        </div>
+        <p class="cap abs" style="left:79px;top:590px;width:1122px;">주황 점 = 그때 테슬라·Musk가 말한 출시·생산 목표<span class="chip c">주장</span> · 회색 점선 = 말한 그해 · * 2023년 5월 발언은 “약속은 아니다”라고 덧붙임</p>
+        <p class="foot">자료: CNBC·InsideEVs·Electrek·Reuters 발언 기사(2017~2026) · 2027~28년: Electrek(2026-10-13) · 2020년 7월 “12-18개월 뒤”는 2021~22년으로 표시</p>
+        <aside class="notes">점 하나가 테슬라나 머스크가 그때 말한 목표 연도입니다. 2017년 11월에는 3년 뒤인 2020년을, 2025년 11월에는 2~3년 뒤인 2027~28년을 목표로 말했습니다. 회색 점선은 말한 그해이고, 목표는 늘 그 선 위에 있었습니다. 그 사이 목표 연도는 2020년에서 2028년으로 8년 밀렸고, 2026년 행사에서 나온 새 목표는 2028년 생산입니다.</aside>
+      </section>
+
+      <!-- ===== 05 event overview ===== -->
+      <section class="s-event">
+        <!-- frame: slide; xywh: 0.062 0.225 0.877 0.383; intent: to-scale dates read left to right -->
+        <figure class="abs" style="left:79px;top:162px;width:1122px;height:276px;margin:0;" data-motion="fade" data-motion-order="1">
+          <svg class="date-timeline" data-fullsize-qa="true" data-rendered-qa="true" viewBox="0 0 1122 276" width="1122" height="276" role="img" aria-label="9월 12일 예고, 10월 1일 연기, 10월 15일 개최로 이어지는 날짜 그림과 23분 생중계 표시">
+            <defs>
+              <marker id="m5a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#20174A"/></marker>
+            </defs>
+            <line x1="60" y1="118" x2="726" y2="118" stroke="#20174A" stroke-width="3"/>
+            <g stroke="#cfc6a4" stroke-width="2">
+              <line x1="221.6" y1="110" x2="221.6" y2="126"/><line x1="353.2" y1="110" x2="353.2" y2="126"/>
+              <line x1="484.8" y1="110" x2="484.8" y2="126"/><line x1="616.4" y1="110" x2="616.4" y2="126"/>
+            </g>
+            <circle cx="90" cy="118" r="13" fill="#A65308"/>
+            <circle cx="447" cy="118" r="13" fill="#FFFCF1" stroke="#6c648f" stroke-width="3.5"/>
+            <line x1="439" y1="110" x2="455" y2="126" stroke="#6c648f" stroke-width="3.5"/>
+            <line x1="455" y1="110" x2="439" y2="126" stroke="#6c648f" stroke-width="3.5"/>
+            <circle cx="710" cy="118" r="17" fill="#1B7447"/>
+            <line x1="730" y1="118" x2="813" y2="118" stroke="#20174A" stroke-width="3" marker-end="url(#m5a)"/>
+            <rect x="820" y="52" width="290" height="132" rx="16" fill="#20174A"/>
+            <path d="M846 96 L846 128 L872 112 Z" fill="#FFFCF1"/>
+            <rect x="886" y="162" width="196" height="8" rx="4" fill="#FFFCF1" opacity=".85"/>
+            <rect x="1046" y="64" width="52" height="26" rx="6" fill="#1B7447"/>
+            <!-- labels -->
+            <text x="90" y="80" text-anchor="middle" font-size="24" font-weight="800" fill="#20174A">9월 12일</text>
+            <text x="90" y="170" text-anchor="middle" font-size="21" fill="#20174A">‘10.01’ 예고 영상</text>
+            <rect x="62" y="184" width="56" height="28" rx="6" fill="#A65308"/>
+            <text x="90" y="204" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">주장</text>
+            <text x="447" y="80" text-anchor="middle" font-size="24" font-weight="800" fill="#6c648f">10월 1일 예정</text>
+            <rect x="419" y="184" width="56" height="28" rx="6" fill="#A65308"/>
+            <text x="447" y="204" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">주장</text>
+            <text x="447" y="170" text-anchor="middle" font-size="21" fill="#20174A">날씨를 이유로 연기</text>
+            <text x="447" y="238" text-anchor="middle" font-size="18" fill="#6c648f">“실외에서만 열 수 있는 행사”</text>
+            <text x="710" y="80" text-anchor="middle" font-size="24" font-weight="800" fill="#1B7447">10월 15일 개최</text>
+            <text x="710" y="170" text-anchor="middle" font-size="21" fill="#20174A">Tesla YouTube 기록</text>
+            <rect x="682" y="184" width="56" height="28" rx="6" fill="#1B7447"/>
+            <text x="710" y="204" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">검증</text>
+            <text x="710" y="238" text-anchor="middle" font-size="18" fill="#6c648f">한국 시간 16일 9:55</text>
+            <text x="710" y="260" text-anchor="middle" font-size="18" fill="#6c648f">시작 예정(시차 계산)</text>
+            <text x="1072" y="83" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">검증</text>
+            <text x="886" y="126" font-size="40" font-weight="800" fill="#FFFCF1">23분</text>
+            <text x="982" y="124" font-size="22" font-weight="600" fill="#FFFCF1">생중계</text>
+            <text x="886" y="152" font-size="16" fill="#e6e1f5">녹화본 23:21</text>
+          </svg>
+        </figure>
+        <div class="s-head"><span class="kicker"><span class="num">05</span> / 행사 개요</span></div>
+        <h2 class="ttl" data-motion="rise" data-motion-order="0"><span class="hl">2026년 10월 15일</span>, SpaceX 로켓 시험장에서 <span class="nb">23분짜리</span> 생중계가 열렸다</h2>
+        <!-- frame: slide; xywh: 0.062 0.642 0.877 0.181; intent: two equal facts under the timeline -->
+        <div class="info2 abs" style="left:79px;top:462px;width:1122px;" data-motion="rise" data-motion-order="2">
+          <div class="note-card"><p class="lab">장소</p><p class="txt">텍사스 McGregor(Waco 근처)의<br>SpaceX 로켓 시험장, 실외 무대</p></div>
+          <div class="note-card"><p class="lab">발표자</p><p class="txt">Elon Musk · Franz von Holzhausen(디자인)<br>Lars Moravy(차량 엔지니어링)</p></div>
+        </div>
+        <p class="foot">자료: Electrek(2026-09-12·09-28), Tesla YouTube 메타데이터, CNBC(2026-10-15), Reuters(2026-10-16) · 날짜 간격은 날수 비례(눈금 1주)</p>
+        <aside class="notes">행사는 원래 10월 1일이었습니다. 9월 12일 예고 영상에 10.01이 찍혀 있었죠. 실외에서만 열 수 있는 행사라 날씨를 이유로 미뤄졌고, 10월 15일 현지 저녁, 한국 시간으로 16일 오전 9시 55분 시작 예정으로 열렸습니다(시차로 계산한 시각). 녹화본 길이는 23분 21초입니다. 장소는 텍사스의 SpaceX 로켓 시험장입니다.</aside>
+      </section>
+
+      <!-- ===== 06 what was shown ===== -->
+      <section class="s-shown">
+        <!-- frame: slide; xywh: 0.062 0.244 0.877 0.472; intent: four equal panels, one per live demo -->
+        <figure class="abs" style="left:79px;top:176px;width:1122px;height:340px;margin:0;" data-motion="fade" data-motion-order="1">
+          <svg class="demo-diagram" data-fullsize-qa="true" data-rendered-qa="true" viewBox="0 0 1122 340" width="1122" height="340" role="img" aria-label="네 가지 현장 시연 그림. 경사로에서 뒤집어 착지, 차 다섯 대 위로 점프, 0에서 60 mph 가속, 수직으로 떠올라 회전">
+            <defs>
+              <marker id="m6a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#2456B5"/></marker>
+              <symbol id="car6" viewBox="0 0 320 110">
+                <path d="M18 84 C13 84 11 80 11 74 L12 64 C13 57 20 53 30 52 L70 47 C94 36 120 30 150 29 C172 28 190 31 206 38 L226 46 C250 47 276 52 294 60 C302 64 306 70 305 78 C304 82 300 84 294 84 L272 84 A24 24 0 0 0 224 84 L98 84 A24 24 0 0 0 50 84 Z" fill="#C73463"/>
+                <path d="M86 50 C104 40 126 34 150 33 C168 33 182 35 195 41 L206 47 Z" fill="#FFFCF1" opacity=".75"/>
+                <circle cx="74" cy="84" r="18" fill="#20174A"/><circle cx="248" cy="84" r="18" fill="#20174A"/>
+                <circle cx="74" cy="84" r="6" fill="#c9c2e0"/><circle cx="248" cy="84" r="6" fill="#c9c2e0"/>
+              </symbol>
+            </defs>
+            <rect x="0" y="0" width="264" height="340" rx="16" fill="#FFFCF1" stroke="#E7DCB6" stroke-width="1.5"/>
+            <rect x="286" y="0" width="264" height="340" rx="16" fill="#FFFCF1" stroke="#E7DCB6" stroke-width="1.5"/>
+            <rect x="572" y="0" width="264" height="340" rx="16" fill="#FFFCF1" stroke="#E7DCB6" stroke-width="1.5"/>
+            <rect x="858" y="0" width="264" height="340" rx="16" fill="#FFFCF1" stroke="#E7DCB6" stroke-width="1.5"/>
+            <!-- panel 1: ramp, upside down, flip, landing (drawn at 354 wide, scaled to the panel) -->
+            <g transform="translate(4 52) scale(0.745)">
+              <line x1="16" y1="300" x2="338" y2="300" stroke="#6c648f" stroke-width="2"/>
+              <path d="M150 300 C252 300 306 250 306 176 C306 110 262 78 200 78 H92" fill="none" stroke="#8f88ad" stroke-width="12" stroke-linecap="round"/>
+              <use href="#car6" transform="translate(196 114.9) scale(-0.3 -0.3)" width="320" height="110"/>
+              <g stroke="#2456B5" stroke-width="2.5" marker-end="url(#m6a)">
+                <line x1="124" y1="134" x2="124" y2="116"/><line x1="148" y1="134" x2="148" y2="116"/><line x1="172" y1="134" x2="172" y2="116"/>
+              </g>
+              <path d="M98 104 C44 122 32 200 56 262" fill="none" stroke="#2456B5" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#m6a)"/>
+              <use href="#car6" transform="translate(24 269.1) scale(0.3)" width="320" height="110"/>
+            </g>
+            <!-- panel 2: kick flip over five vehicles -->
+            <g transform="translate(290 52) scale(0.745)">
+              <line x1="16" y1="300" x2="338" y2="300" stroke="#6c648f" stroke-width="2"/>
+              <path d="M16 300 L62 300 L62 274 Z" fill="#8f88ad"/>
+              <g fill="#d9d3ea" stroke="#6c648f" stroke-width="2">
+                <rect x="72" y="266" width="42" height="26" rx="7"/>
+                <rect x="120" y="258" width="44" height="34" rx="7"/>
+                <rect x="170" y="254" width="46" height="38" rx="5"/>
+                <rect x="222" y="234" width="52" height="58" rx="5"/>
+                <rect x="280" y="266" width="34" height="26" rx="9"/>
+              </g>
+              <g fill="#20174A">
+                <circle cx="83" cy="294" r="5"/><circle cx="103" cy="294" r="5"/>
+                <circle cx="131" cy="294" r="5"/><circle cx="153" cy="294" r="5"/>
+                <circle cx="181" cy="294" r="5"/><circle cx="205" cy="294" r="5"/>
+                <circle cx="234" cy="294" r="5"/><circle cx="262" cy="294" r="5"/>
+                <circle cx="289" cy="294" r="5"/><circle cx="305" cy="294" r="5"/>
+              </g>
+              <path d="M62 270 Q190 6 328 286" fill="none" stroke="#2456B5" stroke-width="3" stroke-dasharray="7 6"/>
+              <path d="M334.3 298.5 L334.3 282.9 L321.7 289.1 Z" fill="#2456B5"/>
+              <use href="#car6" transform="translate(194 138) rotate(-24) translate(-48 -16.5) scale(0.3)" width="320" height="110"/>
+            </g>
+            <!-- panel 3: speed over time -->
+            <g transform="translate(576 52) scale(0.745)">
+              <line x1="50" y1="290" x2="330" y2="290" stroke="#20174A" stroke-width="2"/>
+              <line x1="50" y1="290" x2="50" y2="96" stroke="#20174A" stroke-width="2"/>
+              <line x1="50" y1="110" x2="330" y2="110" stroke="#8f88ad" stroke-width="2" stroke-dasharray="6 6"/>
+              <line x1="277" y1="110" x2="277" y2="290" stroke="#A65308" stroke-width="2.5" stroke-dasharray="6 6"/>
+              <path d="M50 290 C120 282 214 172 277 110" fill="none" stroke="#2456B5" stroke-width="5" stroke-linecap="round"/>
+              <circle cx="277" cy="110" r="8" fill="#A65308"/>
+            </g>
+            <!-- panel 4: vertical launch into a corkscrew -->
+            <line x1="872" y1="266" x2="1108" y2="266" stroke="#6c648f" stroke-width="2"/>
+            <use href="#car6" x="950" y="240" width="80" height="27.5"/>
+            <path d="M990 246 C1020 226 960 206 990 186 C1020 166 960 146 990 126 L990 106" fill="none" stroke="#2456B5" stroke-width="3" stroke-dasharray="7 6"/>
+            <path d="M990 88 L981 106 L999 106 Z" fill="#2456B5"/>
+            <!-- titles and labels (text last) -->
+            <text x="16" y="36" font-size="20" font-weight="800" fill="#20174A">① 경사로 뒤집기</text>
+            <text x="302" y="36" font-size="20" font-weight="800" fill="#20174A">② 차 5대 넘기</text>
+            <text x="588" y="36" font-size="20" font-weight="800" fill="#20174A">③ 0-60 질주</text>
+            <text x="874" y="36" font-size="20" font-weight="800" fill="#20174A">④ 수직 상승</text>
+            <g fill="#2456B5"><rect x="198" y="15" width="52" height="28" rx="6"/><rect x="484" y="15" width="52" height="28" rx="6"/><rect x="770" y="15" width="52" height="28" rx="6"/><rect x="1056" y="15" width="52" height="28" rx="6"/></g>
+            <g font-size="16" font-weight="700" fill="#fff" text-anchor="middle"><text x="224" y="35">시연</text><text x="510" y="35">시연</text><text x="796" y="35">시연</text><text x="1082" y="35">시연</text></g>
+            <text x="113" y="171" text-anchor="middle" font-size="16" font-weight="600" fill="#20174A">흡입 팬으로 버팀</text>
+            <text x="108" y="196" text-anchor="middle" font-size="16" font-weight="700" fill="#20174A">최대 2G</text>
+            <rect x="140" y="178" width="48" height="25" rx="6" fill="#A65308"/>
+            <text x="164" y="196" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">주장</text>
+            <text x="62" y="230" font-size="16" font-weight="600" fill="#2456B5">추진기로 뒤집어 착지</text>
+            <text x="619" y="128" font-size="15" fill="#6c648f">60 mph</text>
+            <text x="588" y="70" font-size="15" fill="#6c648f">곡선 모양은 개념도</text>
+            <text x="613" y="286" text-anchor="middle" font-size="15" fill="#6c648f">0초</text>
+            <text x="776" y="260" text-anchor="end" font-size="16" font-weight="800" fill="#A65308">0.81초</text>
+            <text x="822" y="286" text-anchor="middle" font-size="15" fill="#6c648f">1초</text>
+            <rect x="588" y="298" width="48" height="25" rx="6" fill="#A65308"/>
+            <text x="612" y="316" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">주장</text>
+            <text x="644" y="316" font-size="15" fill="#20174A">테슬라 타이머 값</text>
+            <text x="990" y="296" text-anchor="middle" font-size="16" font-weight="600" fill="#2456B5">곧게 떠올라 회전</text>
+            <text x="990" y="318" text-anchor="middle" font-size="15" fill="#6c648f">마지막 시연(코르크스크루)</text>
+          </svg>
+        </figure>
+        <div class="s-head"><span class="kicker"><span class="num">06</span> / 보여 준 것</span></div>
+        <h2 class="ttl" data-motion="rise" data-motion-order="0">관객 앞 시연은 <span class="hl">네 번</span>: 뒤집기, <span class="nb">차 5대</span> 넘기, 0-60 질주, 수직 상승</h2>
+        <!-- frame: slide; xywh: 0.062 0.744 0.877 0.117; intent: term glosses as a separate band, not tied to one panel -->
+        <div class="gloss3 gloss-band abs" style="left:79px;top:536px;width:1122px;" data-motion="fade" data-motion-order="2">
+          <div><b>흡입 팬</b>: 차 바닥 공기를<br>빨아내 차를 노면에 붙이는 팬</div>
+          <div><b>콜드 가스 추진기</b>: 불 없이<br>압축 공기를 뿜어 차를 미는 장치</div>
+          <div><b>무인 시연</b>: 사람은 타지 않았다<br>차가 스스로 달렸다</div>
+        </div>
+        <p class="foot">자료: Reuters·The Verge·NBC(2026-10-16), Electrek·CNN·Gizmodo(2026-10-15), Tesla 생중계 00:08:14(2G)·00:21:28(마지막 시연)</p>
+        <aside class="notes">관객 앞 시연은 네 번이었습니다. 첫째, 경사로를 올라가 거꾸로 붙어 있다가 뒤집어 바퀴로 착지했습니다. 흡입 팬이 최대 2G로 당긴다는 건 테슬라의 설명입니다. 둘째, 테슬라 차 다섯 대 위로 비틀며 넘었습니다. 셋째, 0-60 mph 질주를 했고 화면에 0.81초가 떴는데, 이 숫자는 테슬라 자체 타이머 값이라 주장으로 표시했습니다. 넷째, 마지막으로 곧게 떠올라 코르크스크루처럼 회전했습니다. 시연 차에는 사람이 타지 않았습니다(Electrek, CNN).</aside>
+      </section>
+
+      <!-- ===== 07 three trims ===== -->
+      <section class="s-trims">
+        <!-- frame: slide; xywh: 0.062 0.217 0.877 0.306; intent: same silhouette three times so only the thrusters differ -->
+        <figure class="abs" style="left:79px;top:156px;width:1122px;height:220px;margin:0;" data-motion="fade" data-motion-order="1">
+          <svg class="trim-diagram" data-fullsize-qa="true" data-rendered-qa="true" viewBox="0 0 1122 220" width="1122" height="220" role="img" aria-label="같은 일반 로드스터 옆모습 세 개. 추진기가 없는 차, 뒤쪽 추진기가 있는 차, 차체 둘레에 추진기가 있고 떠오른 차">
+            <defs>
+              <symbol id="car7" viewBox="0 0 320 110">
+                <path d="M18 84 C13 84 11 80 11 74 L12 64 C13 57 20 53 30 52 L70 47 C94 36 120 30 150 29 C172 28 190 31 206 38 L226 46 C250 47 276 52 294 60 C302 64 306 70 305 78 C304 82 300 84 294 84 L272 84 A24 24 0 0 0 224 84 L98 84 A24 24 0 0 0 50 84 Z" fill="#3a3163"/>
+                <path d="M86 50 C104 40 126 34 150 33 C168 33 182 35 195 41 L206 47 Z" fill="#FFFCF1" opacity=".65"/>
+                <circle cx="74" cy="84" r="18" fill="#20174A"/><circle cx="248" cy="84" r="18" fill="#20174A"/>
+                <circle cx="74" cy="84" r="6" fill="#c9c2e0"/><circle cx="248" cy="84" r="6" fill="#c9c2e0"/>
+              </symbol>
+            </defs>
+            <!-- Performance: no thrusters -->
+            <ellipse cx="177" cy="170" rx="128" ry="7" fill="rgba(32,23,74,.10)"/>
+            <use href="#car7" x="47" y="84" width="260" height="89.4"/>
+            <!-- Thrust: rear thrusters, cold-gas plume -->
+            <g transform="translate(384 0)">
+              <ellipse cx="177" cy="170" rx="128" ry="7" fill="rgba(32,23,74,.10)"/>
+              <path d="M56 134 L56 148 L12 162 L12 120 Z" fill="#9DB8EA" opacity=".85"/>
+              <use href="#car7" x="47" y="84" width="260" height="89.4"/>
+              <circle cx="57" cy="141" r="7" fill="#2456B5"/>
+            </g>
+            <!-- Rocket: thrusters around the body, lifted -->
+            <g transform="translate(768 0)">
+              <ellipse cx="177" cy="176" rx="104" ry="6" fill="rgba(32,23,74,.08)"/>
+              <path d="M56 106 L56 120 L14 132 L14 94 Z" fill="#9DB8EA" opacity=".85"/>
+              <path d="M294 110 L294 124 L338 136 L338 98 Z" fill="#9DB8EA" opacity=".85"/>
+              <path d="M64 126 L78 126 L90 168 L52 168 Z" fill="#9DB8EA" opacity=".85"/>
+              <path d="M276 126 L290 126 L302 168 L264 168 Z" fill="#9DB8EA" opacity=".85"/>
+              <use href="#car7" x="47" y="56" width="260" height="89.4"/>
+              <g fill="#2456B5">
+                <circle cx="57" cy="113" r="7"/><circle cx="293" cy="117" r="7"/>
+                <circle cx="71" cy="125" r="7"/><circle cx="283" cy="125" r="7"/>
+              </g>
+              <rect x="22" y="0" width="310" height="38" rx="19" fill="#FBE3EA" stroke="#C73463" stroke-width="2"/>
+              <path d="M168 38 L177 50 L186 38 Z" fill="#FBE3EA" stroke="#C73463" stroke-width="2" stroke-linejoin="round"/>
+              <rect x="169" y="35" width="16" height="4" fill="#FBE3EA"/>
+            </g>
+            <text x="945" y="25" text-anchor="middle" font-size="18" font-weight="700" fill="#C73463">테슬라: “그러니까… 네, 날 수 있다”</text>
+            <g font-size="20" fill="#6c648f" text-anchor="middle">
+              <text x="177" y="206">추진기 없음</text>
+              <text x="561" y="206">뒤쪽 추진기</text>
+              <text x="945" y="206">차체 둘레 추진기 · 떠오름</text>
+            </g>
+          </svg>
+        </figure>
+        <div class="s-head"><span class="kicker"><span class="num">07</span> / 새 Roadster 세 가지</span></div>
+        <h2 class="ttl" data-motion="rise" data-motion-order="0">세 버전 중 테슬라가 ‘날 수 있다’고 한 것은 <span class="hl nb">초대제 1인승 Rocket</span>뿐이다</h2>
+        <!-- frame: slide; xywh: 0.062 0.539 0.877 0.333; intent: cards sit exactly under their silhouettes -->
+        <div class="trims abs" style="left:79px;top:388px;width:1122px;" data-motion="rise" data-motion-order="2">
+          <div class="trim note-card"><span class="chip c">주장</span><p class="nm">Performance</p>
+            <dl><dt>용도</dt><dd>도로용</dd><dt>좌석</dt><dd>2인승</dd><dt>0-60 mph</dt><dd>1.6초 미만</dd><dt>구매</dt><dd>예약 판매</dd></dl></div>
+          <div class="trim note-card"><span class="chip c">주장</span><p class="nm">Thrust</p>
+            <dl><dt>용도</dt><dd>경주용</dd><dt>좌석</dt><dd>2인승</dd><dt>0-60 mph</dt><dd>0.9초 미만</dd><dt>구매</dt><dd>한정 판매</dd></dl></div>
+          <div class="trim note-card rocket"><span class="chip c">주장</span><p class="nm">Rocket</p>
+            <dl><dt>용도</dt><dd>공중용</dd><dt>좌석</dt><dd>1인승</dd><dt>0-60 mph</dt><dd>0.59초 미만</dd><dt>구매</dt><dd>초대받은 사람만</dd></dl></div>
+        </div>
+        <p class="foot">자료: Tesla X 게시물(2026-10-16: 세 버전 사양, “So...yes, it can fly”), Tesla Roadster 페이지 2026-10-16 보관본 · 실루엣과 추진기 위치는 개념 그림</p>
+        <aside class="notes">새 Roadster는 세 가지입니다. 도로용 Performance, 뒤쪽에 압축 공기 추진기를 단 경주용 Thrust, 차체 둘레에 추진기를 단 공중용 Rocket. 테슬라가 날 수 있다고 한 것은 Rocket뿐이고, Rocket은 1인승에 초대받은 사람만 살 수 있습니다. 표의 숫자는 모두 테슬라 발표입니다. 그림은 일반적인 차 실루엣으로, 실제 디자인을 따라 그린 것이 아닙니다.</aside>
+      </section>
+
+      <!-- ===== 08 2017 vs 2026 (chart B) ===== -->
+      <section class="s-compare">
+        <!-- frame: slide; xywh: 0.062 0.253 0.594 0.594; intent: dominant left chart -->
+        <div class="cmp-diagram abs" data-fullsize-qa="true" data-rendered-qa="true" style="left:79px;top:182px;width:760px;" data-motion="fade" data-motion-order="1" role="img" aria-label="2017년 약속과 2026년 발표를 주행거리, 좌석, 가격으로 비교한 막대그래프">
+          <div class="bar-legend"><span class="sw sw17"></span>2017년 약속 <span class="sw sw26" style="margin-left:14px"></span>2026년 발표 <span style="margin-left:14px">숫자는 모두</span><span class="chip c first">주장</span><span style="margin-left:6px">· km는 환산</span></div>
+          <div class="cmp-row">
+            <div class="cmp-lab">주행거리</div>
+            <div class="cmp-bars">
+              <div class="bline"><div class="bar y17" style="width:400px"></div><span class="bval">620마일<small>약 998 km</small></span></div>
+              <div class="bline"><div class="bar y26" style="width:194px"></div><span class="bval">300마일 이상<small>480 km 이상</small></span></div>
+            </div>
+          </div>
+          <div class="cmp-row">
+            <div class="cmp-lab">좌석</div>
+            <div class="cmp-bars">
+              <div class="bline"><div class="bar y17" style="width:400px"></div><span class="bval">4인승</span></div>
+              <div class="bline"><div class="bar y26" style="width:200px"></div><span class="bval">2인승<small>Rocket은 1인승</small></span></div>
+            </div>
+          </div>
+          <div class="cmp-row">
+            <div class="cmp-lab">가격</div>
+            <div class="cmp-bars">
+              <div class="bline"><div class="bar y17" style="width:400px"></div><span class="bval">기본 $200,000</span></div>
+              <div class="bline"><div class="bar none" style="width:400px">발표 없음</div></div>
+            </div>
+          </div>
+          <p class="fn" style="margin-top:16px">막대 길이는 같은 줄 안에서만 비교합니다. 2026년 가격과 인도일은 어느 버전도 발표하지 않았습니다.</p>
+        </div>
+        <div class="s-head"><span class="kicker"><span class="num">08</span> / 2017년 vs 2026년</span></div>
+        <h2 class="ttl" data-motion="rise" data-motion-order="0">주행거리는 절반, 좌석도 절반, <span class="hl">가격은 아직 없다</span></h2>
+        <!-- frame: slide; xywh: 0.679 0.253 0.259 0.500; intent: right counterweight, top-aligned with the chart legend, that fixes a common misreading -->
+        <div class="dep-card note-card abs" style="left:869px;top:182px;width:332px;" data-motion="rise" data-motion-order="2">
+          <p class="h">2026년 예약금은 차값이 아니다</p>
+          <p class="t">예약금: 줄을 서려고 먼저 내는 돈<br>2026년 차값: 아직 발표 없음</p>
+          <div class="rule"></div>
+          <p class="row">Performance $50,000<span class="chip c">주장</span></p>
+          <p class="row">Thrust $250,000<span class="chip c">주장</span></p>
+          <p class="row">Rocket 초대제, 예약금 안내 없음</p>
+          <div class="rule"></div>
+          <p class="t"><span class="nb">2017년 Founders Series는</span><br><span class="nb">차값 전액이 $250,000<span class="chip c">주장</span></span></p>
+        </div>
+        <p class="foot">자료: Tesla Roadster 페이지 2017 보관본(가격·Founders), Tesla X(2026-10-16), Reuters(2026-10-16), Electrek(2026-10-15), NBC News(2026-10-16)</p>
+        <aside class="notes">2017년 약속과 2026년 발표를 나란히 놓으면, 주행거리는 620마일에서 300마일 이상으로 절반쯤, 좌석은 넷에서 둘로 줄었습니다. 가격은 2017년에 기본 20만 달러였지만 이번에는 발표하지 않았습니다. 2026년 기준으로 25만 달러는 Thrust 버전의 예약금이지 차값이 아닙니다. 참고로 2017년 Founders Series는 실제 차값이 25만 달러였습니다.</aside>
+      </section>
+
+      <!-- ===== 09 verification ===== -->
+      <section class="s-verify">
+        <!-- frame: slide; xywh: 0.062 0.222 0.500 0.633; intent: left diagram carries the proof -->
+        <figure class="abs" style="left:79px;top:160px;width:640px;height:456px;margin:0;" data-motion="fade" data-motion-order="1">
+          <svg class="chain-diagram" data-fullsize-qa="true" data-rendered-qa="true" viewBox="0 0 640 456" width="640" height="456" role="img" aria-label="0.81초를 누가 쟀는지 나타낸 두 줄 흐름도와 1-ft rollout 자">
+            <defs>
+              <marker id="m9c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#20174A"/></marker>
+              <marker id="m9b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8f88ad"/></marker>
+              <symbol id="car9" viewBox="0 0 320 110">
+                <path d="M18 84 C13 84 11 80 11 74 L12 64 C13 57 20 53 30 52 L70 47 C94 36 120 30 150 29 C172 28 190 31 206 38 L226 46 C250 47 276 52 294 60 C302 64 306 70 305 78 C304 82 300 84 294 84 L272 84 A24 24 0 0 0 224 84 L98 84 A24 24 0 0 0 50 84 Z" fill="#C73463"/>
+                <path d="M86 50 C104 40 126 34 150 33 C168 33 182 35 195 41 L206 47 Z" fill="#FFFCF1" opacity=".75"/>
+                <circle cx="74" cy="84" r="18" fill="#20174A"/><circle cx="248" cy="84" r="18" fill="#20174A"/>
+                <circle cx="74" cy="84" r="6" fill="#c9c2e0"/><circle cx="248" cy="84" r="6" fill="#c9c2e0"/>
+              </symbol>
+            </defs>
+            <rect x="1" y="40" width="180" height="84" rx="12" fill="#DDE7FA" stroke="#2456B5" stroke-width="2"/>
+            <rect x="230" y="40" width="180" height="84" rx="12" fill="#FFFCF1" stroke="#20174A" stroke-width="2"/>
+            <rect x="459" y="40" width="180" height="84" rx="12" fill="#FBE7CC" stroke="#A65308" stroke-width="2.5"/>
+            <line x1="185" y1="82" x2="224" y2="82" stroke="#20174A" stroke-width="3" marker-end="url(#m9c)"/>
+            <line x1="414" y1="82" x2="453" y2="82" stroke="#20174A" stroke-width="3" marker-end="url(#m9c)"/>
+            <rect x="1" y="204" width="180" height="84" rx="12" fill="none" stroke="#8f88ad" stroke-width="2.5" stroke-dasharray="8 6"/>
+            <rect x="230" y="204" width="180" height="84" rx="12" fill="none" stroke="#8f88ad" stroke-width="2.5" stroke-dasharray="8 6"/>
+            <rect x="459" y="204" width="180" height="84" rx="12" fill="#FBE3EA" stroke="#C73463" stroke-width="2.5" stroke-dasharray="8 6"/>
+            <line x1="185" y1="246" x2="224" y2="246" stroke="#8f88ad" stroke-width="3" stroke-dasharray="5 5" marker-end="url(#m9b)"/>
+            <line x1="414" y1="246" x2="453" y2="246" stroke="#8f88ad" stroke-width="3" stroke-dasharray="5 5" marker-end="url(#m9b)"/>
+            <!-- rollout ruler -->
+            <line x1="0" y1="410" x2="640" y2="410" stroke="#20174A" stroke-width="3"/>
+            <rect x="86" y="396" width="98" height="28" rx="4" fill="#C73463" opacity=".22"/>
+            <line x1="184" y1="392" x2="184" y2="428" stroke="#C73463" stroke-width="3"/>
+            <use href="#car9" x="4" y="383" width="80" height="27.5"/>
+            <!-- labels -->
+            <text x="0" y="26" font-size="22" font-weight="800" fill="#20174A">테슬라가 잰 기록</text>
+            <text x="91" y="76" text-anchor="middle" font-size="22" font-weight="600" fill="#20174A">생중계 주행</text>
+            <rect x="65" y="88" width="52" height="24" rx="5" fill="#2456B5"/>
+            <text x="91" y="105" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">시연</text>
+            <text x="320" y="90" text-anchor="middle" font-size="22" font-weight="600" fill="#20174A">테슬라 타이머</text>
+            <text x="549" y="84" text-anchor="middle" font-size="34" font-weight="800" fill="#20174A">0.81초</text>
+            <rect x="523" y="92" width="52" height="24" rx="5" fill="#A65308"/>
+            <text x="549" y="109" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">주장</text>
+            <text x="0" y="190" font-size="22" font-weight="800" fill="#6c648f">독립 측정 (언론·시험 기관)</text>
+            <text x="91" y="254" text-anchor="middle" font-size="22" font-weight="600" fill="#6c648f">독립 계측</text>
+            <text x="320" y="254" text-anchor="middle" font-size="22" font-weight="600" fill="#6c648f">공개된 기록</text>
+            <text x="549" y="255" text-anchor="middle" font-size="26" font-weight="800" fill="#C73463">찾지 못함</text>
+            <text x="0" y="350" font-size="21" font-weight="800" fill="#20174A">1-ft rollout: 첫 1피트는 시간에서 뺀다</text>
+            <text x="0" y="378" font-size="17" fill="#6c648f">Electrek: 테슬라가 행사 뒤 낸 더 빠른 수치에 쓰인 방식</text>
+            <text x="135" y="440" text-anchor="middle" font-size="16" font-weight="700" fill="#C73463">빼는 구간</text>
+            <text x="640" y="440" text-anchor="end" font-size="16" fill="#6c648f">길이는 개념도, 실제 비율 아님</text>
+            <text x="194" y="440" font-size="16" fill="#20174A">여기서부터 시간을 잰다 →</text>
+          </svg>
+        </figure>
+        <div class="s-head"><span class="kicker"><span class="num">09</span> / 누가 쟀나</span></div>
+        <h2 class="ttl" data-motion="rise" data-motion-order="0"><span class="hl">0.81초</span>는 테슬라 타이머의 기록이다. 독립 측정은 아직 없다</h2>
+        <!-- frame: slide; xywh: 0.585 0.222 0.353 0.597; intent: right column lists what is still unchecked -->
+        <div class="unk abs" style="left:749px;top:160px;width:452px;" data-motion="rise" data-motion-order="2">
+          <h3>아직 확인되지 않은 것</h3>
+          <div class="it"><p class="a">사전 녹화 영상에선 약 1.0초<span class="chip c">주장</span></p><p class="b">생중계 0.81초와 다른 값</p></div>
+          <div class="it"><p class="a">길게 나는 비행 장면</p><p class="b">짧게 떠오르고 뒤집고 착지하는 장면뿐</p></div>
+          <div class="it"><p class="a">관객·기자·고객 시승 보도</p><p class="b">찾지 못함(2026-10-19까지)</p></div>
+          <div class="quote-card" style="margin-top:22px"><span class="q" style="font-size:20px">“지속 비행이 아니라, 말 그대로 깡충 뛰는 것이다.”</span><span class="who">Roger Connor, 스미소니언 항공우주박물관<br>행사 전 CNN 인터뷰(번역)</span></div>
+        </div>
+        <p class="foot">자료: NBC News·The Verge(2026-10-16: 테슬라 타이머), Electrek(Jameson Dow: 사전 녹화 1.0초, 1-ft rollout), CNN(2026-10-15: 비행 없음)</p>
+        <aside class="notes">0.81초는 진짜로 화면에 떴습니다. 하지만 잰 것은 테슬라의 타이머였고, 언론이나 시험 기관이 따로 잰 기록은 아직 찾지 못했습니다. 그래서 숫자는 주장, 달린 장면은 시연으로 나눴습니다. Electrek에 따르면 테슬라가 행사 뒤에 낸 더 빠른 수치에는 처음 1피트를 빼고 재는 1-ft rollout이 들어 있습니다. 사전 녹화 영상은 약 1초였고, 길게 나는 비행 장면은 없었습니다.</aside>
+      </section>
+
+      <!-- ===== 10 0-60 comparison (chart C) ===== -->
+      <section class="s-race">
+        <!-- frame: slide; xywh: 0.062 0.278 0.877 0.528; intent: full-width chart, color = chip -->
+        <div class="race race-diagram abs" data-fullsize-qa="true" data-rendered-qa="true" style="left:79px;top:200px;width:1122px;" data-motion="fade" data-motion-order="1" role="img" aria-label="0-60 mph 기록 막대그래프. 색은 주장, 시연, 검증 표시">
+          <p class="grp">Roadster (모두 테슬라 발표)</p>
+          <p class="lab">2017 테슬라 홈페이지</p><div class="trk"><div class="fill c" style="width:532px"></div></div><p class="val">1.9초<span class="chip c">주장</span></p>
+          <p class="lab">2024 Musk X 게시물</p><div class="trk"><div class="fill c lt" style="width:280px"></div></div><p class="val">1초 미만<span class="chip c">주장</span></p>
+          <p class="lab">2026 행사 · 사전 녹화 영상</p><div class="trk"><div class="fill c" style="width:280px"></div></div><p class="val">약 1.0초<span class="chip c">주장</span></p>
+          <p class="lab">2026 행사 · 생중계, 테슬라 타이머</p><div class="trk"><div class="fill c" style="width:227px"></div></div><p class="val">0.81초<span class="chip c">주장</span></p>
+          <p class="lab">2026 Rocket 사양 발표</p><div class="trk"><div class="fill c lt" style="width:165px"></div></div><p class="val">0.59초 미만<span class="chip c">주장</span></p>
+          <p class="grp gap">다른 차</p>
+          <p class="lab">Model S Plaid · MotorTrend 측정</p><div class="trk"><div class="fill v" style="width:554px"></div></div><p class="val">1.98초<span class="chip v">검증</span></p>
+          <p class="lab">Rimac Nevera · 외부 계측</p><div class="trk"><div class="fill v" style="width:487px"></div></div><p class="val">1.74초<span class="chip v">검증</span></p>
+        </div>
+        <div class="s-head"><span class="kicker"><span class="num">10</span> / 0-60 비교</span></div>
+        <h2 class="ttl" data-motion="rise" data-motion-order="0">0-60 주장은 1.9초에서 0.59초 미만까지 줄었지만,<br><span class="hl">검증된 값은 다른 차의 것뿐이다</span></h2>
+        <p class="fn abs" style="left:79px;top:566px;width:1122px;">막대는 0~2초 같은 눈금 · 점선 끝 = ‘미만’ 값의 상한 · 측정 조건이 서로 달라 막대끼리 그대로 비교할 수는 없습니다.<br>측정 조건: Plaid 1.98초는 1-ft rollout, 준비된 노면(VHT) · Nevera 1.74초는 1-ft rollout, Dewesoft·Racelogic 계측</p>
+        <p class="foot">자료: Tesla(2017 페이지 보관본, X), Electrek(2026-10-15), NBC News(2026-10-16), InsideEVs(MotorTrend 측정), Rimac 보도자료(2023, 외부 계측)</p>
+        <aside class="notes">0-60 숫자만 모아 보면, 테슬라의 주장은 2017년 1.9초에서 2026년 Rocket 0.59초 미만까지 계속 작아졌습니다. 생중계 0.81초도 테슬라 타이머 값이라 주장으로 표시했습니다. 초록색, 즉 검증된 막대는 두 개인데 둘 다 다른 차입니다. MotorTrend가 잰 Model S Plaid와, Dewesoft·Racelogic 장비로 외부 계측한 Rimac Nevera입니다. 두 값 모두 처음 1피트를 빼고 쟀고, Plaid는 준비된 노면에서 쟀습니다. 측정 조건이 서로 다르다는 점도 기억해 주세요.</aside>
+      </section>
+
+      <!-- ===== 11 still promises ===== -->
+      <section class="s-open">
+        <!-- frame: slide; xywh: 0.062 0.222 0.531 0.639; intent: clipboard is the dominant left visual -->
+        <figure class="abs" style="left:79px;top:160px;width:680px;height:460px;margin:0;" data-motion="fade" data-motion-order="1">
+          <svg class="ledger-diagram" data-fullsize-qa="true" data-rendered-qa="true" viewBox="0 0 680 460" width="680" height="460" role="img" aria-label="빈 체크 상자 세 개가 있는 클립보드. 생산 시작, 가격, 공공도로 운행 허가">
+            <rect x="0" y="18" width="680" height="442" rx="24" fill="#20174A"/>
+            <rect x="22" y="58" width="636" height="382" rx="12" fill="#FFFCF1"/>
+            <rect x="252" y="2" width="176" height="52" rx="12" fill="#6c648f"/>
+            <rect x="290" y="14" width="100" height="16" rx="8" fill="#20174A"/>
+            <line x1="46" y1="186" x2="634" y2="186" stroke="#E7DCB6" stroke-width="2"/>
+            <line x1="46" y1="312" x2="634" y2="312" stroke="#E7DCB6" stroke-width="2"/>
+            <rect x="576" y="98" width="50" height="50" rx="8" fill="#fff" stroke="#20174A" stroke-width="3"/>
+            <rect x="576" y="224" width="50" height="50" rx="8" fill="#fff" stroke="#20174A" stroke-width="3"/>
+            <rect x="576" y="350" width="50" height="50" rx="8" fill="#fff" stroke="#20174A" stroke-width="3"/>
+            <!-- calendar -->
+            <rect x="52" y="94" width="66" height="58" rx="8" fill="#FBE7CC" stroke="#A65308" stroke-width="3"/>
+            <line x1="52" y1="110" x2="118" y2="110" stroke="#A65308" stroke-width="3"/>
+            <line x1="69" y1="86" x2="69" y2="100" stroke="#A65308" stroke-width="4" stroke-linecap="round"/>
+            <line x1="101" y1="86" x2="101" y2="100" stroke="#A65308" stroke-width="4" stroke-linecap="round"/>
+            <rect x="62" y="120" width="10" height="10" fill="#A65308"/><rect x="80" y="120" width="10" height="10" fill="#A65308"/><rect x="98" y="120" width="10" height="10" fill="#A65308"/>
+            <rect x="62" y="136" width="10" height="10" fill="#A65308"/>
+            <!-- price tag -->
+            <path d="M54 222 L94 222 L120 249 L94 276 L54 276 Z" fill="#FBE7CC" stroke="#A65308" stroke-width="3" stroke-linejoin="round"/>
+            <circle cx="66" cy="249" r="5" fill="#A65308"/>
+            <!-- road sign -->
+            <circle cx="86" cy="376" r="32" fill="#fff" stroke="#C73463" stroke-width="6"/>
+            <path d="M74 394 L80 360 M98 394 L92 360" stroke="#6c648f" stroke-width="3" stroke-linecap="round"/>
+            <line x1="64" y1="354" x2="108" y2="398" stroke="#C73463" stroke-width="6" stroke-linecap="round"/>
+            <!-- text -->
+            <text x="94" y="261" text-anchor="middle" font-size="28" font-weight="800" fill="#A65308">?</text>
+            <text x="146" y="116" font-size="28" font-weight="800" fill="#20174A">생산 시작 2028년</text>
+            <rect x="362" y="93" width="58" height="29" rx="6" fill="#A65308"/>
+            <text x="391" y="114" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">주장</text>
+            <text x="146" y="152" font-size="21" fill="#6c648f">인도일은 발표하지 않았다</text>
+            <text x="146" y="242" font-size="28" font-weight="800" fill="#20174A">가격: 발표 없음</text>
+            <text x="146" y="278" font-size="21" fill="#6c648f">지금 받는 것은 예약금뿐</text>
+            <text x="146" y="368" font-size="28" font-weight="800" fill="#20174A">Rocket 공공도로 주행 허가</text>
+            <text x="146" y="404" font-size="21" fill="#6c648f">테슬라 페이지: ‘공공도로 승인 안 됨’</text>
+          </svg>
+        </figure>
+        <div class="s-head"><span class="kicker"><span class="num">11</span> / 아직 빈칸</span></div>
+        <h2 class="ttl" data-motion="rise" data-motion-order="0">생산 시작, 가격, 도로 주행 허가: <span class="hl">세 칸은 아직 비어 있다</span></h2>
+        <!-- frame: slide; xywh: 0.616 0.286 0.322 0.497; intent: two outside voices balance the clipboard -->
+        <div class="qcol abs" style="left:789px;top:206px;width:412px;" data-motion="rise" data-motion-order="2">
+          <div class="quote-card"><span class="q">“전통 자동차 회사를<br>머쓱하게 만든 것 말고는<br>상업적 가치 없는 엔지니어링 과시.”</span><span class="who">Gene Munster, Deepwater Asset Management<br>Reuters 인용(번역)</span></div>
+          <div class="quote-card"><span class="q">“제품으로는 완전히 쓸모없다.<br>(…) 엔지니어링 과시로는<br>정말 볼 만했다.”</span><span class="who">Andrew J. Hawkins, The Verge(번역)</span></div>
+        </div>
+        <p class="foot">자료: Reuters(2026-10-16), NBC News(2026-10-16: 가격·인도일 미발표), Tesla Roadster 페이지 2026-10-16 보관본, The Verge(2026-10-16)</p>
+        <aside class="notes">행사가 끝났어도 세 칸은 비어 있습니다. 생산 시작 2028년은 무대 발언이고 인도일은 없습니다. 가격은 어느 버전도 발표하지 않았습니다. Rocket은 테슬라 홈페이지에 공공도로 승인이 안 됐다고 적혀 있습니다. 투자자와 기자의 반응도 같은 방향입니다. 엔지니어링은 볼 만했지만 제품으로는 아직이라는 것입니다.</aside>
+      </section>
+
+      <!-- ===== 12 closing ===== -->
+      <section class="s-end">
+        <!-- frame: slide; xywh: 0.593 0.208 0.345 0.681; intent: mirrors the cover's indigo panel on the other side -->
+        <div class="sorter-panel abs" style="left:759px;top:150px;width:442px;height:490px;" data-motion="fade" data-motion-order="2">
+          <svg class="sorter-diagram" data-fullsize-qa="true" data-rendered-qa="true" viewBox="0 0 442 490" width="442" height="490" role="img" aria-label="덱에 나온 숫자를 세 칸에 나눠 담은 그림과, 칸을 옮기는 데 필요한 세 가지">
+            <defs>
+              <marker id="m12a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#FFFCF1"/></marker>
+            </defs>
+            <rect x="12" y="66" width="130" height="234" rx="14" fill="rgba(255,252,241,.07)" stroke="rgba(255,252,241,.35)" stroke-width="1.5"/>
+            <rect x="156" y="66" width="130" height="234" rx="14" fill="rgba(255,252,241,.07)" stroke="rgba(255,252,241,.35)" stroke-width="1.5"/>
+            <rect x="300" y="66" width="130" height="234" rx="14" fill="rgba(255,252,241,.07)" stroke="rgba(255,252,241,.35)" stroke-width="1.5"/>
+            <rect x="37" y="80" width="80" height="34" rx="7" fill="#A65308"/>
+            <rect x="181" y="80" width="80" height="34" rx="7" fill="#2456B5"/>
+            <rect x="325" y="80" width="80" height="34" rx="7" fill="#1B7447"/>
+            <g fill="#FFFCF1">
+              <rect x="20" y="132" width="114" height="42" rx="8"/><rect x="20" y="184" width="114" height="42" rx="8"/><rect x="20" y="236" width="114" height="42" rx="8"/>
+              <rect x="164" y="132" width="114" height="42" rx="8"/><rect x="164" y="184" width="114" height="42" rx="8"/>
+              <rect x="308" y="132" width="114" height="42" rx="8"/><rect x="308" y="184" width="114" height="42" rx="8"/>
+            </g>
+            <path d="M77 304 C 120 392 322 392 365 308" fill="none" stroke="#FFFCF1" stroke-width="3" marker-end="url(#m12a)"/>
+            <text x="16" y="40" font-size="22" font-weight="800" fill="#FFFCF1">이 덱의 숫자, 세 칸에 담기</text>
+            <g font-size="20" font-weight="800" fill="#fff" text-anchor="middle">
+              <text x="77" y="104">주장</text><text x="221" y="104">시연</text><text x="365" y="104">검증</text>
+            </g>
+            <g font-size="17" font-weight="700" fill="#20174A" text-anchor="middle">
+              <text x="77" y="159">2028년 생산</text><text x="77" y="211">0.81초 기록</text><text x="77" y="263">300마일 이상</text>
+              <text x="221" y="159">0-60 질주</text><text x="221" y="211">차 5대 넘기</text>
+              <text x="365" y="159">10월 15일</text><text x="365" y="211">23분 생중계</text>
+            </g>
+            <text x="221" y="430" text-anchor="middle" font-size="19" fill="#e6e1f5">주장이 검증으로 옮겨 가려면</text>
+            <text x="221" y="462" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFCF1">독립 계측 · 실제 생산과 인도</text>
+          </svg>
+        </div>
+        <div class="s-head"><span class="kicker"><span class="num">12</span> / 마무리</span></div>
+        <!-- frame: slide; xywh: 0.062 0.139 0.500 0.250; intent: closing statement at the left optical center -->
+        <h2 class="end-title abs" style="left:79px;top:100px;width:640px;" data-motion="rise" data-motion-order="0">묘기는 실제로 해냈다.<br>이제 확인할 것은<br><span class="hl">날짜와 가격이다.</span></h2>
+        <p class="cta-lead abs" style="left:79px;top:330px;width:640px;" data-motion="fade" data-motion-order="1">발표 숫자를 들으면 먼저 물어보세요</p>
+        <div class="ask abs" style="left:79px;top:384px;" data-motion="fade" data-motion-order="1"><span class="c">주장인가?</span><span class="d">시연인가?</span><span class="v">검증인가?</span></div>
+        <div class="quote-card abs" style="left:79px;top:486px;width:600px;" data-motion="fade" data-motion-order="3"><span class="q">“여기 엔지니어링은 진짜다.”</span><span class="who">Fred Lambert, Electrek · Roadster 예약 보유자(번역)</span></div>
+        <p class="foot">자료: 이 덱 2·5·6·8·9쪽의 숫자, Electrek(2026-10-15) · 비공식 정리, Tesla와 무관</p>
+        <aside class="notes">정리하면, 묘기는 관객 앞에서 실제로 해냈습니다. 하지만 가격, 인도 날짜, 성능 수치는 아직 테슬라의 약속입니다. 앞으로 발표 숫자를 들으면 세 가지만 물어보세요. 테슬라가 말한 것인지, 눈앞에서 보여 준 것인지, 누군가 따로 확인한 것인지. 주장이 검증으로 옮겨 가려면 독립 계측과 실제 생산·인도가 필요하고, 가격은 아직 빈칸입니다.</aside>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script>
+    const printMode = /print-pdf/gi.test(window.location.search);
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const motionAnimations = new WeakMap();
+
+    function motionKeyframes(kind) {
+      const frames = {
+        rise: [
+          { opacity: 0, transform: 'translate3d(0, 22px, 0)' },
+          { opacity: 1, transform: 'translate3d(0, 0, 0)' }
+        ],
+        fade: [
+          { opacity: 0 },
+          { opacity: 1 }
+        ],
+        wipe: [
+          { opacity: 0, clipPath: 'inset(0 100% 0 0)' },
+          { opacity: 1, clipPath: 'inset(0 0 0 0)' }
+        ]
+      };
+      return frames[kind] || frames.fade;
+    }
+
+    function finishMotion(slide) {
+      if (!slide) return;
+      slide.querySelectorAll('[data-motion]').forEach((element) => {
+        const running = motionAnimations.get(element);
+        if (running) running.cancel();
+        element.style.opacity = '1';
+        element.style.transform = 'none';
+        element.style.clipPath = 'none';
+      });
+    }
+
+    function playMotion(slide) {
+      if (!slide || printMode || reduceMotion.matches) {
+        finishMotion(slide);
+        return;
+      }
+      slide.querySelectorAll('[data-motion]').forEach((element, index) => {
+        const running = motionAnimations.get(element);
+        if (running) running.cancel();
+        const order = Number(element.dataset.motionOrder || index);
+        const delay = Number(element.dataset.motionDelay || order * 90);
+        const duration = Number(element.dataset.motionDuration || 560);
+        const animation = element.animate(
+          motionKeyframes(element.dataset.motion),
+          { duration, delay, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'both' }
+        );
+        motionAnimations.set(element, animation);
+      });
+    }
+
+    function enterSlide(slide) {
+      playMotion(slide);
+    }
+
+    function leaveSlide(slide) {
+      if (!slide) return;
+      slide.querySelectorAll('[data-motion]').forEach((element) => {
+        const animation = motionAnimations.get(element);
+        if (animation) animation.cancel();
+      });
+    }
+
+    window.addEventListener('beforeprint', () => {
+      document.querySelectorAll('[data-motion]').forEach((element) => {
+        element.style.opacity = '1';
+        element.style.transform = 'none';
+        element.style.clipPath = 'none';
+      });
+    });
+
+    reduceMotion.addEventListener('change', () => {
+      const t = reduceMotion.matches ? 'none' : 'fade';
+      Reveal.configure({ transition: t, backgroundTransition: t });
+      enterSlide(Reveal.getCurrentSlide());
+    });
+
+    Reveal.initialize({
+      width: 1280,
+      height: 720,
+      margin: 0.04,
+      minScale: 0.2,
+      maxScale: 1.6,
+      hash: true,
+      center: false,
+      pdfPageHeightOffset: 0,
+      slideNumber: 'c/t',
+      controlsLayout: 'edges',
+      transition: reduceMotion.matches ? 'none' : 'fade',
+      backgroundTransition: reduceMotion.matches ? 'none' : 'fade',
+      transitionSpeed: 'fast'
+    });
+
+    Reveal.on('ready', (event) => enterSlide(event.currentSlide));
+    Reveal.on('slidechanged', (event) => {
+      leaveSlide(event.previousSlide);
+      enterSlide(event.currentSlide);
+    });
+  </script>
+</body>
+</html>

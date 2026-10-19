@@ -1,0 +1,880 @@
+{
+  "source": "sample-judged-template.pptx",
+  "slide_size": {
+    "emu": [
+      12192000,
+      6858000
+    ],
+    "px": [
+      1920,
+      1080
+    ],
+    "in": [
+      13.333,
+      7.5
+    ]
+  },
+  "px_per_pt": 2,
+  "min_font_pt": 12.0,
+  "min_font_px": 24,
+  "fonts": [
+    {
+      "family": "Arial",
+      "uses": 11
+    }
+  ],
+  "theme_fonts": {
+    "major": "Arial",
+    "minor": "Arial"
+  },
+  "slides": [
+    {
+      "index": 1,
+      "part": "ppt/slides/slide1.xml",
+      "title": "표지",
+      "match": "skip",
+      "prompts": [],
+      "title_box": {
+        "x": 96,
+        "y": 30,
+        "w": 1728,
+        "h": 60,
+        "text_x": 110.4,
+        "text_y": 37.2,
+        "font_px": 40,
+        "font": "Arial",
+        "color": "#F4F6F8"
+      },
+      "background": [
+        {
+          "kind": "background",
+          "fill": {
+            "kind": "solid",
+            "color": "#FFFFFF"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 1080
+          },
+          "geom": "rect"
+        }
+      ],
+      "art": [
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#22303C"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 120
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 120,
+          "layer": "base"
+        },
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#4A7C99"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 1056,
+            "w": 1920,
+            "h": 24
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 1056,
+          "w": 1920,
+          "h": 24,
+          "layer": "top"
+        }
+      ],
+      "layer_html": "<div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:1080px;background:#FFFFFF\"></div><div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:120px;background:#22303C\"></div><div class=\"tart\" style=\"left:0px;top:1056px;width:1920px;height:24px;background:#4A7C99\"></div>"
+    },
+    {
+      "index": 2,
+      "part": "ppt/slides/slide2.xml",
+      "title": "문제",
+      "match": "exact",
+      "prompts": [],
+      "title_box": {
+        "x": 96,
+        "y": 30,
+        "w": 1728,
+        "h": 60,
+        "text_x": 110.4,
+        "text_y": 37.2,
+        "font_px": 40,
+        "font": "Arial",
+        "color": "#F4F6F8"
+      },
+      "background": [
+        {
+          "kind": "background",
+          "fill": {
+            "kind": "solid",
+            "color": "#FFFFFF"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 1080
+          },
+          "geom": "rect"
+        }
+      ],
+      "art": [
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#22303C"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 120
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 120,
+          "layer": "base"
+        },
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#4A7C99"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 1056,
+            "w": 1920,
+            "h": 24
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 1056,
+          "w": 1920,
+          "h": 24,
+          "layer": "top"
+        }
+      ],
+      "layer_html": "<div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:1080px;background:#FFFFFF\"></div><div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:120px;background:#22303C\"></div><div class=\"tart\" style=\"left:0px;top:1056px;width:1920px;height:24px;background:#4A7C99\"></div>"
+    },
+    {
+      "index": 3,
+      "part": "ppt/slides/slide3.xml",
+      "title": "핵심 주장",
+      "match": "exact",
+      "prompts": [],
+      "title_box": {
+        "x": 96,
+        "y": 30,
+        "w": 1728,
+        "h": 60,
+        "text_x": 110.4,
+        "text_y": 37.2,
+        "font_px": 40,
+        "font": "Arial",
+        "color": "#F4F6F8"
+      },
+      "background": [
+        {
+          "kind": "background",
+          "fill": {
+            "kind": "solid",
+            "color": "#FFFFFF"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 1080
+          },
+          "geom": "rect"
+        }
+      ],
+      "art": [
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#22303C"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 120
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 120,
+          "layer": "base"
+        },
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#4A7C99"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 1056,
+            "w": 1920,
+            "h": 24
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 1056,
+          "w": 1920,
+          "h": 24,
+          "layer": "top"
+        }
+      ],
+      "layer_html": "<div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:1080px;background:#FFFFFF\"></div><div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:120px;background:#22303C\"></div><div class=\"tart\" style=\"left:0px;top:1056px;width:1920px;height:24px;background:#4A7C99\"></div>"
+    },
+    {
+      "index": 4,
+      "part": "ppt/slides/slide4.xml",
+      "title": "무엇을 보여줬나",
+      "match": "exact",
+      "prompts": [],
+      "title_box": {
+        "x": 96,
+        "y": 30,
+        "w": 1728,
+        "h": 60,
+        "text_x": 110.4,
+        "text_y": 37.2,
+        "font_px": 40,
+        "font": "Arial",
+        "color": "#F4F6F8"
+      },
+      "background": [
+        {
+          "kind": "background",
+          "fill": {
+            "kind": "solid",
+            "color": "#FFFFFF"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 1080
+          },
+          "geom": "rect"
+        }
+      ],
+      "art": [
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#22303C"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 120
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 120,
+          "layer": "base"
+        },
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#4A7C99"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 1056,
+            "w": 1920,
+            "h": 24
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 1056,
+          "w": 1920,
+          "h": 24,
+          "layer": "top"
+        }
+      ],
+      "layer_html": "<div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:1080px;background:#FFFFFF\"></div><div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:120px;background:#22303C\"></div><div class=\"tart\" style=\"left:0px;top:1056px;width:1920px;height:24px;background:#4A7C99\"></div>"
+    },
+    {
+      "index": 5,
+      "part": "ppt/slides/slide5.xml",
+      "title": "숫자 검증",
+      "match": "exact",
+      "prompts": [],
+      "title_box": {
+        "x": 96,
+        "y": 30,
+        "w": 1728,
+        "h": 60,
+        "text_x": 110.4,
+        "text_y": 37.2,
+        "font_px": 40,
+        "font": "Arial",
+        "color": "#F4F6F8"
+      },
+      "background": [
+        {
+          "kind": "background",
+          "fill": {
+            "kind": "solid",
+            "color": "#FFFFFF"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 1080
+          },
+          "geom": "rect"
+        }
+      ],
+      "art": [
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#22303C"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 120
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 120,
+          "layer": "base"
+        },
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#4A7C99"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 1056,
+            "w": 1920,
+            "h": 24
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 1056,
+          "w": 1920,
+          "h": 24,
+          "layer": "top"
+        }
+      ],
+      "layer_html": "<div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:1080px;background:#FFFFFF\"></div><div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:120px;background:#22303C\"></div><div class=\"tart\" style=\"left:0px;top:1056px;width:1920px;height:24px;background:#4A7C99\"></div>"
+    },
+    {
+      "index": 6,
+      "part": "ppt/slides/slide6.xml",
+      "title": "무엇을 약속했나",
+      "match": "exact",
+      "prompts": [],
+      "title_box": {
+        "x": 96,
+        "y": 30,
+        "w": 1728,
+        "h": 60,
+        "text_x": 110.4,
+        "text_y": 37.2,
+        "font_px": 40,
+        "font": "Arial",
+        "color": "#F4F6F8"
+      },
+      "background": [
+        {
+          "kind": "background",
+          "fill": {
+            "kind": "solid",
+            "color": "#FFFFFF"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 1080
+          },
+          "geom": "rect"
+        }
+      ],
+      "art": [
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#22303C"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 120
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 120,
+          "layer": "base"
+        },
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#4A7C99"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 1056,
+            "w": 1920,
+            "h": 24
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 1056,
+          "w": 1920,
+          "h": 24,
+          "layer": "top"
+        }
+      ],
+      "layer_html": "<div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:1080px;background:#FFFFFF\"></div><div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:120px;background:#22303C\"></div><div class=\"tart\" style=\"left:0px;top:1056px;width:1920px;height:24px;background:#4A7C99\"></div>"
+    },
+    {
+      "index": 7,
+      "part": "ppt/slides/slide7.xml",
+      "title": "일정",
+      "match": "exact",
+      "prompts": [],
+      "title_box": {
+        "x": 96,
+        "y": 30,
+        "w": 1728,
+        "h": 60,
+        "text_x": 110.4,
+        "text_y": 37.2,
+        "font_px": 40,
+        "font": "Arial",
+        "color": "#F4F6F8"
+      },
+      "background": [
+        {
+          "kind": "background",
+          "fill": {
+            "kind": "solid",
+            "color": "#FFFFFF"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 1080
+          },
+          "geom": "rect"
+        }
+      ],
+      "art": [
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#22303C"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 120
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 120,
+          "layer": "base"
+        },
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#4A7C99"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 1056,
+            "w": 1920,
+            "h": 24
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 1056,
+          "w": 1920,
+          "h": 24,
+          "layer": "top"
+        }
+      ],
+      "layer_html": "<div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:1080px;background:#FFFFFF\"></div><div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:120px;background:#22303C\"></div><div class=\"tart\" style=\"left:0px;top:1056px;width:1920px;height:24px;background:#4A7C99\"></div>"
+    },
+    {
+      "index": 8,
+      "part": "ppt/slides/slide8.xml",
+      "title": "한계",
+      "match": "exact",
+      "prompts": [],
+      "title_box": {
+        "x": 96,
+        "y": 30,
+        "w": 1728,
+        "h": 60,
+        "text_x": 110.4,
+        "text_y": 37.2,
+        "font_px": 40,
+        "font": "Arial",
+        "color": "#F4F6F8"
+      },
+      "background": [
+        {
+          "kind": "background",
+          "fill": {
+            "kind": "solid",
+            "color": "#FFFFFF"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 1080
+          },
+          "geom": "rect"
+        }
+      ],
+      "art": [
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#22303C"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 120
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 120,
+          "layer": "base"
+        },
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#4A7C99"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 1056,
+            "w": 1920,
+            "h": 24
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 1056,
+          "w": 1920,
+          "h": 24,
+          "layer": "top"
+        }
+      ],
+      "layer_html": "<div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:1080px;background:#FFFFFF\"></div><div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:120px;background:#22303C\"></div><div class=\"tart\" style=\"left:0px;top:1056px;width:1920px;height:24px;background:#4A7C99\"></div>"
+    },
+    {
+      "index": 9,
+      "part": "ppt/slides/slide9.xml",
+      "title": "결론",
+      "match": "exact",
+      "prompts": [],
+      "title_box": {
+        "x": 96,
+        "y": 30,
+        "w": 1728,
+        "h": 60,
+        "text_x": 110.4,
+        "text_y": 37.2,
+        "font_px": 40,
+        "font": "Arial",
+        "color": "#F4F6F8"
+      },
+      "background": [
+        {
+          "kind": "background",
+          "fill": {
+            "kind": "solid",
+            "color": "#FFFFFF"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 1080
+          },
+          "geom": "rect"
+        }
+      ],
+      "art": [
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#22303C"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 120
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 120,
+          "layer": "base"
+        },
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#4A7C99"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 1056,
+            "w": 1920,
+            "h": 24
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 1056,
+          "w": 1920,
+          "h": 24,
+          "layer": "top"
+        }
+      ],
+      "layer_html": "<div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:1080px;background:#FFFFFF\"></div><div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:120px;background:#22303C\"></div><div class=\"tart\" style=\"left:0px;top:1056px;width:1920px;height:24px;background:#4A7C99\"></div>"
+    },
+    {
+      "index": 10,
+      "part": "ppt/slides/slide10.xml",
+      "title": "출처",
+      "match": "exact",
+      "prompts": [],
+      "title_box": {
+        "x": 96,
+        "y": 30,
+        "w": 1728,
+        "h": 60,
+        "text_x": 110.4,
+        "text_y": 37.2,
+        "font_px": 40,
+        "font": "Arial",
+        "color": "#F4F6F8"
+      },
+      "background": [
+        {
+          "kind": "background",
+          "fill": {
+            "kind": "solid",
+            "color": "#FFFFFF"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 1080
+          },
+          "geom": "rect"
+        }
+      ],
+      "art": [
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#22303C"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 120
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 120,
+          "layer": "base"
+        },
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#4A7C99"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 1056,
+            "w": 1920,
+            "h": 24
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 1056,
+          "w": 1920,
+          "h": 24,
+          "layer": "top"
+        }
+      ],
+      "layer_html": "<div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:1080px;background:#FFFFFF\"></div><div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:120px;background:#22303C\"></div><div class=\"tart\" style=\"left:0px;top:1056px;width:1920px;height:24px;background:#4A7C99\"></div>"
+    },
+    {
+      "index": 11,
+      "part": "ppt/slides/slide11.xml",
+      "title": "감사",
+      "match": "skip",
+      "prompts": [],
+      "title_box": {
+        "x": 96,
+        "y": 30,
+        "w": 1728,
+        "h": 60,
+        "text_x": 110.4,
+        "text_y": 37.2,
+        "font_px": 40,
+        "font": "Arial",
+        "color": "#F4F6F8"
+      },
+      "background": [
+        {
+          "kind": "background",
+          "fill": {
+            "kind": "solid",
+            "color": "#FFFFFF"
+          },
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 1080
+          },
+          "geom": "rect"
+        }
+      ],
+      "art": [
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#22303C"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1920,
+            "h": 120
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 120,
+          "layer": "base"
+        },
+        {
+          "kind": "shape",
+          "fill": {
+            "kind": "solid",
+            "color": "#4A7C99"
+          },
+          "geom": "rect",
+          "box": {
+            "x": 0,
+            "y": 1056,
+            "w": 1920,
+            "h": 24
+          },
+          "from": "slide",
+          "x": 0,
+          "y": 1056,
+          "w": 1920,
+          "h": 24,
+          "layer": "top"
+        }
+      ],
+      "layer_html": "<div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:1080px;background:#FFFFFF\"></div><div class=\"tart tbase\" style=\"left:0px;top:0px;width:1920px;height:120px;background:#22303C\"></div><div class=\"tart\" style=\"left:0px;top:1056px;width:1920px;height:24px;background:#4A7C99\"></div>"
+    }
+  ],
+  "warnings": []
+}

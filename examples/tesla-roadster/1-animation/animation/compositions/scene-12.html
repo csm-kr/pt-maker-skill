@@ -1,0 +1,44 @@
+<template id="scene-12-template">
+  <div data-composition-id="scene-12" data-width="1920" data-height="1080" class="comp" id="s12-root">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <p class="kicker" id="s12-kicker"><i class="kbar" style="--k:var(--demo)"></i>마무리</p>
+    <div class="status-rail" aria-label="이 장면 숫자의 근거 표시"><span class="st st-claim on">주장</span><span class="st st-demo on">시연</span><span class="st st-ver on">검증</span><span class="st st-rep on">보도</span></div>
+    <div class="scene-content" id="s12-content">
+      <div class="quote quote-big" id="s12-quote" style="left:96px;top:290px;width:640px">
+        <p class="quote-t">“엔지니어링은 진짜다.”</p>
+        <p class="quote-a">Fred Lambert, Electrek · Roadster 예약자 (번역)<span class="tag t-rep">보도</span></p>
+      </div>
+      <h2 class="title " id="s12-title" style="top:150px;left:800px;font-size:76px"><span class="ln" id="s12-l1">보여준 묘기는 <span class="c-demo">진짜</span>였고</span><span class="ln" id="s12-l2">이제 확인할 것은</span><span class="ln" id="s12-l3"><span class="c-alert">가격·수치·날짜</span>다</span></h2>
+      <div class="cta" id="s12-cta" style="left:800px;top:478px;width:1024px">
+        <p class="cta-lead">발표 숫자를 들으면 이렇게 물어보세요</p>
+        <div class="cta-chips" id="s12-chips"><span class="cta-chip t-claim" id="s12-k1">주장인가?</span><span class="cta-chip t-demo" id="s12-k2">시연인가?</span><span class="cta-chip t-ver" id="s12-k3">검증인가?</span></div>
+      </div>
+      <p class="watch" id="s12-watch" style="left:96px;top:676px">지켜볼 3가지 · 숫자가 확인되는 순간</p>
+      <div class="road road-12" id="s12-road" style="left:96px;top:872px;width:1728px"></div>
+      <div class="flag" id="s12-f1" style="left:670px;top:744px;width:300px"><p class="flag-lab">가격 발표</p><i class="flag-pole"></i></div><div class="flag" id="s12-f2" style="left:1070px;top:744px;width:300px"><p class="flag-lab">수치 독립 계측</p><i class="flag-pole"></i></div><div class="flag" id="s12-f3" style="left:1470px;top:744px;width:300px"><p class="flag-lab"><span class="c-claim">2028년</span> 생산 시작</p><i class="flag-pole"></i></div>
+      <svg class="car " id="s12-car" viewBox="0 0 300 100" width="420" height="140" style="left:120px;top:736.2px" aria-hidden="true"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></svg>
+    </div>
+    <p class="src" id="s12-src"><b>Details:</b> Reuters(2028년 생산) · Electrek(Fred Lambert 인용) · 가격 발표와 독립 계측은 2026-10-19 기준 찾지 못함</p>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const s12T = { road: 1.55, car: 1.8, flags: 2.2, quote: 3.2, cta: 3.8, chips: 4.2, payoff: 5.3 };
+      const s12Tl = gsap.timeline({ paused: true });
+      s12Tl.from("#s12-kicker", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, .12);
+      s12Tl.from("#s12-root .status-rail", { opacity: 0, duration: .5, ease: "power1.out" }, .2);
+      s12Tl.from("#s12-src", { opacity: 0, duration: .6, ease: "power1.out" }, 3.00);
+      s12Tl.fromTo("#s12-l1", { clipPath: "inset(-12% 0% 100% 0%)", y: 34 }, { clipPath: "inset(-12% 0% -12% 0%)", y: 0, duration: .58, ease: "power3.out" }, 0.30);
+      s12Tl.fromTo("#s12-l2", { clipPath: "inset(-12% 0% 100% 0%)", y: 34 }, { clipPath: "inset(-12% 0% -12% 0%)", y: 0, duration: .58, ease: "power3.out" }, 0.72);
+      s12Tl.fromTo("#s12-l3", { clipPath: "inset(-12% 0% 100% 0%)", y: 34 }, { clipPath: "inset(-12% 0% -12% 0%)", y: 0, duration: .58, ease: "power3.out" }, 1.14);
+      s12Tl.from("#s12-road", { scaleX: 0, transformOrigin: "0% 50%", duration: 1.0, ease: "power2.inOut" }, s12T.road);
+      s12Tl.from("#s12-watch", { opacity: 0, x: -16, duration: .45 }, s12T.road + .2);
+      s12Tl.fromTo("#s12-car", { x: -760, opacity: 0 }, { x: 0, opacity: 1, duration: 1.3, ease: "power3.out" }, s12T.car);
+      s12Tl.from("#s12-root .flag", { y: 26, opacity: 0, duration: .4, ease: "back.out(1.8)", stagger: .25 }, s12T.flags);
+      s12Tl.from("#s12-quote", { opacity: 0, y: 18, duration: .5, ease: "power2.out" }, s12T.quote);
+      s12Tl.from("#s12-root .cta-lead", { opacity: 0, y: 12, duration: .45, ease: "power2.out" }, s12T.cta);
+      s12Tl.from("#s12-root .cta-chip", { scale: 1.4, opacity: 0, transformOrigin: "50% 50%", duration: .38, ease: "back.out(2)", stagger: .34 }, s12T.chips);
+      s12Tl.fromTo("#s12-root .status-rail .st", { opacity: .3, scale: .9, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: .35, ease: "back.out(2)", stagger: .1 }, s12T.payoff);
+      s12Tl.set("#s12-src", { opacity: 1 }, 10);
+      window.__timelines["scene-12"] = s12Tl;
+    </script>
+  </div>
+</template>

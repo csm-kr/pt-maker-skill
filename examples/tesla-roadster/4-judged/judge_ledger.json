@@ -1,0 +1,97 @@
+{
+  "round": 3,
+  "artifacts": {
+    "slides_dir": "slides",
+    "pdf": "TeslaRoadsterJudgedv3.pdf",
+    "deck": "deck.html",
+    "deck_hash": "6f3f47b277134254bcad434c88078c2207600659472402546516919636e167ab"
+  },
+  "criteria": [
+    {
+      "id": "accuracy",
+      "name": "사실 정확성",
+      "weight": 40,
+      "reviewer": "judge-accuracy-r3",
+      "blind": true,
+      "score": 8,
+      "p0": [
+        "A1: '출력 1 MW 이상(1,500마력)' — 1 MW는 약 1,341마력이고, 1,500마력은 상위 버전에 대한 발언이라 괄호가 잘못된 환산처럼 읽힌다",
+        "p4: 네 번째 시연 '수직 이륙'을 독립 보도로 확인하지 못했다 (fact-check-r3는 녹화 21:53–21:56에서 직접 확인함)"
+      ],
+      "top_fixes": [
+        "A1: '출력 1 MW(약 1,341마력) 주장'으로 고치고 1,500마력은 버전 조건과 함께 따로 표시",
+        "p4: 수직 이륙의 출처를 녹화 시각과 함께 밝히고 '관객 앞에서'의 범위를 좁히기",
+        "p6: 제목을 '테슬라의 새 주장값은 더 빠르지만'으로 고치고 0.81초에 버전과 추진기 조건 붙이기"
+      ]
+    },
+    {
+      "id": "clarity",
+      "name": "메시지 명확성",
+      "weight": 25,
+      "reviewer": "judge-clarity-r3",
+      "blind": true,
+      "score": 7,
+      "p0": [
+        "p6: 제목 '테슬라 0-60 값은 더 빠르지만'이 같은 차트(1.9초 > 1.74초 > 1.4초)와 '순위가 아니다' 문구와 어긋난다",
+        "p3: 검증 칸의 유일한 숫자가 다른 차(Model S Plaid)의 값인데 표시가 없어 Roadster 값으로 오해할 수 있다"
+      ],
+      "top_fixes": [
+        "p3: 메시지의 두 갈래(보여준 것 / 남은 것)에 맞춰 나누고 머리띠 '핵심 주장'을 '핵심 메시지'로",
+        "p6: 제목을 차트에 맞추고 p5·p6을 합쳐 반복 줄이기",
+        "p2: '8년'과 단위 표기를 쉬운 말로, 마일에 km 병기"
+      ]
+    },
+    {
+      "id": "transparency",
+      "name": "근거 투명성",
+      "weight": 25,
+      "reviewer": "judge-transparency-r3",
+      "blind": true,
+      "score": 8,
+      "p0": [
+        "p6: Rimac 1.74초를 '검증'으로 칠했지만 출처 줄에는 제조사 자료만 보이고 측정 기관 출처가 없다",
+        "p6: 제목이 같은 차트와 맞지 않는다"
+      ],
+      "top_fixes": [
+        "숫자마다 위첨자 번호로 출처 줄과 짝짓기 (p8 방식을 다른 쪽으로 확대)",
+        "p6·p3·p11: 검증 칩 기준을 하나로, 측정 기관을 직접 출처로",
+        "p3·p5·p9: '독립 계측 찾지 못함'을 덱 자체 확인 결과로 표시하고 검색 범위 밝히기"
+      ]
+    },
+    {
+      "id": "design",
+      "name": "디자인",
+      "weight": 10,
+      "reviewer": "judge-design-r3",
+      "blind": true,
+      "score": 8,
+      "p0": [
+        "p6: 제목과 막대 그래프가 반대로 읽힌다 (규칙 위반은 없음)"
+      ],
+      "top_fixes": [
+        "p6: '짧을수록 빠름' 표시, 2017년 막대 낮추기, '미만' 라벨 방식 통일",
+        "p8: 가로축을 '발표 순서'로 바꾸거나 실제 날짜 간격으로, 범례 두 줄로 나누기",
+        "p5: 영어 인용 한국어로, 작은 Wikipedia 캡처 키우거나 빼기"
+      ]
+    }
+  ],
+  "fact_check": {
+    "reviewer": "fact-check-r3",
+    "blind": true,
+    "facts_checked": 42,
+    "mismatches": [
+      "p6: 제목 '테슬라 0-60 값은 더 빠르지만' vs 같은 차트의 1.9초 > 1.74초 > 1.4초",
+      "A1: '1 MW 이상(1,500마력)' vs Top Gear 06:12–06:29(1,500마력은 performance 이상)와 26:47–26:53(기본형 1 MW, 1,340 bhp)",
+      "p5: 'the company claimed'는 The Verge 2026-10-16 행사 기사 문장인데 하단 출처는 The Verge 분석 기사만 표시",
+      "p6: Model S Plaid의 '1-ft rollout' 조건이 인용한 InsideEVs 2021-06-17 기사에 없음 (준비된 노면은 맞음)",
+      "p8: ① 2021의 근거는 Electrek 2026-10-13 요약이고, 붙인 InsideEVs 2020-07-23은 '12 to 18 months'만 말함; ⑥은 2025-11 발언인데 기사 날짜 2026-10-13이 붙음",
+      "p4: '탑승한 사람 0명'에 '시연 중' 범위가 빠짐; '매달리기' 칸에 시연 라벨 없음",
+      "p9: 'Rocket 공공도로 사용 승인 안 됨'에 주장 라벨 없음"
+    ],
+    "p0": [
+      "p6: 제목이 같은 슬라이드의 막대로 반박된다",
+      "A1: '1 MW 이상(1,500마력)'은 계산으로 반박된다"
+    ]
+  },
+  "notes": "Round 3 of 3. Weighted 7.75 against a target of 8.0, with P0 findings open. The owner chose to publish this round as is, so the gate result stays a fail. Rounds: r1 7.0, r2 7.4, r3 7.75. All reviewers saw only slides/*.png and slides/text.txt (fact-check also facts.json and the public sources)."
+}

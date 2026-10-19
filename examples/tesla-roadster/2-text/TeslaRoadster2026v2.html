@@ -1,0 +1,737 @@
+<!doctype html>
+<!--
+  pt-maker text-led deck (production-direction: text, mode: presentation)
+  Topic: the 2026-10-15 Tesla Roadster event, unofficial summary. Not affiliated with Tesla.
+  Every number comes from research/facts.json and carries a 주장 / 시연 / 검증 tag.
+-->
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tesla Roadster 2026 발표 요약 (비공식) v2</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+
+  <!-- 폰트: Pretendard(본문) · JetBrains Mono(번호) · Nanum Pen Script(메모 손글씨) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Nanum+Pen+Script&display=swap">
+
+  <!-- PDF 추출용 print 스타일 (?print-pdf 쿼리일 때만 로드) -->
+  <script>
+    (function () {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = /print-pdf/gi.test(window.location.search)
+        ? 'https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/css/print/pdf.css'
+        : 'https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/css/print/paper.css';
+      document.head.appendChild(link);
+    })();
+  </script>
+
+  <style>
+    :root {
+      --paper:      #FAF3DE;
+      --card:       #FFFCF1;
+      --ink:        #20174A;
+      --ink-soft:   #5E5784;
+      --cream-line: #E7DCB6;
+      --accent:     #C73463;
+      --tape:       rgba(199,52,99,0.18);
+      --stage-w:    1280px;
+      --stage-h:    720px;
+      --safe-x:     6.2%;
+      --safe-y:     6.2%;
+      --motion-fast: 220ms;
+      --motion-enter: 560ms;
+      --ease-enter: cubic-bezier(.2,.8,.2,1);
+      --ease-exit: cubic-bezier(.4,0,1,1);
+
+      /* 의미 색: 주장(테슬라가 말함) · 시연(관객 앞에서 보임) · 검증(기록·독립 측정) */
+      --claim: #8A4B00;  --claim-bg: #FBE5C2;  --claim-line: #E3B36E;
+      --demo:  #1B5592;  --demo-bg:  #DCEAF7;  --demo-line:  #9DC0E6;
+      --ver:   #1E6542;  --ver-bg:   #D8EEDF;  --ver-line:   #9FCFAF;
+      --night: #20174A;  --night-2:  #2C2260;
+      --pink:  #F2B8CB;  --lilac:    #B9B3D6;
+      --claim-lt: #F6C27A; --demo-lt: #9CC7F2; --ver-lt: #98D8AE;
+    }
+
+    .reveal { font-family: "Pretendard", system-ui, sans-serif; color: var(--ink); font-size: 28px; line-height: 1.56; word-break: keep-all; overflow-wrap: break-word; text-wrap: pretty; }
+    .reveal .slides { text-align: left; }
+    .reveal .slides section { height: 100%; isolation: isolate; }
+    .reveal .slides section:not(.present) { pointer-events: none; }
+
+    .reveal-viewport {
+      background-color: var(--paper);
+      background-image: repeating-linear-gradient(
+        to bottom, transparent 0, transparent 47px, rgba(32,23,74,0.045) 48px);
+    }
+
+    .reveal h1, .reveal h2, .reveal h3 { font-family: "Pretendard"; color: var(--ink); font-weight: 800; line-height: 1.2; letter-spacing: -0.015em; margin: 0; text-transform: none; text-wrap: balance; }
+    .reveal .accent { color: var(--accent); }
+
+    .kicker { font-family: "Pretendard", sans-serif; font-size: 20px; letter-spacing: .04em; color: var(--accent); font-weight: 700; display: inline-block; line-height: 1.3; }
+    .kicker .num { font-family: "JetBrains Mono", monospace; font-size: 18px; color: var(--ink-soft); letter-spacing: .04em; }
+    .reveal .s-head { position: absolute; top: 44px; left: 79px; z-index: 6; }
+
+    /* 손글씨 메모: 사실·숫자에는 쓰지 않는다 */
+    .memo { font-family: "Nanum Pen Script", cursive; color: var(--accent); font-size: 40px; line-height: 1.1; transform: rotate(-3deg); display: inline-block; }
+
+    /* Subject-safe frame for the one documentary photo (contain, never crop). */
+    .photo-frame { background: #fff; border: 1.5px solid var(--ink); border-radius: 12px; padding: 12px; box-shadow: 6px 8px 0 rgba(32,23,74,0.08); }
+    .photo-frame img { display: block; width: 100%; height: auto; object-fit: contain; border-radius: 4px; }
+
+    /* Motion source stays readable before JS and in print. JS applies finite WAAPI poses. */
+    [data-motion] { transform-origin: center; will-change: transform, opacity, clip-path; }
+
+    /* ---------- deck system ---------- */
+    .stage { position: absolute; inset: 0; }
+    .reveal h2.t { position: absolute; left: 79px; top: 92px; width: 1122px; font-size: 44px; line-height: 1.28; }
+    .sub { position: absolute; left: 79px; margin: 0; font-size: 22px; line-height: 1.45; font-weight: 500; color: var(--ink-soft); }
+    .foot { position: absolute; left: 79px; right: 79px; bottom: 20px; display: flex; justify-content: space-between; align-items: baseline; gap: 32px; font-size: 15px; line-height: 1.4; color: var(--ink-soft); }
+    .foot .src { flex: 1; min-width: 0; }
+    .foot .pg { white-space: nowrap; font-weight: 600; }
+    .foot .pg b { font-family: "JetBrains Mono", monospace; font-weight: 500; margin-left: .6em; }
+
+    .tag { display: inline-block; font-size: 20px; line-height: 1.2; font-weight: 700; letter-spacing: 0; padding: 3px 11px 4px; border-radius: 999px; border: 1.5px solid; white-space: nowrap; vertical-align: middle; position: relative; top: -.06em; margin-left: .3em; font-style: normal; }
+    .tag:first-child { margin-left: 0; }
+    .t-claim { color: var(--claim); background: var(--claim-bg); border-color: var(--claim-line); }
+    .t-demo  { color: var(--demo);  background: var(--demo-bg);  border-color: var(--demo-line); }
+    .t-ver   { color: var(--ver);   background: var(--ver-bg);   border-color: var(--ver-line); }
+    .t-calc  { color: #4A4560; background: #ECE8F2; border-color: #C9C3D9; }
+    .nowrap { white-space: nowrap; }
+
+    /* dark field (cover + closing) */
+    .dark { color: #FAF3DE; }
+    .reveal .dark h1, .reveal .dark h2 { color: #FAF3DE; }
+    .dark .kicker { color: var(--pink); }
+    .dark .kicker .num { color: var(--lilac); }
+    .dark .foot { color: var(--lilac); }
+    .pink { color: var(--pink); }
+
+    /* 01 cover */
+    .cv-badge { position: absolute; top: 38px; right: 79px; font-size: 20px; line-height: 1.3; font-weight: 600; color: #FAF3DE; border: 1.5px solid var(--lilac); border-radius: 999px; padding: 6px 18px; }
+    .cv-pre { position: absolute; left: 79px; top: 184px; margin: 0; font-size: 26px; line-height: 1.4; font-weight: 600; color: var(--lilac); }
+    .reveal h1.cv-focal { position: absolute; left: 79px; top: 238px; width: 760px; font-size: 80px; line-height: 1.16; letter-spacing: -.025em; }
+    .cv-metric { position: absolute; left: 871px; top: 252px; width: 330px; border-left: 3px solid var(--pink); padding-left: 26px; box-sizing: border-box; }
+    .cv-metric .big { font-size: 66px; line-height: 1.05; font-weight: 800; letter-spacing: -.02em; color: #FAF3DE; }
+    .cv-metric .lab { margin-top: 14px; font-size: 22px; line-height: 1.5; color: var(--lilac); }
+    .cv-sub { position: absolute; left: 79px; top: 482px; margin: 0; font-size: 28px; line-height: 1.5; color: #FAF3DE; }
+
+    /* 02 stepped phrase */
+    .step { position: absolute; }
+    .step .when { margin: 0 0 4px; font-size: 22px; line-height: 1.4; font-weight: 600; color: var(--ink-soft); }
+    .step .say { margin: 0; font-size: 40px; line-height: 1.3; font-weight: 800; letter-spacing: -.015em; white-space: nowrap; }
+    .st1 { left: 79px; top: 186px; }
+    .st2 { left: 299px; top: 306px; }
+    .st3 { left: 519px; top: 426px; }
+    .st3 .say { color: var(--accent); }
+    .step .say .tag { margin-left: 14px; }
+    .joint { position: absolute; border-left: 2.5px dashed var(--ink-soft); border-bottom: 2.5px dashed var(--ink-soft); border-bottom-left-radius: 14px; }
+    .joint::after { content: ""; position: absolute; right: -2px; bottom: -8.5px; border-left: 12px solid var(--ink-soft); border-top: 7px solid transparent; border-bottom: 7px solid transparent; }
+    .j1 { left: 99px; top: 278px; width: 184px; height: 82px; }
+    .j2 { left: 319px; top: 398px; width: 184px; height: 82px; }
+    .legend { position: absolute; left: 805px; top: 180px; width: 396px; }
+    .memo2 { position: absolute; left: 96px; top: 548px; }
+    .legend .lg-h { margin: 0 0 8px; font-size: 20px; line-height: 1.3; font-weight: 700; color: var(--ink-soft); }
+    .legend .lg-r { margin: 0 0 6px; font-size: 21px; line-height: 1.5; }
+    .legend .lg-r .tag { margin: 0 10px 0 0; }
+
+    /* 03 metric-led + photo */
+    .m-grid { position: absolute; left: 79px; top: 262px; width: 590px; display: grid; grid-template-columns: 1fr 1fr; column-gap: 26px; row-gap: 26px; }
+    .m-cell { border-top: 2.5px solid var(--ink); padding-top: 12px; }
+    .m-cell .n { font-size: 56px; line-height: 1.1; font-weight: 800; letter-spacing: -.02em; }
+    .m-cell .l { margin-top: 6px; font-size: 22px; line-height: 1.45; color: var(--ink-soft); }
+    .ph3 { position: absolute; left: 712px; top: 262px; width: 489px; }
+    .ph-cap { margin: 14px 0 0; font-size: 20px; line-height: 1.45; font-weight: 600; }
+    .ph-credit { margin: 4px 0 0; font-size: 15px; line-height: 1.4; color: var(--ink-soft); }
+
+    /* 04 staircase */
+    .quote4 { position: absolute; left: 79px; top: 226px; width: 400px; margin: 0; }
+    .quote4 .q { margin: 0; font-size: 25px; line-height: 1.55; font-weight: 600; }
+    .quote4 .by { margin: 8px 0 0; font-size: 18px; line-height: 1.4; color: var(--ink-soft); }
+    .stairs { position: absolute; left: 80px; top: 270px; width: 1120px; height: 360px; display: grid; grid-template-columns: repeat(8, 1fr); align-items: end; }
+    .stairs .col { display: flex; flex-direction: column; align-items: stretch; justify-content: flex-end; height: 100%; padding: 0 6px; box-sizing: border-box; }
+    .stairs .yr { font-size: 26px; line-height: 1.25; font-weight: 800; text-align: center; margin-bottom: 8px; white-space: nowrap; }
+    .stairs .blk { background: var(--claim-bg); border: 2px solid var(--claim-line); border-bottom: none; border-radius: 6px 6px 0 0; }
+    .stairs .col.first .blk { background: #FFFFFF; border-color: var(--ink); }
+    .stairs .col.last .blk { background: var(--accent); border-color: var(--accent); }
+    .stairs .col.last .yr { color: var(--accent); }
+    .stairs .base { border-top: 2.5px solid var(--ink); margin: 0 -6px; }
+    .stairs .dt { margin-top: 8px; font-family: "JetBrains Mono", monospace; font-size: 20px; line-height: 1.3; text-align: center; color: var(--ink); }
+    .stairs .nt { font-size: 20px; line-height: 1.3; text-align: center; color: var(--ink-soft); min-height: 26px; }
+    .memo4 { position: absolute; left: 590px; top: 238px; }
+
+    /* 05 metric split */
+    .big5 { position: absolute; left: 79px; top: 290px; width: 380px; }
+    .big5 .n { font-size: 150px; line-height: 1; font-weight: 800; letter-spacing: -.04em; color: var(--accent); }
+    .big5 .l { margin-top: 16px; font-size: 22px; line-height: 1.5; color: var(--ink-soft); }
+    .rows5 { position: absolute; left: 500px; top: 248px; width: 701px; }
+    .rows5 .r { display: grid; grid-template-columns: 118px 1fr; column-gap: 18px; border-top: 1.5px solid var(--cream-line); padding: 15px 0 16px; }
+    .rows5 .r:first-child { border-top: 2.5px solid var(--ink); }
+    .rows5 .k { font-size: 20px; line-height: 1.75; font-weight: 700; color: var(--ink-soft); }
+    .rows5 .v { font-size: 26px; line-height: 1.45; }
+    .rows5 .v2 { display: block; margin-top: 2px; font-size: 21px; line-height: 1.45; color: var(--ink-soft); }
+
+    /* 06 three demos */
+    .demo-svg { position: absolute; left: 79px; top: 206px; }
+    .cap6 { position: absolute; width: 290px; }
+    .cap6.k1 { left: 323px; top: 224px; }
+    .cap6.k2 { left: 892px; top: 224px; }
+    .cap6.k3 { left: 323px; top: 444px; }
+    .cap6.k4 { left: 892px; top: 444px; }
+    .cap6 .h { margin: 0; font-size: 24px; line-height: 1.4; font-weight: 800; }
+    .cap6 .m { margin: 6px 0 0; font-size: 22px; line-height: 1.4; font-weight: 700; }
+    .cap6 .b { margin: 6px 0 0; font-size: 21px; line-height: 1.5; color: var(--ink-soft); }
+
+    /* 07 asymmetric split */
+    .note7 { position: absolute; left: 79px; top: 226px; margin: 0; font-size: 21px; line-height: 1.4; color: var(--ink-soft); }
+    .trim { position: absolute; left: 79px; width: 380px; box-sizing: border-box; background: var(--card); border: 1.5px solid var(--cream-line); border-radius: 16px; padding: 18px 24px; }
+    .trim.p1 { top: 276px; height: 152px; }
+    .trim.p2 { top: 446px; height: 152px; }
+    .trim .nm { font-size: 28px; line-height: 1.3; font-weight: 800; }
+    .trim .ds { margin-top: 4px; font-size: 20px; line-height: 1.45; color: var(--ink-soft); }
+    .trim .mt { margin-top: 8px; font-size: 26px; line-height: 1.35; font-weight: 700; }
+    .rocket { position: absolute; left: 495px; top: 276px; width: 706px; height: 322px; box-sizing: border-box; background: var(--card); border: 2.5px solid var(--ink); border-radius: 18px; box-shadow: 8px 10px 0 rgba(199,52,99,0.16); padding: 24px 34px; }
+    .rocket .nm { font-size: 46px; line-height: 1.15; font-weight: 800; color: var(--accent); letter-spacing: -.02em; }
+    .rocket .ds { margin-top: 8px; font-size: 22px; line-height: 1.45; color: var(--ink-soft); }
+    .rocket .mt { margin-top: 20px; font-size: 42px; line-height: 1.2; font-weight: 800; letter-spacing: -.02em; }
+    .rocket .dt2 { margin-top: 10px; font-size: 22px; line-height: 1.45; }
+    .rocket .qt { margin-top: 22px; padding-top: 16px; border-top: 1.5px solid var(--cream-line); font-size: 22px; line-height: 1.45; }
+    .rocket .qt b { font-weight: 800; }
+
+    /* 08 editorial table */
+    .note8 { position: absolute; right: 79px; top: 188px; margin: 0; font-size: 21px; line-height: 1.4; color: var(--ink-soft); }
+    .tbl { position: absolute; left: 79px; top: 232px; width: 1122px; border-collapse: collapse; }
+    .tbl th { text-align: left; font-size: 20px; line-height: 1.3; font-weight: 700; color: var(--ink-soft); padding: 0 12px 10px; border-bottom: 2.5px solid var(--ink); }
+    .tbl td { font-size: 26px; line-height: 1.35; padding: 12px 12px; border-bottom: 1.5px solid var(--cream-line); vertical-align: baseline; }
+    .tbl td.k { font-weight: 700; width: 196px; }
+    .tbl td.y17 { width: 404px; color: var(--ink-soft); }
+    .tbl tr.hot td { background: rgba(199,52,99,0.07); }
+    .tbl tr.hot td.y26 { color: var(--accent); font-weight: 800; }
+    .tbl .small { font-size: 21px; color: var(--ink-soft); }
+    .fn8 { position: absolute; left: 79px; top: 590px; margin: 0; font-size: 20px; line-height: 1.4; color: var(--ink-soft); }
+
+    /* 09 split contrast */
+    .col9 { position: absolute; top: 248px; width: 541px; height: 262px; box-sizing: border-box; border-radius: 16px; padding: 20px 28px; }
+    .col9.a { left: 79px; background: var(--demo-bg); border: 1.5px solid var(--demo-line); }
+    .col9.b { left: 660px; background: var(--claim-bg); border: 1.5px solid var(--claim-line); }
+    .col9 .h { margin: 0 0 10px; font-size: 26px; line-height: 1.35; font-weight: 800; }
+    .col9 ul { list-style: none; margin: 0; padding: 0; }
+    .col9 li { position: relative; padding-left: 22px; margin: 0 0 10px; font-size: 23px; line-height: 1.5; }
+    .col9 li::before { content: ""; position: absolute; left: 0; top: .62em; width: 9px; height: 9px; border-radius: 50%; background: var(--ink); }
+    .col9 li b { font-weight: 700; }
+    .q9 { position: absolute; left: 79px; top: 544px; width: 1122px; margin: 0; font-size: 26px; line-height: 1.45; font-weight: 700; }
+    .q9 .by { font-size: 18px; font-weight: 500; color: var(--ink-soft); margin-left: .6em; }
+
+    /* 10 metric + bars */
+    .big10 { position: absolute; left: 79px; top: 212px; width: 370px; }
+    .big10 .n0 { font-size: 44px; line-height: 1.1; font-weight: 800; letter-spacing: -.02em; color: var(--claim); }
+    .big10 .n { margin-top: 6px; font-size: 60px; line-height: 1.05; font-weight: 800; letter-spacing: -.03em; color: var(--claim); white-space: nowrap; }
+    .big10 .l { margin-top: 16px; font-size: 23px; line-height: 1.5; }
+    .big10 .g { margin-top: 18px; padding-top: 14px; border-top: 1.5px solid var(--cream-line); font-size: 22px; line-height: 1.5; color: var(--ink); }
+    .bars { position: absolute; left: 480px; top: 208px; width: 721px; }
+    .bars .key { margin: 0 0 10px; font-size: 20px; line-height: 1.4; color: var(--ink-soft); }
+    .bars .row { display: grid; grid-template-columns: 236px 300px 1fr; align-items: center; height: 44px; }
+    .bars .row.sep { margin-top: 10px; border-top: 1.5px dashed var(--cream-line); padding-top: 8px; height: 44px; }
+    .bars .lb { font-size: 21px; line-height: 1.3; }
+    .bars .tr { position: relative; height: 22px; }
+    .bars .br { position: absolute; left: 0; top: 0; height: 22px; border-radius: 0 6px 6px 0; }
+    .bars .br.c { background: #E9A64C; }
+    .bars .br.v { background: #3E9A68; }
+    .bars .br.lt { border-radius: 0; background-image: linear-gradient(90deg, rgba(255,255,255,0) 70%, rgba(250,243,222,.95) 100%); }
+    .bars .vl { padding-left: 14px; font-size: 21px; line-height: 1.3; font-weight: 700; white-space: nowrap; }
+    .bars .vl .tag { font-size: 17px; padding: 2px 8px 3px; margin-left: 10px; }
+    .bars .axis { margin-left: 236px; width: 300px; display: flex; justify-content: space-between; border-top: 1.5px solid var(--ink); padding-top: 4px; font-family: "JetBrains Mono", monospace; font-size: 16px; color: var(--ink-soft); }
+    .fn10 { position: absolute; left: 79px; top: 580px; margin: 0; font-size: 20px; line-height: 1.4; color: var(--ink-soft); }
+
+    /* 11 stepped checklist + quote */
+    .chk { position: absolute; width: 640px; display: grid; grid-template-columns: 34px 1fr; column-gap: 18px; }
+    .chk .bx { width: 30px; height: 30px; border: 2.5px solid var(--ink); border-radius: 6px; margin-top: 8px; box-sizing: border-box; background: #fff; }
+    .chk .h { margin: 0; font-size: 32px; line-height: 1.35; font-weight: 800; }
+    .chk .d { margin: 4px 0 0; font-size: 24px; line-height: 1.5; color: var(--ink); }
+    .c1 { left: 79px; top: 214px; }
+    .c2 { left: 119px; top: 346px; }
+    .c3 { left: 159px; top: 478px; }
+    .qcard { position: absolute; left: 820px; top: 236px; width: 381px; box-sizing: border-box; background: var(--card); border: 1.5px solid var(--ink); border-radius: 16px; padding: 22px 26px; }
+    .qcard .h { margin: 0 0 10px; font-size: 20px; line-height: 1.3; font-weight: 700; color: var(--accent); }
+    .qcard .q { margin: 0; font-size: 26px; line-height: 1.55; font-weight: 700; }
+    .qcard .by { margin: 12px 0 0; font-size: 17px; line-height: 1.45; color: var(--ink-soft); }
+
+    /* 12 closing */
+    .reveal h2.cl-focal { position: absolute; left: 79px; top: 136px; width: 1122px; font-size: 60px; line-height: 1.24; letter-spacing: -.025em; }
+    .cl-by { position: absolute; left: 79px; top: 318px; margin: 0; font-size: 21px; line-height: 1.45; color: var(--lilac); }
+    .cl-cta { position: absolute; left: 79px; top: 398px; width: 640px; }
+    .cl-cta .a { margin: 0; font-size: 24px; line-height: 1.45; color: var(--lilac); }
+    .cl-cta .b { margin: 10px 0 0; font-size: 46px; line-height: 1.25; font-weight: 800; letter-spacing: -.02em; }
+    .cl-cta .b .w1 { color: var(--claim-lt); }
+    .cl-cta .b .w2 { color: var(--demo-lt); }
+    .cl-cta .b .w3 { color: var(--ver-lt); }
+    .watch { position: absolute; left: 768px; top: 386px; width: 433px; box-sizing: border-box; background: var(--night-2); border: 1.5px solid var(--lilac); border-radius: 16px; padding: 20px 26px; }
+    .watch .h { margin: 0 0 8px; font-size: 21px; line-height: 1.3; font-weight: 700; color: var(--pink); }
+    .watch ol { margin: 0; padding: 0; list-style: none; counter-reset: w; }
+    .watch li { counter-increment: w; position: relative; padding-left: 38px; margin: 8px 0 0; font-size: 26px; line-height: 1.45; color: #FAF3DE; }
+    .watch li::before { content: counter(w); position: absolute; left: 0; top: .12em; width: 26px; height: 26px; border-radius: 50%; background: var(--pink); color: var(--night); font: 700 16px/26px "JetBrains Mono", monospace; text-align: center; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 1ms !important;
+      }
+      [data-motion] { opacity: 1 !important; transform: none !important; clip-path: none !important; will-change: auto !important; }
+    }
+
+    @media print {
+      [data-motion] { opacity: 1 !important; transform: none !important; clip-path: none !important; }
+    }
+  </style>
+</head>
+<body data-deck-title="Tesla Roadster 2026 발표 요약" data-deck-version="v2">
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- ===== 01 표지: oversized statement (dark field) ===== -->
+      <section class="s-title dark" data-background-color="#20174A">
+        <div class="stage">
+          <div class="s-head"><span class="kicker"><span class="num">01</span> / 비공식 정리</span></div>
+          <div class="cv-badge">Tesla와 제휴·후원 관계가 없는 독립 요약</div>
+          <p class="cv-pre" data-motion="fade" data-motion-order="0">Tesla Roadster 2세대 · 2026년 10월 15일 발표 요약</p>
+          <h1 class="cv-focal" data-motion="rise" data-motion-order="1">떠오르긴 했다.<br><span class="pink">살 수는 아직 없다.</span></h1>
+          <div class="cv-metric" data-motion="fade" data-motion-order="2">
+            <div class="big">3,255일</div>
+            <div class="lab">2017-11-16 시제품 공개부터<br>2026-10-15 발표까지 <span class="tag t-calc">계산</span></div>
+          </div>
+          <p class="cv-sub" data-motion="fade" data-motion-order="3">모든 숫자에 <span class="tag t-claim">주장</span> <span class="tag t-demo">시연</span> <span class="tag t-ver">검증</span> <span class="tag t-calc">계산</span> 표시를 붙였다</p>
+          <div class="foot"><span class="src">v2 · 기준일 2026-10-19 · 근거: Reuters, Tesla 공식 녹화본, CNBC, The Verge 외</span><span class="pg">비공식 정리 · Tesla와 무관<b>01 / 12</b></span></div>
+          <aside class="notes">이 덱은 Tesla와 관계없는 비공식 요약입니다. 2026년 10월 15일(미국 현지) Roadster 행사를 보지 못한 분을 위해, 무엇이 약속(주장)이고 무엇이 관객 앞에서 보였고(시연) 무엇이 확인됐는지(검증) 나눠 봅니다. 3,255일은 2017-11-16 시제품 공개일과 2026-10-15 행사일 사이를 직접 센 값이라 "계산"으로 표시했습니다(days-unveil-to-event). 테슬라의 주장도, 외부 측정도 아닙니다. 출처: Reuters https://finance.yahoo.com/news/tesla-set-unveil-next-generation-100401819.html · Tesla 녹화본 https://www.youtube.com/watch?v=qt5p-_tE8d0</aside>
+        </div>
+      </section>
+
+      <!-- ===== 02 한눈에: stepped phrase ===== -->
+      <section class="s-steps">
+        <div class="stage">
+          <div class="s-head"><span class="kicker"><span class="num">02</span> / 한눈에</span></div>
+          <h2 class="t" data-motion="rise" data-motion-order="0">약속은 2020년, 시연은 2026년, 다음 약속은 2028년</h2>
+          <div class="flow steps" data-fullsize-qa="true" data-rendered-qa="true" role="group" aria-label="약속에서 시연, 다시 약속으로 이어지는 세 단계">
+            <div class="step st1" data-motion="fade" data-motion-order="1"><p class="when">2017년 시제품 공개 때</p><p class="say">“2020년에 내놓겠다”<span class="tag t-claim">주장</span></p></div>
+            <i class="joint j1"></i>
+            <div class="step st2" data-motion="fade" data-motion-order="2"><p class="when">2026년 10월 15일 행사에서</p><p class="say">관객 앞에서 묘기를 보였다<span class="tag t-demo">시연</span></p></div>
+            <i class="joint j2"></i>
+            <div class="step st3" data-motion="fade" data-motion-order="3"><p class="when">같은 무대에서</p><p class="say">“2028년에 생산을 시작하겠다”<span class="tag t-claim">주장</span></p></div>
+          </div>
+          <div class="legend" data-motion="fade" data-motion-order="4">
+            <p class="lg-h">이 덱의 숫자 표시</p>
+            <p class="lg-r"><span class="tag t-claim">주장</span>테슬라·머스크가 말한 것</p>
+            <p class="lg-r"><span class="tag t-demo">시연</span>관객 앞에서 실제로 보여 준 것</p>
+            <p class="lg-r"><span class="tag t-ver">검증</span>기록이나 독립 측정으로 확인한 것</p>
+            <p class="lg-r"><span class="tag t-calc">계산</span>날짜·시각·단위를 직접 환산한 값</p>
+          </div>
+          <div class="memo2" data-motion="fade" data-motion-order="5"><span class="memo">약속 → 묘기 → 또 약속</span></div>
+          <div class="foot"><span class="src">출처: CNBC(2017-11-17) · Reuters(2026-10-16) · Tesla 공식 녹화본</span><span class="pg">비공식 정리 · Tesla와 무관<b>02 / 12</b></span></div>
+          <aside class="notes">한 장으로 보는 흐름입니다. 2017년에는 2020년 출시를 약속했고(production-promise-2017, CNBC https://www.cnbc.com/2017/11/16/tesla-ceo-elon-musk-unveils-a-surprise-new-car-a-new-roadster.html), 2026년 10월 15일에는 관객 앞에서 묘기를 보였고, 같은 무대에서 2028년 생산을 새로 약속했습니다(production-2028, Reuters). 앞으로 모든 숫자 옆에 주장·시연·검증 표시를 붙입니다.</aside>
+        </div>
+      </section>
+
+      <!-- ===== 03 2017년의 약속: metric-led copy + photo ===== -->
+      <section class="s-metric">
+        <div class="stage">
+          <div class="s-head"><span class="kicker"><span class="num">03</span> / 2017년의 약속</span></div>
+          <h2 class="t" data-motion="rise" data-motion-order="0">2017년 테슬라는 숫자 네 개를 내걸고 2020년 출시를 약속했다</h2>
+          <p class="sub" style="top:206px">출시 목표 2020년 <span class="tag t-claim">주장</span> · 0-60 mph = 멈춘 상태에서 시속 60마일까지 걸리는 시간</p>
+          <div class="m-grid" data-motion="fade" data-motion-order="1">
+            <div class="m-cell"><div class="n">1.9초</div><div class="l">0-60 mph <span class="tag t-claim">주장</span></div></div>
+            <div class="m-cell"><div class="n">620마일</div><div class="l">주행거리 <span class="tag t-claim">주장</span><br>약 998 km로 환산 <span class="tag t-calc">계산</span></div></div>
+            <div class="m-cell"><div class="n">4인승</div><div class="l">앞 2석 + 뒤 2석 <span class="tag t-claim">주장</span></div></div>
+            <div class="m-cell"><div class="n">$200,000</div><div class="l">기본 가격 <span class="tag t-claim">주장</span></div></div>
+          </div>
+          <figure class="ph3" data-motion="fade" data-motion-order="2" style="margin:0">
+            <div class="photo-frame"><img src="assets/img/roadster-2017-prototype-side.jpg" alt="빨간색 2017년 Roadster 시제품을 옆에서 찍은 사진. 2019년 야외 전시."></div>
+            <figcaption>
+              <p class="ph-cap">2017년 공개 시제품(2019년 촬영).<br>2026년에 공개된 디자인과 다른 차다.</p>
+              <p class="ph-credit">Photo: Editor928111, CC BY-SA 4.0, via Wikimedia Commons</p>
+            </figcaption>
+          </figure>
+          <div class="foot"><span class="src">출처: Tesla Roadster 페이지(2017-11-17 보관본) · CNBC(2017-11-17)</span><span class="pg">비공식 정리 · Tesla와 무관<b>03 / 12</b></span></div>
+          <aside class="notes">2017년 Semi 트럭 행사 끝에 깜짝 공개된 시제품의 Tesla Roadster 페이지 사양입니다. 0-60 mph 1.9초, 주행거리 620마일(우리가 환산하면 약 998 km), 4인승(2+2), 기본 가격 20만 달러, 모두 테슬라의 주장입니다. 2020년 출시도 그때의 약속입니다. 0-60 mph는 멈춘 상태에서 시속 60마일까지 걸리는 시간입니다. 사진은 2017년 시제품이며 2026년 차가 아닙니다. 출처: https://web.archive.org/web/20171117051903/https://www.tesla.com/roadster/ · CNBC 2017 · 사진 https://commons.wikimedia.org/wiki/File:NextGenTeslaRoadster_(cropped).jpg</aside>
+        </div>
+      </section>
+
+      <!-- ===== 04 밀린 약속: stepped phrase (staircase) ===== -->
+      <section class="s-stairs">
+        <div class="stage">
+          <div class="s-head"><span class="kicker"><span class="num">04</span> / 밀린 약속</span></div>
+          <h2 class="t" data-motion="rise" data-motion-order="0">출시 약속은 2020년에서 출발해 2028년까지 밀렸다</h2>
+          <p class="sub" style="top:160px">칸 높이 = 그때 약속한 연도 · 아래 = 말한 날짜 · 모두 머스크·테슬라 발언 <span class="tag t-claim">주장</span></p>
+          <blockquote class="quote4" data-motion="fade" data-motion-order="2">
+            <p class="q">“2017년부터 예약금을 받았지만,<br>목표로 한 인도 날짜는 모두 놓쳤다.”</p>
+            <p class="by">CNBC, 2026-10-15 (번역)</p>
+          </blockquote>
+          <div class="memo4" data-motion="fade" data-motion-order="3"><span class="memo">약속은 점점 위로</span></div>
+          <div class="timeline stairs" data-fullsize-qa="true" data-rendered-qa="true" role="group" aria-label="발언 날짜별로 약속한 출시 연도: 2020년에서 2028년까지" data-motion="wipe" data-motion-order="1">
+            <div class="col first"><div class="yr">2020</div><div class="blk" style="height:26px"></div><div class="base"></div><div class="dt">2017.11</div><div class="nt">첫 약속</div></div>
+            <div class="col"><div class="yr">2021~22</div><div class="blk" style="height:65px"></div><div class="base"></div><div class="dt">2020.07</div><div class="nt"></div></div>
+            <div class="col"><div class="yr">2022</div><div class="blk" style="height:78px"></div><div class="base"></div><div class="dt">2021.01</div><div class="nt"></div></div>
+            <div class="col"><div class="yr">2023</div><div class="blk" style="height:104px"></div><div class="base"></div><div class="dt">2021.09</div><div class="nt"></div></div>
+            <div class="col"><div class="yr">2024</div><div class="blk" style="height:130px"></div><div class="base"></div><div class="dt">2023.05</div><div class="nt">“약속은 아님”</div></div>
+            <div class="col"><div class="yr">2025</div><div class="blk" style="height:156px"></div><div class="base"></div><div class="dt">2024.02</div><div class="nt"></div></div>
+            <div class="col"><div class="yr">2027~28</div><div class="blk" style="height:221px"></div><div class="base"></div><div class="dt">2025.11</div><div class="nt"></div></div>
+            <div class="col last"><div class="yr">2028</div><div class="blk" style="height:234px"></div><div class="base"></div><div class="dt">2026.10</div><div class="nt">이번 발표</div></div>
+          </div>
+          <div class="foot"><span class="src">출처: CNBC · InsideEVs · Electrek · TechCrunch · Reuters (날짜별 원문은 발표자 노트)</span><span class="pg">비공식 정리 · Tesla와 무관<b>04 / 12</b></span></div>
+          <aside class="notes">발언 날짜별로 약속한 연도를 쌓았습니다. 2017-11 → 2020(CNBC), 2020-07 → 2021~22(InsideEVs, "12~18개월" 해석이 갈려 범위로 표시), 2021-01 → 2022(Electrek), 2021-09 → 2023(Electrek), 2023-05 → 2024("약속은 아님", InsideEVs), 2024-02 → 2025(Electrek), 2025-11 → 2027~28(2026-04-01 시연 뒤 12~18개월, TechCrunch), 2026-10 → 2028(Reuters). 인용은 CNBC 2026-10-15 기사 문장을 번역했습니다. URL: https://insideevs.com/news/435447/tesla-q2-2020-earnings-call-key-details/ · https://electrek.co/2021/01/28/elon-musk-tesla-roadster-delayed-2022/ · https://electrek.co/2021/09/01/tesla-delays-new-roadster-2023/ · https://insideevs.com/news/667648/tesla-roadster-hopefully-entering-production-2024-elon-musk/ · https://electrek.co/2024/02/28/tesla-unveil-new-roadster-this-year-elon-rockets-spacex-collab/ · https://techcrunch.com/2025/11/06/tesla-delays-reveal-of-production-roadster-2-to-april-fools-day/ · https://www.cnbc.com/2026/10/15/tesla-roadster-reveal-what-to-know-about-the-delayed-ev.html</aside>
+        </div>
+      </section>
+
+      <!-- ===== 05 행사: metric-led split ===== -->
+      <section class="s-event">
+        <div class="stage">
+          <div class="s-head"><span class="kicker"><span class="num">05</span> / 행사</span></div>
+          <h2 class="t" data-motion="rise" data-motion-order="0">2026년 10월 15일, Roadster는 23분짜리 야외 생중계로 공개됐다</h2>
+          <div class="big5" data-motion="fade" data-motion-order="1">
+            <div class="n">23분</div>
+            <div class="l">Tesla YouTube 공식 녹화본 길이<br><span class="nowrap">23분 21초</span> <span class="tag t-ver">검증</span></div>
+          </div>
+          <div class="rows5" data-motion="fade" data-motion-order="2">
+            <div class="r"><div class="k">한국 시간</div><div class="v">10월 16일 오전 9시 55분 시작 <span class="tag t-calc">계산</span><span class="v2">미국 중부의 예정 시각을 한국 시간으로 바꾼 값</span></div></div>
+            <div class="r"><div class="k">장소</div><div class="v">SpaceX 로켓 시험장(텍사스 McGregor)</div></div>
+            <div class="r"><div class="k">무대</div><div class="v">Elon Musk, Franz von Holzhausen, Lars Moravy</div></div>
+            <div class="r"><div class="k">원래 날짜</div><div class="v">10월 1일 예정 <span class="tag t-claim">주장</span><span class="v2">날씨를 이유로 미뤘다(Electrek 보도)</span></div></div>
+          </div>
+          <div class="foot"><span class="src">출처: YouTube ‘Roadster Event’ 기록 · CNBC · Reuters · Electrek</span><span class="pg">비공식 정리 · Tesla와 무관<b>05 / 12</b></span></div>
+          <aside class="notes">행사는 미국 중부 시간 10월 15일 저녁, 한국 시간 10월 16일 오전 9시 55분에 시작했습니다. CNBC가 보도한 미국 중부 예정 시각(19:55 CDT)을 한국 시간으로 바꾼 값이라 "계산"으로 표시했습니다(event-start-kst). 공식 녹화본은 23분 21초입니다(event-length-min). 장소는 텍사스 McGregor(Waco 근처) SpaceX 로켓 시험장이고, 무대에는 Elon Musk, 디자인 책임자 Franz von Holzhausen, 차량 엔지니어링 부사장 Lars Moravy가 올랐습니다(CNBC). 원래 10월 1일 행사(테슬라 예고 "Go for launch 10.01", unveil-2026-09)를 날씨 때문에 미뤘다고 Electrek이 보도했습니다. URL: https://www.youtube.com/watch?v=qt5p-_tE8d0 · https://www.cnbc.com/2026/10/15/tesla-roadster-reveal-what-to-know-about-the-delayed-ev.html · https://electrek.co/2026/09/28/tesla-roadster-demo-delayed-october-15-weather/ · https://electrek.co/2026/09/12/tesla-roadster-october-1-reveal-teaser/</aside>
+        </div>
+      </section>
+
+      <!-- ===== 06 보여준 것: editorial 2x2 text grid + SVG ===== -->
+      <section class="s-demos">
+        <div class="stage">
+          <div class="s-head"><span class="kicker"><span class="num">06</span> / 보여준 것</span></div>
+          <h2 class="t" data-motion="rise" data-motion-order="0">관객 앞에서 보여준 묘기는 네 가지였다</h2>
+          <p class="sub" style="top:160px">네 장면 모두 관객 앞에서 보인 것 <span class="tag t-demo">시연</span> · 숫자는 따로 표시 · 그림은 설명용 도식</p>
+          <svg class="demo-svg" data-fullsize-qa="true" data-rendered-qa="true" width="1122" height="424" viewBox="0 0 1122 424" role="img" aria-label="네 가지 현장 시연을 설명하는 도식: 경사로에서 뒤집혀 내려오기, 차 다섯 대 뛰어넘기, 0-60 타이머, 수직 이륙 뒤 회전" data-motion="fade" data-motion-order="1">
+            <defs>
+              <g id="car">
+                <path d="M0 15 Q3 6 16 5 L30 1 Q42 0 50 7 L60 9 Q64 10 64 14 L64 17 L0 17 Z" fill="#C73463" stroke="#20174A" stroke-width="1.5" stroke-linejoin="round"/>
+                <circle cx="14" cy="17" r="5" fill="#20174A"/>
+                <circle cx="50" cy="17" r="5" fill="#20174A"/>
+              </g>
+              <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0 0 L10 5 L0 10 Z" fill="#1B5592"/>
+              </marker>
+            </defs>
+            <rect x="1" y="1" width="551" height="202" rx="14" fill="#FFFCF1" stroke="#20174A" stroke-width="1.5"/>
+            <rect x="570" y="1" width="551" height="202" rx="14" fill="#FFFCF1" stroke="#20174A" stroke-width="1.5"/>
+            <rect x="1" y="221" width="551" height="202" rx="14" fill="#FFFCF1" stroke="#20174A" stroke-width="1.5"/>
+            <rect x="570" y="221" width="551" height="202" rx="14" fill="#FFFCF1" stroke="#20174A" stroke-width="1.5"/>
+            <!-- 1: ramp, upside-down hold, flip, landing -->
+            <g transform="translate(14 16)">
+              <line x1="4" y1="160" x2="216" y2="160" stroke="#20174A" stroke-width="2"/>
+              <path d="M8 160 L120 160 Q176 160 180 108 L180 66 Q180 28 142 28 L100 28" fill="none" stroke="#20174A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+              <use href="#car" transform="translate(160 47) rotate(180) scale(.75)"/>
+              <text x="128" y="92" font-family="Pretendard, sans-serif" font-size="15" font-weight="700" fill="#20174A">거꾸로</text>
+              <path d="M106 50 Q60 44 56 96 Q54 122 62 136" fill="none" stroke="#1B5592" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#arr)"/>
+              <use href="#car" transform="translate(36 143.5) scale(.75)"/>
+              <text x="4" y="22" font-family="Pretendard, sans-serif" font-size="15" font-weight="700" fill="#1B5592">뒤집어 착지</text>
+            </g>
+            <!-- 2: kick flip over five cars -->
+            <g transform="translate(583 16)">
+              <line x1="4" y1="160" x2="228" y2="160" stroke="#20174A" stroke-width="2"/>
+              <g fill="#E7DCB6" stroke="#20174A" stroke-width="1.5">
+                <rect x="30" y="142" width="30" height="18" rx="5"/>
+                <rect x="64" y="142" width="30" height="18" rx="5"/>
+                <rect x="98" y="142" width="30" height="18" rx="5"/>
+                <rect x="132" y="142" width="30" height="18" rx="5"/>
+                <rect x="166" y="142" width="30" height="18" rx="5"/>
+              </g>
+              <path d="M8 154 Q116 -36 224 154" fill="none" stroke="#1B5592" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#arr)"/>
+              <use href="#car" transform="translate(86 46) rotate(-20 24 8) scale(.75)"/>
+              <text x="113" y="134" text-anchor="middle" font-family="Pretendard, sans-serif" font-size="15" font-weight="700" fill="#20174A">차 5대</text>
+            </g>
+            <!-- 3: 0-60 run on Tesla's timer -->
+            <g transform="translate(14 236)">
+              <text x="4" y="18" font-family="JetBrains Mono, monospace" font-size="13" fill="#5E5784">0→60 mph</text>
+              <circle cx="110" cy="90" r="60" fill="#FFFFFF" stroke="#20174A" stroke-width="3"/>
+              <rect x="101" y="22" width="18" height="10" rx="3" fill="#20174A"/>
+              <path d="M110 36 A54 54 0 0 1 156.8 63" fill="none" stroke="#1B5592" stroke-width="7" stroke-linecap="round"/>
+              <path d="M110 90 L151.6 66" stroke="#1B5592" stroke-width="3.5" stroke-linecap="round"/>
+              <circle cx="110" cy="90" r="5" fill="#20174A"/>
+              <text x="110" y="134" text-anchor="middle" font-family="Pretendard, sans-serif" font-size="22" font-weight="800" fill="#8A4B00">0.81초</text>
+            </g>
+            <!-- 4: vertical launch into a corkscrew -->
+            <g transform="translate(583 236)">
+              <line x1="4" y1="160" x2="216" y2="160" stroke="#20174A" stroke-width="2"/>
+              <rect x="92" y="156" width="36" height="4" fill="#20174A"/>
+              <use href="#car" transform="translate(102 156) rotate(-90) scale(.75)"/>
+              <path d="M110 100 C142 92 142 74 110 68 C78 62 78 44 110 38 C142 32 140 18 114 10" fill="none" stroke="#1B5592" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#arr)"/>
+              <text x="4" y="22" font-family="Pretendard, sans-serif" font-size="15" font-weight="700" fill="#1B5592">수직 이륙</text>
+              <text x="148" y="58" font-family="Pretendard, sans-serif" font-size="15" font-weight="700" fill="#20174A">회전</text>
+            </g>
+          </svg>
+          <div class="cap6 k1" data-motion="fade" data-motion-order="2"><p class="h">거꾸로 매달린 뒤 착지</p><p class="m">흡입력 최대 2G <span class="tag t-claim">주장</span></p><p class="b">2G는 중력의 두 배. 바닥 팬이 공기를 빨아 차를 노면에 붙인다</p></div>
+          <div class="cap6 k2" data-motion="fade" data-motion-order="2"><p class="h">차들 위로 비틀며 점프</p><p class="m">뛰어넘은 차 5대 <span class="tag t-demo">시연</span></p><p class="b">Model 3·Y, Cybertruck, Semi, Cybercab 위로 ‘kick flip’</p></div>
+          <div class="cap6 k3" data-motion="fade" data-motion-order="3"><p class="h">0-60 mph 가속 주행</p><p class="m">화면 기록 0.81초 <span class="tag t-claim">주장</span></p><p class="b">달린 장면은 관객 앞 시연, 숫자는 테슬라 자체 타이머 값</p></div>
+          <div class="cap6 k4" data-motion="fade" data-motion-order="3"><p class="h">수직 이륙 뒤 나선 회전</p><p class="m">생중계 마지막 장면 <span class="tag t-demo">시연</span></p><p class="b">땅에서 곧바로 솟아올라 공중에서 비틀며 돌았다</p></div>
+          <div class="foot"><span class="src">출처: Reuters · The Verge · NBC News · Electrek · CNN · Gizmodo · Tesla 녹화본 · 그림: 직접 그린 설명용 도식</span><span class="pg">비공식 정리 · Tesla와 무관<b>06 / 12</b></span></div>
+          <aside class="notes">현장에서 보인 묘기는 네 가지입니다. 첫째, 사람이 타지 않은 차가 휘어진 경사로를 올라 거꾸로 매달렸다가 뒤집혀 바퀴로 착지했습니다(demo-ramp-flip, Reuters). 차를 붙잡는 흡입 팬은 "최대 2G"까지 당긴다는 것이 테슬라 설명입니다(suction-2g-2026, 녹화본 00:08:14). 2G는 중력의 두 배입니다. 둘째, Model 3, Model Y, Cybertruck, Semi, Cybercab 다섯 대를 비틀며 뛰어넘었습니다(demo-kickflip-cars, The Verge). 셋째, 0-60 mph 가속 주행을 관객 앞에서 했고, 화면의 0.81초는 테슬라 자체 타이머 값이라 주장으로 표시했습니다(demo-zero60-live; NBC "according to Tesla", The Verge "the company claimed"). 넷째, 생중계 마지막 장면(녹화본 00:21:28~00:22:12, "Let's do the last thing")에서 땅에서 수직으로 솟아 나선형으로 회전했습니다(Gizmodo). 시연 차에는 사람이 타지 않았고 운전석에는 Starman 마네킹이 있었습니다(Electrek "For the demos, nobody was in the car", CNN). 그림은 실제 장면이 아니라 직접 그린 설명용 도식입니다. URL: https://finance.yahoo.com/news/tesla-set-unveil-next-generation-100401819.html · https://www.theverge.com/transportation/1012552/tesla-roadster-next-gen-reveal-elon-musk · https://www.nbcnews.com/tech/tech-news/elon-musk-shows-flying-tesla-roadster-years-delays-rcna603905 · https://electrek.co/2026/10/15/tesla-unveils-cyberfied-new-roadster-kickflip/ · https://www.cnn.com/2026/10/15/business/tesla-unveils-what-it-says-is-a-flying-car · https://gizmodo.com/teslas-new-roadster-can-somehow-do-corkscrews-in-the-air-without-exploding-yet-2000826761</aside>
+        </div>
+      </section>
+
+      <!-- ===== 07 새 Roadster: asymmetric split contrast ===== -->
+      <section class="s-trims">
+        <div class="stage">
+          <div class="s-head"><span class="kicker"><span class="num">07</span> / 새 Roadster</span></div>
+          <h2 class="t" data-motion="rise" data-motion-order="0">세 버전 가운데 ‘날 수 있다’고 한 것은<br>초대받은 1인승 Rocket뿐이다</h2>
+          <p class="note7">이 장의 숫자는 모두 테슬라 발표 <span class="tag t-claim">주장</span> · 추진기: 불 없이 압축 공기를 뿜어 차를 미는 장치</p>
+          <div class="trim p1" data-motion="fade" data-motion-order="1">
+            <div class="nm">Performance</div>
+            <div class="ds">도로용 · 2인승 · 추진기 없음 · 예약 판매</div>
+            <div class="mt">0-60 mph 1.6초 미만</div>
+          </div>
+          <div class="trim p2" data-motion="fade" data-motion-order="2">
+            <div class="nm">Thrust</div>
+            <div class="ds">레이스용 · 2인승 · 뒤쪽 추진기 · 한정 판매</div>
+            <div class="mt">0-60 mph 0.9초 미만</div>
+          </div>
+          <div class="rocket" data-motion="rise" data-motion-order="3">
+            <div class="nm">Rocket</div>
+            <div class="ds">공중용 · 1인승 · 차 둘레에 추진기 · 초대받은 사람만</div>
+            <div class="mt">0-60 mph 0.59초 미만</div>
+            <div class="dt2">압축 공기 탱크 2개, 600 L · 분사구 10개</div>
+            <div class="qt"><b>“So...yes, it can fly”</b> · Tesla X 게시물</div>
+          </div>
+          <div class="foot"><span class="src">출처: Tesla X 사양 게시물(2026-10-16) · Tesla Roadster 페이지(2026-10-16 보관본) · Tesla 녹화본(00:11:52)</span><span class="pg">비공식 정리 · Tesla와 무관<b>07 / 12</b></span></div>
+          <aside class="notes">새 Roadster는 세 버전입니다(trims-2026). Performance는 도로용 2인승으로 추진기가 없고 0-60 mph 1.6초 미만, Thrust는 뒤쪽에 압축 공기 추진기를 단 레이스용 2인승으로 0.9초 미만, Rocket은 차 둘레에 추진기를 단 1인승으로 0.59초 미만이며 초대받은 사람만 살 수 있습니다. 모두 테슬라 발표입니다. 추진기는 불을 붙이지 않고 압축 공기를 뿜어 차를 미는 콜드 가스 추진기입니다. 공기 탱크는 2개, 합계 600 L, 분사구 10개라고 Lars Moravy가 무대에서 말했습니다(air-tank-2026, 00:11:52). "So...yes, it can fly"는 Rocket에 대한 테슬라 X 게시물 문구입니다. URL: https://x.com/Tesla/status/2110905588402295283 · https://web.archive.org/web/20261016023617/https://www.tesla.com/roadster</aside>
+        </div>
+      </section>
+
+      <!-- ===== 08 2017 vs 2026: editorial text grid ===== -->
+      <section class="s-compare">
+        <div class="stage">
+          <div class="s-head"><span class="kicker"><span class="num">08</span> / 2017 vs 2026</span></div>
+          <h2 class="t" data-motion="rise" data-motion-order="0">주행거리와 좌석은 절반 수준이 됐고, 가격은 아직 없다</h2>
+          <p class="note8">표의 숫자는 테슬라 발표 <span class="tag t-claim">주장</span> · 2017년 km 값만 환산 <span class="tag t-calc">계산</span></p>
+          <table class="tbl" data-motion="fade" data-motion-order="1">
+            <thead><tr><th>항목</th><th>2017년 약속</th><th>2026년 발표</th></tr></thead>
+            <tbody>
+              <tr><td class="k">주행거리</td><td class="y17">620마일 <span class="small">약 998 km</span></td><td class="y26">300마일 이상 <span class="small">480 km 이상</span></td></tr>
+              <tr><td class="k">좌석</td><td class="y17">4인승</td><td class="y26">2인승 <span class="small">Rocket은 1인승</span></td></tr>
+              <tr><td class="k">최고 속도</td><td class="y17">250 mph 이상 <span class="small">402 km/h 이상</span></td><td class="y26">Rocket만 230 mph 이상 <span class="small">370 km/h 이상</span></td></tr>
+              <tr class="hot"><td class="k">가격</td><td class="y17">$200,000부터</td><td class="y26">발표 없음</td></tr>
+              <tr><td class="k">생산 시작</td><td class="y17">2020년</td><td class="y26">2028년</td></tr>
+            </tbody>
+          </table>
+          <p class="fn8">최고 속도는 출처마다 다르다. 테슬라 엔지니어는 Top Gear에 “지금은 214 mph”라고 말했다 <span class="tag t-claim">주장</span></p>
+          <div class="foot"><span class="src">출처: Tesla 페이지 보관본(2017·2026) · Tesla X · Reuters · NBC News · Top Gear</span><span class="pg">비공식 정리 · Tesla와 무관<b>08 / 12</b></span></div>
+          <aside class="notes">2017년 약속과 2026년 발표를 나란히 놓았습니다. 주행거리는 620마일(약 998 km)에서 300마일 이상(480 km 이상)으로, 좌석은 4인승에서 2인승(Rocket 1인승)으로 줄었습니다. 최고 속도 230 mph 이상(370 km/h 이상)은 Rocket 버전에만 해당하는 발표이고(Tesla X "up to >230mph (Rocket)"), 엔지니어는 Top Gear에 "지금은 214 mph"라고 말해 출처마다 다릅니다(tg-topspeed-now). 2017년 기본 가격은 20만 달러였고, 2026년에는 어느 버전도 가격을 발표하지 않았습니다(NBC News). 표의 숫자는 테슬라 발표이고, 2017년 열의 km·km/h 값(998 km, 402 km/h)만 우리가 환산한 값입니다. URL: https://web.archive.org/web/20171117051903/https://www.tesla.com/roadster/ · https://x.com/Tesla/status/2110905588402295283 · https://www.nbcnews.com/tech/tech-news/elon-musk-shows-flying-tesla-roadster-years-delays-rcna603905 · https://www.youtube.com/watch?v=JdkIOhFmbKI</aside>
+        </div>
+      </section>
+
+      <!-- ===== 09 검증: split contrast + quote ===== -->
+      <section class="s-verify">
+        <div class="stage">
+          <div class="s-head"><span class="kicker"><span class="num">09</span> / 검증</span></div>
+          <h2 class="t" data-motion="rise" data-motion-order="0">0.81초는 테슬라 타이머의 기록이다.<br>독립 측정은 아직 없다.</h2>
+          <div class="col9 a" data-motion="fade" data-motion-order="1">
+            <p class="h">관객이 직접 본 것 <span class="tag t-demo">시연</span></p>
+            <ul>
+              <li>경사로에 거꾸로 붙었다가 뒤집어 착지</li>
+              <li>차 5대 위로 몸을 비틀며 점프</li>
+              <li>0-60 mph 가속 주행</li>
+              <li>땅에서 수직으로 솟아 나선형 회전</li>
+            </ul>
+          </div>
+          <div class="col9 b" data-motion="fade" data-motion-order="2">
+            <p class="h">아직 확인되지 않은 것</p>
+            <ul>
+              <li>화면의 <b>0.81초</b>: 테슬라 타이머 값 <span class="tag t-claim">주장</span></li>
+              <li>독립 매체·기관의 가속 측정: 찾지 못함</li>
+              <li>기자·고객 시승: 보도 없음</li>
+              <li>오래 나는 비행: 없음, 짧은 점프뿐</li>
+            </ul>
+          </div>
+          <p class="q9" data-motion="fade" data-motion-order="3">“말 그대로 깡충 뛰는 수준이다.”<span class="by">Roger Connor, 스미소니언 항공우주박물관 큐레이터 · 행사 전 CNN 인터뷰(번역)</span></p>
+          <div class="foot"><span class="src">출처: NBC News · The Verge · CNN · Electrek · 2026-10-19까지 보도 검색</span><span class="pg">비공식 정리 · Tesla와 무관<b>09 / 12</b></span></div>
+          <aside class="notes">0-60 mph 주행 자체는 관객 앞 시연이지만, 화면의 0.81초는 테슬라가 자기 타이머로 잰 값이라 주장으로 표시합니다(demo-zero60-live; NBC "according to Tesla"). 2026-10-19까지 찾은 보도에서는 독립 매체나 기관의 가속 측정, 기자·고객 시승 보도를 찾지 못했습니다(verify-no-independent-0-60, q-no-rides-2026). 찾지 못했다는 뜻이지, 없었다는 증거는 아닙니다. 오래 나는 비행은 보이지 않았고 짧은 점프와 착지뿐이었습니다(q-no-flight-range, CNN). 인용은 행사 전 CNN이 전한 스미소니언 큐레이터 Roger Connor의 말("We are literally talking about hopping.")을 번역했습니다. URL: https://www.theverge.com/transportation/1012783/tesla-roadster-flying-stunt-production-reality-musk · https://www.cnn.com/2026/10/15/business/tesla-unveils-what-it-says-is-a-flying-car · https://www.youtube.com/watch?v=JdkIOhFmbKI</aside>
+        </div>
+      </section>
+
+      <!-- ===== 10 0-60 비교: metric-led copy + bars ===== -->
+      <section class="s-zero60">
+        <div class="stage">
+          <div class="s-head"><span class="kicker"><span class="num">10</span> / 0-60 mph</span></div>
+          <h2 class="t" data-motion="rise" data-motion-order="0">0-60 주장은 1.9초에서 0.59초 미만까지 빨라졌다</h2>
+          <div class="big10" data-motion="fade" data-motion-order="1">
+            <div class="n0">1.9초 →</div>
+            <div class="n">0.59초 미만</div>
+            <div class="l">모두 테슬라가 말한 숫자 <span class="tag t-claim">주장</span></div>
+            <div class="g">측정으로 확인된 비교값은<br>Model S Plaid 1.98초뿐 <span class="tag t-ver">검증</span></div>
+          </div>
+          <div class="diagram bars" data-fullsize-qa="true" data-rendered-qa="true" role="group" aria-label="0-60 mph 숫자와 그 상태(주장, 시연, 검증)를 비교한 막대 그래프" data-motion="wipe" data-motion-order="2">
+            <p class="key">막대 색 = 표시 색 · 흐린 끝 = “미만”</p>
+            <div class="row"><div class="lb">2017년 약속</div><div class="tr"><div class="br c" style="width:285px"></div></div><div class="vl">1.9초<span class="tag t-claim">주장</span></div></div>
+            <div class="row"><div class="lb">2024년 머스크 발언</div><div class="tr"><div class="br c lt" style="width:150px"></div></div><div class="vl">1초 미만<span class="tag t-claim">주장</span></div></div>
+            <div class="row"><div class="lb">2026년 녹화 영상</div><div class="tr"><div class="br c" style="width:150px"></div></div><div class="vl">약 1.0초<span class="tag t-claim">주장</span></div></div>
+            <div class="row"><div class="lb">2026년 생중계 화면</div><div class="tr"><div class="br c" style="width:122px"></div></div><div class="vl">0.81초<span class="tag t-claim">주장</span></div></div>
+            <div class="row"><div class="lb">Rocket 발표 사양</div><div class="tr"><div class="br c lt" style="width:89px"></div></div><div class="vl">0.59초 미만<span class="tag t-claim">주장</span></div></div>
+            <div class="row sep"><div class="lb">비교: Model S Plaid</div><div class="tr"><div class="br v" style="width:297px"></div></div><div class="vl">1.98초<span class="tag t-ver">검증</span></div></div>
+            <div class="axis"><span>0초</span><span>1초</span><span>2초</span></div>
+          </div>
+          <p class="fn10">측정 조건이 서로 달라 순위로 읽으면 안 된다. Plaid 1.98초는 MotorTrend가 직접 잰 독립 측정값이다.</p>
+          <div class="foot"><span class="src">출처: Tesla 페이지(2017) · Musk X(2024) · Electrek · CNBC · Tesla X · InsideEVs(MotorTrend 측정)</span><span class="pg">비공식 정리 · Tesla와 무관<b>10 / 12</b></span></div>
+          <aside class="notes">이 장은 추세를 봅니다. 테슬라가 말한 0-60 mph는 2017년 1.9초에서 2026년 Rocket 사양 0.59초 미만까지 빨라졌지만, 측정으로 확인된 비교값은 Model S Plaid 1.98초 하나뿐입니다. 막대는 숫자의 상태를 색으로 나눴습니다. 2017년 약속 1.9초(주장), 2024년 머스크의 "1초 미만"(주장), 행사에서 보여 준 녹화 영상 약 1.0초(주장), 생중계 화면의 0.81초(주행은 시연이지만 숫자는 테슬라 타이머 값이라 주장), Rocket 사양 0.59초 미만(주장)입니다. 비교용 Model S Plaid 1.98초는 MotorTrend가 직접 잰 값(검증)입니다. 측정 조건(노면, 출발 직후 구간을 빼는지 등)이 서로 달라 순위표로 읽으면 안 됩니다. URL: https://x.com/elonmusk/status/1762718427775410295 · https://electrek.co/2026/10/15/an-updated-technical-look-at-teslas-kick-flipping-0-60-in-1s-next-gen-roadster/ · https://www.cnbc.com/2026/10/15/tesla-roadster-reveal-what-to-know-about-the-delayed-ev.html · https://insideevs.com/news/514719/tesla-models-accleration-test-motortrend/</aside>
+        </div>
+      </section>
+
+      <!-- ===== 11 남은 약속: stepped checklist + quote ===== -->
+      <section class="s-left">
+        <div class="stage">
+          <div class="s-head"><span class="kicker"><span class="num">11</span> / 남은 질문</span></div>
+          <h2 class="t" data-motion="rise" data-motion-order="0">생산은 2028년이라는 약속, 가격과 도로 허가는 아직 없다</h2>
+          <div class="chk c1" data-motion="fade" data-motion-order="1"><span class="bx"></span><div><p class="h">생산 시작</p><p class="d">2028년 <span class="tag t-claim">주장</span> · 인도 날짜는 발표하지 않았다</p></div></div>
+          <div class="chk c2" data-motion="fade" data-motion-order="2"><span class="bx"></span><div><p class="h">가격</p><p class="d">어느 버전도 발표하지 않았다. 예약금 조건만 나왔다</p></div></div>
+          <div class="chk c3" data-motion="fade" data-motion-order="3"><span class="bx"></span><div><p class="h">도로 주행(Rocket)</p><p class="d">Rocket은 ‘공공도로 주행 승인 없음’이라고 테슬라가 밝혔다</p></div></div>
+          <div class="qcard" data-motion="fade" data-motion-order="4">
+            <p class="h">투자자의 한 줄</p>
+            <p class="q">“기존 완성차 회사를 머쓱하게 만든 것 말고는 상업적 가치가 없는 공학 과시였다.”</p>
+            <p class="by">Gene Munster<br>Deepwater Asset Management<br>Reuters 인용 · 번역</p>
+          </div>
+          <div class="foot"><span class="src">출처: Reuters · NBC News · Tesla Roadster 페이지(2026-10-16 보관본)</span><span class="pg">비공식 정리 · Tesla와 무관<b>11 / 12</b></span></div>
+          <aside class="notes">생산은 2028년이라는 약속만 있고, 가격과 도로 주행 허가는 아직 없습니다. 생산은 2028년 시작이라고 머스크가 말했지만(production-2028) 인도 날짜는 없었습니다. 어느 버전도 가격을 발표하지 않았고(q-no-price-no-delivery, NBC News) 예약금 조건만 공개됐습니다. 예약금은 차값이 아니라 줄을 서려고 먼저 내는 돈입니다. Rocket은 테슬라 홈페이지에 "Not approved for public road use"라고 적혀 있습니다(q-rocket-not-road). 인용은 Reuters가 전한 Gene Munster의 X 글을 번역했습니다. URL: https://finance.yahoo.com/news/tesla-set-unveil-next-generation-100401819.html · https://www.nbcnews.com/tech/tech-news/elon-musk-shows-flying-tesla-roadster-years-delays-rcna603905 · https://web.archive.org/web/20261016023617/https://www.tesla.com/roadster</aside>
+        </div>
+      </section>
+
+      <!-- ===== 12 정리: oversized statement (dark field, mirrors cover) ===== -->
+      <section class="s-end dark" data-background-color="#20174A">
+        <div class="stage">
+          <div class="s-head"><span class="kicker"><span class="num">12</span> / 정리</span></div>
+          <h2 class="cl-focal" data-motion="rise" data-motion-order="0">보여준 묘기는 진짜였다.<br><span class="pink">이제 확인할 것은 날짜와 가격이다.</span></h2>
+          <p class="cl-by" data-motion="fade" data-motion-order="1">“여기서 보인 공학은 진짜다.” Fred Lambert, Electrek (번역)</p>
+          <div class="cl-cta" data-motion="fade" data-motion-order="2">
+            <p class="a">출시 숫자를 들으면 이렇게 물어보세요</p>
+            <p class="b"><span class="w1">주장</span>인가, <span class="w2">시연</span>인가, <span class="w3">검증</span>인가?</p>
+          </div>
+          <div class="watch" data-motion="fade" data-motion-order="3">
+            <p class="h">지켜볼 3가지</p>
+            <ol>
+              <li>가격 발표</li>
+              <li>독립 매체의 가속 측정</li>
+              <li>2028년 생산 시작 <span class="tag t-claim">주장</span></li>
+            </ol>
+          </div>
+          <div class="foot"><span class="src">기준일 2026-10-19 · 장별 출처 URL은 발표자 노트에 있다</span><span class="pg">비공식 정리 · Tesla와 무관<b>12 / 12</b></span></div>
+          <aside class="notes">정리합니다. 관객 앞에서 보인 묘기는 진짜였습니다. Roadster 예약자이기도 한 Electrek의 Fred Lambert도 "The engineering here is real."이라고 썼습니다. 하지만 가격, 인도 날짜, 성능 수치는 아직 테슬라의 약속입니다. 앞으로 출시 숫자를 들으면 그것이 주장인지, 시연인지, 검증인지 물어보세요. 지켜볼 것은 가격 발표, 독립 매체의 가속 측정, 2028년 생산 시작입니다. URL: https://electrek.co/2026/10/15/tesla-unveils-cyberfied-new-roadster-kickflip/</aside>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script>
+    const printMode = /print-pdf/gi.test(window.location.search);
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const motionAnimations = new WeakMap();
+
+    function motionKeyframes(kind) {
+      const frames = {
+        rise: [
+          { opacity: 0, transform: 'translate3d(0, 22px, 0)' },
+          { opacity: 1, transform: 'translate3d(0, 0, 0)' }
+        ],
+        fade: [
+          { opacity: 0 },
+          { opacity: 1 }
+        ],
+        wipe: [
+          { opacity: 0, clipPath: 'inset(0 100% 0 0)' },
+          { opacity: 1, clipPath: 'inset(0 0 0 0)' }
+        ]
+      };
+      return frames[kind] || frames.fade;
+    }
+
+    function finishMotion(slide) {
+      if (!slide) return;
+      slide.querySelectorAll('[data-motion]').forEach((element) => {
+        const running = motionAnimations.get(element);
+        if (running) running.cancel();
+        element.style.opacity = '1';
+        element.style.transform = 'none';
+        element.style.clipPath = 'none';
+      });
+    }
+
+    function playMotion(slide) {
+      if (!slide || printMode || reduceMotion.matches) {
+        finishMotion(slide);
+        return;
+      }
+      slide.querySelectorAll('[data-motion]').forEach((element, index) => {
+        const running = motionAnimations.get(element);
+        if (running) running.cancel();
+        const order = Number(element.dataset.motionOrder || index);
+        const delay = Number(element.dataset.motionDelay || order * 90);
+        const duration = Number(element.dataset.motionDuration || 560);
+        const animation = element.animate(
+          motionKeyframes(element.dataset.motion),
+          { duration, delay, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'both' }
+        );
+        motionAnimations.set(element, animation);
+      });
+    }
+
+    function enterSlide(slide) {
+      playMotion(slide);
+    }
+
+    function leaveSlide(slide) {
+      if (!slide) return;
+      slide.querySelectorAll('[data-motion]').forEach((element) => {
+        const animation = motionAnimations.get(element);
+        if (animation) animation.cancel();
+      });
+      slide.querySelectorAll('video, audio').forEach((media) => media.pause());
+    }
+
+    window.addEventListener('beforeprint', () => {
+      document.querySelectorAll('[data-motion]').forEach((element) => {
+        element.style.opacity = '1';
+        element.style.transform = 'none';
+        element.style.clipPath = 'none';
+      });
+    });
+
+    reduceMotion.addEventListener('change', () => {
+      enterSlide(Reveal.getCurrentSlide());
+    });
+
+    Reveal.initialize({
+      width: 1280,
+      height: 720,
+      margin: 0.04,
+      minScale: 0.2,
+      maxScale: 1.6,
+      hash: true,
+      // PDF bleed 방지: center:false + pdfPageHeightOffset:0 (template contract).
+      center: false,
+      pdfPageHeightOffset: 0,
+      // 쪽 번호는 각 슬라이드 footer에 직접 넣는다(화면·PDF 같은 크기로 보이게).
+      slideNumber: false,
+      // 화살표를 화면 양옆에 두어 footer 쪽 번호와 겹치지 않게 한다.
+      controlsLayout: 'edges',
+      transition: 'fade',
+      transitionSpeed: 'fast'
+    });
+
+    Reveal.on('ready', (event) => enterSlide(event.currentSlide));
+    Reveal.on('slidechanged', (event) => {
+      leaveSlide(event.previousSlide);
+      enterSlide(event.currentSlide);
+    });
+  </script>
+</body>
+</html>

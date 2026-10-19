@@ -1,0 +1,140 @@
+{
+  "deck_kind": "judged",
+  "pt_qa_result": "pass",
+  "score": 93.02,
+  "p0_count": 0,
+  "p2_count": 4,
+  "html_guard_result": "pass",
+  "html_guard_p0_count": 0,
+  "media_guard_result": "pass",
+  "media_guard_p0_count": 0,
+  "rendered_pdf": true,
+  "contact_sheet_reviewed": true,
+  "regression_check": "pass",
+  "qa_agent": "not run in this pass: the orchestrator runs the blind judge panel separately; the rubric was applied by hand on the rendered PNGs and the contact sheet",
+  "artifacts": {
+    "html": "deck.html",
+    "pdf": "TeslaRoadsterJudgedv3.pdf",
+    "contact_sheet": "TeslaRoadsterJudgedv3_contact.png",
+    "full_size_png_dir": "slides"
+  },
+  "full_size_pages_reviewed": {
+    "cover": [
+      1
+    ],
+    "section_openers": [],
+    "person_photo_led": [],
+    "real_maps": [],
+    "diagrams_svgs_timelines": [
+      2,
+      4,
+      6,
+      8
+    ],
+    "activities_quizzes": [],
+    "final": [
+      12,
+      13
+    ]
+  },
+  "checklist": {
+    "purpose_audience_context": "pass",
+    "claim_headlines": "pass",
+    "one_idea_per_slide": "pass",
+    "visual_material_relevance": "pass",
+    "visual_hierarchy": "pass",
+    "design_token_consistency": "pass",
+    "text_fit_wrapping": "pass",
+    "korean_line_breaks": "pass",
+    "layout_alignment": "pass",
+    "safe_area_footer": "pass",
+    "diagram_marker_accuracy": "pass",
+    "image_subject_integrity": "pass",
+    "contrast_readability": "pass",
+    "html_guard_result": "pass",
+    "pdf_export_page_order": "pass",
+    "contact_sheet_regression": "pass"
+  },
+  "rubric": {
+    "narrative_audience": {
+      "score": 17,
+      "max": 18,
+      "notes": "v3 order: problem, message, (1) shown 04-06, (2) promises 07-09, conclusion; band markers name the half. One label system defined on 03 and reused on 06; fixed phrases for the 6 production slips (03, 08) and for no independent timing (03, 05, 09). Minus one: 03 and 10 share a headline by design."
+    },
+    "visual_system": {
+      "score": 13,
+      "max": 14,
+      "notes": "One token set matching the template band; chips use the same four colours everywhere; outline bars mark upper bounds on 07. Minus one: Pretendard is not bundled, the render uses Apple SD Gothic Neo."
+    },
+    "layout_typography": {
+      "score": 16,
+      "max": 18,
+      "notes": "qa_layout_gate: no problems; every page at most 77 whitespace tokens incl. footer; body starts under the title; 03, 05, 10, 12 rechecked after line-break fixes. Minus two: 09, 10, A1 keep about 100-150 px above the footer; chips wrap on a few A1 lines."
+    },
+    "visual_evidence": {
+      "score": 13,
+      "max": 14,
+      "notes": "05 leads with one statement and keeps the one-sentence Wikipedia capture small with the key phrase highlighted; 06 bar chart with outline upper bound and divider; 08 step chart with numbered slips and a linked source under each point; 01 and 12 CC BY-SA photo. Minus one: demos on 04 are drawings because no open 2026 photos exist."
+    },
+    "interaction_accessibility": {
+      "score": 9,
+      "max": 10,
+      "notes": "Alt text on both images, aria-label on every chart and panel SVG, all sources are clickable links (page 11 lists every source used). Minus one: no speaker notes (html guard P2)."
+    },
+    "technical_delivery": {
+      "score": 12,
+      "max": 12,
+      "notes": "build, qa_layout_gate, qa_facts_gate, qa_html_guard, qa_media_guard and qa_submission_gate --offline all pass; PDF 13 pages 1:1 with deck.html at 13.333 x 7.5 in; contact sheet made from the exact v2 PDF."
+    }
+  },
+  "diagram_checks": [
+    {
+      "slide": 2,
+      "name": "flow",
+      "full_size_reviewed": true,
+      "connector_endpoints": "pass",
+      "labels_clear": "pass",
+      "no_collisions": "pass",
+      "layout_alignment": "pass"
+    },
+    {
+      "slide": 4,
+      "name": "four demo schematics (lift-off, spin, landing labelled)",
+      "full_size_reviewed": true,
+      "connector_endpoints": "pass",
+      "labels_clear": "pass",
+      "no_collisions": "pass",
+      "layout_alignment": "pass"
+    },
+    {
+      "slide": 6,
+      "name": "0-60 bar chart",
+      "full_size_reviewed": true,
+      "connector_endpoints": "pass",
+      "labels_clear": "pass",
+      "no_collisions": "pass",
+      "layout_alignment": "pass"
+    },
+    {
+      "slide": 8,
+      "name": "six production slips step chart",
+      "full_size_reviewed": true,
+      "connector_endpoints": "pass",
+      "labels_clear": "pass",
+      "no_collisions": "pass",
+      "layout_alignment": "pass"
+    }
+  ],
+  "p2_notes": [
+    "html guard: speaker notes missing (not needed for a submission PDF)",
+    "09, 10, A1 keep some space above the footer",
+    "a few A1 chips wrap",
+    "cover and closing photo show incidental bystanders at the top right (source crop)"
+  ],
+  "recheck_pages": [
+    3,
+    5,
+    10,
+    12
+  ]
+}

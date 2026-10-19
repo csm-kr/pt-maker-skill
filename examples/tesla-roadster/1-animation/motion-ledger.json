@@ -1,0 +1,317 @@
+{
+  "mode": "animation",
+  "production_direction": "animation",
+  "dominant_current": "left-to-right",
+  "transition_vocabulary": {
+    "presenter_seams": [
+      "prism",
+      "curtain",
+      "aperture"
+    ],
+    "hyperframes_film": [
+      "hard-cut on track 0"
+    ],
+    "inside_scene": [
+      "vector-match",
+      "hard-resolve"
+    ]
+  },
+  "title_entrances": {
+    "A": "writing wipe (clip mask per line)",
+    "B": "rise",
+    "C": "lift from a baseline mask"
+  },
+  "continuity_contract": {
+    "subject_identity": "one generic SVG two-seat roadster, side view, facing right; same path data in every scene (ghost and dashed variants keep the outline)",
+    "camera": "fixed 2D side view, no camera moves",
+    "environment": "near-black #0b0d12 stage with a 48px grid",
+    "palette": "amber 주장, teal 시연, lime 검증, blue 보도, gray 계산, coral still-missing; warm-white ink",
+    "invariants": [
+      "status rail at the same top-right position in every scene",
+      "kicker at top-left",
+      "Details source line at bottom 92px",
+      "the car always faces right"
+    ],
+    "known_limit": "the car's scale changes between scenes (76–540 px wide) because it plays a different role in each diagram"
+  },
+  "scenes": [
+    {
+      "scene": 1,
+      "signature_build": "text-write",
+      "title_entrance": "A",
+      "hero_resolved_pose_xywh": "0.635 0.651 0.281 0.167"
+    },
+    {
+      "scene": 2,
+      "signature_build": "diagram-build",
+      "title_entrance": "B",
+      "hero_resolved_pose_xywh": "0.466 0.358 0.069 0.041"
+    },
+    {
+      "scene": 3,
+      "signature_build": "image-reveal",
+      "title_entrance": "C",
+      "hero_resolved_pose_xywh": null
+    },
+    {
+      "scene": 4,
+      "signature_build": "line-draw",
+      "title_entrance": "B",
+      "hero_resolved_pose_xywh": "0.694 0.399 0.040 0.023"
+    },
+    {
+      "scene": 5,
+      "signature_build": "metric-stamp",
+      "title_entrance": "A",
+      "hero_resolved_pose_xywh": "0.840 0.390 0.067 0.040"
+    },
+    {
+      "scene": 6,
+      "signature_build": "diagram-build",
+      "title_entrance": "C",
+      "hero_resolved_pose_xywh": "0.575 0.655 0.050 0.030"
+    },
+    {
+      "scene": 7,
+      "signature_build": "card-assembly",
+      "title_entrance": "B",
+      "hero_resolved_pose_xywh": "0.840 0.379 0.096 0.056"
+    },
+    {
+      "scene": 8,
+      "signature_build": "line-draw",
+      "title_entrance": "A",
+      "hero_resolved_pose_xywh": "0.448 0.396 0.054 0.032"
+    },
+    {
+      "scene": 9,
+      "signature_build": "card-assembly",
+      "title_entrance": "C",
+      "hero_resolved_pose_xywh": null
+    },
+    {
+      "scene": 10,
+      "signature_build": "line-draw",
+      "title_entrance": "B",
+      "hero_resolved_pose_xywh": "0.521 0.543 0.054 0.032"
+    },
+    {
+      "scene": 11,
+      "signature_build": "text-write",
+      "title_entrance": "A",
+      "hero_resolved_pose_xywh": "0.449 0.356 0.092 0.055"
+    },
+    {
+      "scene": 12,
+      "signature_build": "diagram-build",
+      "title_entrance": "C",
+      "hero_resolved_pose_xywh": "0.062 0.681 0.219 0.130"
+    }
+  ],
+  "seams": [
+    {
+      "from": 1,
+      "to": 2,
+      "presenter_family": "prism",
+      "carrier": "hero roadster",
+      "exit_vector": [
+        0,
+        0
+      ],
+      "exit_speed": "rest after a hop",
+      "entry_vector": [
+        1,
+        0
+      ],
+      "technique": "vector-match: the car drives in from the left on the new road",
+      "handoff_pose_exit": "0.635 0.651 0.281 0.167",
+      "handoff_pose_entry": "0.466 0.358 0.069 0.041",
+      "chapter_boundary": false
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "presenter_family": "curtain",
+      "carrier": "photo of the real 2017 prototype replaces the drawing",
+      "exit_vector": [
+        0,
+        0
+      ],
+      "exit_speed": "rest",
+      "entry_vector": null,
+      "technique": "hard-resolve: the overview lands, the 2017 photo wipes in left to right",
+      "handoff_pose_exit": "0.466 0.358 0.069 0.041",
+      "handoff_pose_entry": null,
+      "chapter_boundary": false
+    },
+    {
+      "from": 3,
+      "to": 4,
+      "presenter_family": "aperture",
+      "carrier": "hero roadster returns as the chart pen",
+      "exit_vector": [
+        0,
+        0
+      ],
+      "exit_speed": "still",
+      "entry_vector": [
+        1,
+        -1
+      ],
+      "technique": "vector-match: the car starts at the 2017 point and climbs right",
+      "handoff_pose_exit": null,
+      "handoff_pose_entry": "0.694 0.399 0.040 0.023",
+      "chapter_boundary": false
+    },
+    {
+      "from": 4,
+      "to": 5,
+      "presenter_family": "prism",
+      "carrier": "hero roadster",
+      "exit_vector": [
+        1,
+        -1
+      ],
+      "exit_speed": "slow, line speed",
+      "entry_vector": [
+        1,
+        0
+      ],
+      "technique": "vector-match: the car drives in from the left along the timeline",
+      "handoff_pose_exit": "0.694 0.399 0.040 0.023",
+      "handoff_pose_entry": "0.840 0.390 0.067 0.040",
+      "chapter_boundary": true
+    },
+    {
+      "from": 5,
+      "to": 6,
+      "presenter_family": "curtain",
+      "carrier": "hero roadster (diagram poses)",
+      "exit_vector": [
+        1,
+        0
+      ],
+      "exit_speed": "decelerates to rest",
+      "entry_vector": [
+        0,
+        1
+      ],
+      "technique": "hard-resolve: diagram panels build; cars land rather than drive in",
+      "handoff_pose_exit": "0.840 0.390 0.067 0.040",
+      "handoff_pose_entry": "0.575 0.655 0.050 0.030",
+      "chapter_boundary": false
+    },
+    {
+      "from": 6,
+      "to": 7,
+      "presenter_family": "aperture",
+      "carrier": "hero roadster",
+      "exit_vector": [
+        0,
+        1
+      ],
+      "exit_speed": "landing",
+      "entry_vector": [
+        1,
+        -1
+      ],
+      "technique": "vector-match: the hero hops in from the left into the Rocket card",
+      "handoff_pose_exit": "0.575 0.655 0.050 0.030",
+      "handoff_pose_entry": "0.840 0.379 0.096 0.056",
+      "chapter_boundary": false
+    },
+    {
+      "from": 7,
+      "to": 8,
+      "presenter_family": "prism",
+      "carrier": "hero roadster",
+      "exit_vector": [
+        1,
+        0
+      ],
+      "exit_speed": "hop settles",
+      "entry_vector": [
+        1,
+        0
+      ],
+      "technique": "vector-match: the car drives the 2026 range bar from the left",
+      "handoff_pose_exit": "0.840 0.379 0.096 0.056",
+      "handoff_pose_entry": "0.448 0.396 0.054 0.032",
+      "chapter_boundary": true
+    },
+    {
+      "from": 8,
+      "to": 9,
+      "presenter_family": "curtain",
+      "carrier": "none: two-column text scene",
+      "exit_vector": [
+        1,
+        0
+      ],
+      "exit_speed": "decelerating",
+      "entry_vector": null,
+      "technique": "hard-resolve: comparison lands; columns arrive from opposite sides",
+      "handoff_pose_exit": "0.448 0.396 0.054 0.032",
+      "handoff_pose_entry": null,
+      "chapter_boundary": false
+    },
+    {
+      "from": 9,
+      "to": 10,
+      "presenter_family": "aperture",
+      "carrier": "hero roadster",
+      "exit_vector": [
+        0,
+        0
+      ],
+      "exit_speed": "still",
+      "entry_vector": [
+        1,
+        0
+      ],
+      "technique": "vector-match: the car drives the 0.81 s bar from the left",
+      "handoff_pose_exit": null,
+      "handoff_pose_entry": "0.521 0.543 0.054 0.032",
+      "chapter_boundary": false
+    },
+    {
+      "from": 10,
+      "to": 11,
+      "presenter_family": "prism",
+      "carrier": "hero roadster",
+      "exit_vector": [
+        1,
+        0
+      ],
+      "exit_speed": "decelerating",
+      "entry_vector": [
+        1,
+        0
+      ],
+      "technique": "vector-match, then identity change: the solid car fades to a dashed 'not yet built' outline",
+      "handoff_pose_exit": "0.521 0.543 0.054 0.032",
+      "handoff_pose_entry": "0.449 0.356 0.092 0.055",
+      "chapter_boundary": true
+    },
+    {
+      "from": 11,
+      "to": 12,
+      "presenter_family": "curtain",
+      "carrier": "hero roadster",
+      "exit_vector": [
+        0,
+        0
+      ],
+      "exit_speed": "fade to outline",
+      "entry_vector": [
+        1,
+        0
+      ],
+      "technique": "vector-match: the solid car drives in from the left and waits before the first checkpoint",
+      "handoff_pose_exit": "0.449 0.356 0.092 0.055",
+      "handoff_pose_entry": "0.062 0.681 0.219 0.130",
+      "chapter_boundary": false
+    }
+  ],
+  "image_sequences": []
+}

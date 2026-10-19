@@ -1,0 +1,34 @@
+<template id="scene-9-template">
+  <div data-composition-id="scene-9" data-width="1920" data-height="1080" class="comp" id="s9-root">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <p class="kicker" id="s9-kicker"><i class="kbar" style="--k:var(--alert)"></i>검증</p>
+    <div class="status-rail" aria-label="이 장면 숫자의 근거 표시"><span class="st st-claim on">주장</span><span class="st st-demo on">시연</span><span class="st st-ver">검증</span><span class="st st-rep on">보도</span></div>
+    <div class="scene-content" id="s9-content">
+      <h2 class="title " id="s9-title" style="top:128px;left:96px"><span class="ln" id="s9-l1">0.81초는 <span class="c-claim">테슬라 타이머</span>의 기록이고</span><span class="ln" id="s9-l2"><span class="c-alert">독립 측정은 아직 없다</span></span></h2>
+      <div class="vcol vcol-demo" id="s9-left" style="left:96px;top:330px;width:840px;height:580px">
+        <p class="vhead c-demo">보여 준 것</p><div class="vitem" id="s9-a1"><p class="vbig c-claim">0.81초</p><p class="vdesc">생중계 질주의 기록. 숫자는 테슬라 타이머 값<span class="tag t-claim">주장</span></p></div><div class="vitem" id="s9-a2"><p class="vbig c-claim">약 1초</p><p class="vdesc">무대에서 튼 사전 녹화 시험 영상 (Electrek)<span class="tag t-claim">주장</span></p></div><div class="vitem" id="s9-a3"><p class="vbig c-demo">점프</p><p class="vdesc">짧게 떠올라 착지. 오래 나는 비행은 없음 (CNN)<span class="tag t-rep">보도</span></p></div><div class="vitem" id="s9-a4"><p class="vbig c-demo">관객</p><p class="vdesc">팬과 투자자가 현장에서 직접 봤다 (CNN)<span class="tag t-demo">시연</span></p></div>
+      </div>
+      <div class="vcol vcol-alert" id="s9-right" style="left:984px;top:330px;width:840px;height:580px">
+        <p class="vhead c-alert">확인 안 된 것</p><div class="vitem" id="s9-b1"><p class="vbig c-alert">0건</p><p class="vdesc">2026년 수치의 독립 계측을 찾지 못함 <span class="nw">(The Verge 등)</span><span class="tag t-rep">보도</span></p></div><div class="vitem" id="s9-b2"><p class="vbig c-alert">1피트</p><p class="vdesc">뒤에 나온 0.55초 주장은 <span class="nw">첫 1피트를 뺀 기록</span> (Electrek)<span class="tag t-rep">보도</span></p></div><div class="vitem" id="s9-b3"><p class="vbig c-claim">약 5초</p><p class="vdesc">Thrust 버전, 공기 한 번으로 쿼터마일 추진 (Top Gear)<span class="tag t-claim">주장</span></p></div><div class="vitem" id="s9-b4"><p class="vbig c-alert">시승</p><p class="vdesc">관객·기자 시승 보도를 찾지 못함 <span class="nw">(10/19 검색)</span></p></div>
+      </div>
+    </div>
+    <p class="src" id="s9-src"><b>Details:</b> NBC·The Verge(0.81초, 테슬라 계측) · Electrek(녹화 영상, 0.55초 rollout) · CNN(비행·관객) · Top Gear(Thrust 약 5초) · 검색 10/19</p>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const s9T = { cols: 1.45, left: 2.15, right: 3.35 };
+      const s9Tl = gsap.timeline({ paused: true });
+      s9Tl.from("#s9-kicker", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, .12);
+      s9Tl.from("#s9-root .status-rail", { opacity: 0, duration: .5, ease: "power1.out" }, .2);
+      s9Tl.from("#s9-src", { opacity: 0, duration: .6, ease: "power1.out" }, 3.00);
+      s9Tl.fromTo("#s9-l1", { clipPath: "inset(-12% 0% 100% 0%)", y: 34 }, { clipPath: "inset(-12% 0% -12% 0%)", y: 0, duration: .58, ease: "power3.out" }, 0.30);
+      s9Tl.fromTo("#s9-l2", { clipPath: "inset(-12% 0% 100% 0%)", y: 34 }, { clipPath: "inset(-12% 0% -12% 0%)", y: 0, duration: .58, ease: "power3.out" }, 0.72);
+      s9Tl.from("#s9-left", { x: -140, opacity: 0, duration: .65, ease: "power3.out" }, s9T.cols);
+      s9Tl.from("#s9-right", { x: 140, opacity: 0, duration: .65, ease: "power3.out" }, s9T.cols + .18);
+      s9Tl.from("#s9-left .vitem", { x: -36, opacity: 0, duration: .4, ease: "power2.out", stagger: .34 }, s9T.left);
+      s9Tl.from("#s9-right .vitem", { x: 36, opacity: 0, duration: .4, ease: "power2.out", stagger: .34 }, s9T.right);
+      s9Tl.from("#s9-b1 .vbig", { scale: 1.5, transformOrigin: "0% 50%", duration: .45, ease: "back.out(2.2)" }, s9T.right + .1);
+      s9Tl.set("#s9-src", { opacity: 1 }, 11);
+      window.__timelines["scene-9"] = s9Tl;
+    </script>
+  </div>
+</template>

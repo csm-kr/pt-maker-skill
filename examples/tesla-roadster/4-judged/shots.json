@@ -1,0 +1,13 @@
+{
+  "shots": [
+    {
+      "name": "wiki-roadster-not-timed",
+      "url": "https://en.wikipedia.org/w/index.php?title=Tesla_Roadster_(second_generation)&oldid=1380953030",
+      "viewport": [1056, 900],
+      "scale": 2,
+      "clip": [16, 1665, 718, 25],
+      "width": 1436,
+      "quality": 88
+    }
+  ]
+}

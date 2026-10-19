@@ -1,0 +1,44 @@
+<template id="scene-1-template">
+  <div data-composition-id="scene-1" data-width="1920" data-height="1080" class="comp" id="s1-root">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <p class="kicker cover-kicker" id="s1-kicker"><span class="pill-alert">비공식 정리</span>Tesla와 제휴·승인 관계가 없는 개인 요약 · v2, 2026-10-19 기준</p>
+    <div class="status-rail" aria-label="이 장면 숫자의 근거 표시"><span class="rail-label">숫자마다 붙인 표시</span><span class="st st-claim on">주장</span><span class="st st-demo on">시연</span><span class="st st-ver on">검증</span><span class="st st-rep on">보도</span></div>
+    <div class="scene-content" id="s1-content">
+      <h2 class="title cover-title" id="s1-title" style="top:236px;left:96px;font-size:104px"><span class="ln" id="s1-l1">Roadster, 다시 나타나다</span><span class="ln" id="s1-l2"><span class="c-demo">날았지만</span>, 아직 <span class="c-alert">살 수는 없다</span></span></h2>
+      <p class="dek" id="s1-dek" style="top:500px">무엇을 약속했고, 무엇을 보여줬고, 무엇이 확인됐는지 정리합니다</p>
+      <p class="factline" id="s1-fact" style="top:566px">2017-11-16 시제품 공개 → 2026-10-15 발표 <span class="c-ver">= 3,255일 (약 8.9년)</span><span class="tag t-calc">계산</span></p>
+      <ol class="agenda" id="s1-agenda" style="left:96px;top:716px">
+        <li><b class="c-claim">기</b>2017년의 약속</li><li><b class="c-demo">승</b>2026년의 시연</li><li><b class="c-ver">전</b>숫자 검증</li><li><b class="c-alert">결</b>남은 약속</li>
+      </ol>
+      <div class="road" id="s1-road" style="left:96px;top:878px;width:1728px"></div>
+      <svg class="car " id="s1-car" viewBox="0 0 300 100" width="540" height="180" style="left:1220px;top:703.4px" aria-hidden="true"><circle class="puff" id="s1-puff1" cx="-6" cy="70" r="9"/><circle class="puff" id="s1-puff2" cx="-26" cy="80" r="7"/><circle class="puff" id="s1-puff3" cx="-42" cy="88" r="5"/><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></svg>
+    </div>
+    <p class="src" id="s1-src"><b>Details:</b> 공개일 2017-11-16 — NPR · 행사일 2026-10-15 — Tesla YouTube 녹화본 기록, Reuters · 3,255일은 두 날짜로 계산</p>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const s1T = { road: 1.15, car: 2.1, hop: 3.45, land: 3.95 };
+      const s1Tl = gsap.timeline({ paused: true });
+      s1Tl.from("#s1-kicker", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, .12);
+      s1Tl.from("#s1-root .status-rail", { opacity: 0, duration: .5, ease: "power1.out" }, .2);
+      s1Tl.from("#s1-src", { opacity: 0, duration: .6, ease: "power1.out" }, 2.60);
+      s1Tl.fromTo("#s1-l1", { clipPath: "inset(-12% 100% -12% 0%)" }, { clipPath: "inset(-12% 0% -12% 0%)", duration: .62, ease: "power2.inOut" }, 0.32);
+      s1Tl.fromTo("#s1-l2", { clipPath: "inset(-12% 100% -12% 0%)" }, { clipPath: "inset(-12% 0% -12% 0%)", duration: .62, ease: "power2.inOut" }, 0.74);
+      s1Tl.from("#s1-dek", { y: 22, opacity: 0, duration: .5, ease: "power2.out" }, 1.45);
+      s1Tl.from("#s1-fact", { x: -24, opacity: 0, duration: .5, ease: "power2.out" }, 1.8);
+      s1Tl.from("#s1-agenda li", { y: 14, opacity: 0, duration: .35, ease: "power2.out", stagger: .12 }, 2.3);
+      s1Tl.from("#s1-road", { scaleX: 0, transformOrigin: "0% 50%", duration: 1.1, ease: "power2.inOut" }, s1T.road);
+      s1Tl.fromTo("#s1-car", { x: -1820 }, { x: 0, duration: 1.3, ease: "power3.out" }, s1T.car);
+      s1Tl.fromTo("#s1-car", { opacity: 0 }, { opacity: 1, duration: .25, ease: "power1.out" }, s1T.car);
+      s1Tl.to("#s1-car", { keyframes: [
+        { y: -96, rotation: -5, duration: .5, ease: "power2.out" },
+        { y: 0, rotation: 0, duration: .48, ease: "power2.in" },
+        { y: 5, duration: .08, ease: "power1.out" },
+        { y: 0, duration: .14, ease: "power1.out" }
+      ], transformOrigin: "50% 97%" }, s1T.hop);
+      s1Tl.fromTo("#s1-root .puff", { opacity: 0, scale: .3, transformOrigin: "50% 50%" }, { opacity: .9, scale: 1.25, duration: .28, ease: "power2.out", stagger: .05 }, s1T.hop - .05);
+      s1Tl.to("#s1-root .puff", { opacity: 0, scale: 1.8, duration: .42, ease: "power1.in", stagger: .05 }, s1T.hop + .3);
+      s1Tl.set("#s1-src", { opacity: 1 }, 7);
+      window.__timelines["scene-1"] = s1Tl;
+    </script>
+  </div>
+</template>

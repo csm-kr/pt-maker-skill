@@ -1,0 +1,9 @@
+# asset | source/generation mode | URL or prompt note | accessed/generated date
+
+roadster-2017-prototype-side-2019.jpg | Wikimedia Commons photo, CC BY-SA 4.0 | "NextGenTeslaRoadster (cropped).jpg" by Editor928111, https://commons.wikimedia.org/wiki/File:NextGenTeslaRoadster_(cropped).jpg , license https://creativecommons.org/licenses/by-sa/4.0 . Shows the 2017 second-generation Roadster prototype, photographed 2019-06-11 (not the 2026 design). Downloaded as the 1920 px Commons thumbnail; no other changes. Shown whole (object-fit: contain) on slide 1 with the credit "사진: Editor928111, CC BY-SA 4.0, via Wikimedia Commons". | 2026-10-19
+
+roadster-2017-prototype-interior-2019.jpg | Wikimedia Commons photo, CC BY 2.0 | "Inside the new Tesla Roadster.jpg" by Steve Jurvetson, https://commons.wikimedia.org/wiki/File:Inside_the_new_Tesla_Roadster.jpg , license https://creativecommons.org/licenses/by/2.0 . Shows the 2017 prototype's cabin, photographed 2019-04-22 (not the 2026 design). Downloaded as the 1280 px Commons thumbnail; no other changes. Shown whole on slide 3 with the credit "사진: Steve Jurvetson, CC BY 2.0, via Wikimedia Commons". | 2026-10-19
+
+Self-made inline SVG/CSS (no AI-generated images; Claude Code has no image generator) | drawn for this deck | slide 2 three-step diagram; slide 4 step chart of promised years; slide 5 to-scale date timeline; slide 6 demo-sequence diagram; slide 7 generic roadster silhouette with thruster positions (conceptual, not traced from any real car design); slide 8 and slide 10 bar charts; slide 9 measurement-chain diagram and rollout ruler; slide 11 clipboard checklist; slide 12 sorter diagram. Every number comes from research/facts.json (accessed 2026-10-19). | 2026-10-19
+
+Not used on purpose: Tesla logos or wordmarks, Tesla press photos, livestream frames, news photos, screenshots of web pages. Commons candidates with a visible Tesla logo or "TESLA" letters were left out.

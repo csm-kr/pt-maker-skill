@@ -1,0 +1,7 @@
+# asset | source/generation mode | URL or prompt note | accessed/generated date
+assets/img/roadster-2017-prototype-side.jpg | Wikimedia Commons, "NextGenTeslaRoadster (cropped).jpg" by Editor928111, licensed CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0). Photo of the 2017 second-generation Roadster prototype, taken 2019-06-11. Used as the Commons 1280px thumbnail; no crop, edit or overlay. Shown on slide 03 with the credit "Photo: Editor928111, CC BY-SA 4.0, via Wikimedia Commons" and the caption that it is the 2017 prototype, not the 2026 car. | https://commons.wikimedia.org/wiki/File:NextGenTeslaRoadster_(cropped).jpg (file: https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/NextGenTeslaRoadster_%28cropped%29.jpg/1280px-NextGenTeslaRoadster_%28cropped%29.jpg) | accessed 2026-10-19
+slide 06 demo diagram (inline SVG, four panels since v2) | self-drawn SVG explainer of the four live demos; generic car shapes, not traced from any Tesla image, no logo | drawn by hand in the deck HTML | 2026-10-19
+slides 02, 04, 10 diagrams (stepped flow, staircase, bar chart) | self-made HTML/CSS from research/facts.json values | no external image | 2026-10-19
+# No Tesla logos, wordmarks, press photos, livestream frames, news photos or page screenshots are used.
+# Fonts: Pretendard (SIL OFL 1.1), JetBrains Mono (SIL OFL 1.1), Nanum Pen Script (SIL OFL 1.1), loaded from CDN.
+# Numbers and quotes: research/facts.json and research/SOURCE_MAP.md (accessed 2026-10-19); per-slide URLs are in the speaker notes.

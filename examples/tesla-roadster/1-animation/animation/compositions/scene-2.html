@@ -1,0 +1,54 @@
+<template id="scene-2-template">
+  <div data-composition-id="scene-2" data-width="1920" data-height="1080" class="comp" id="s2-root">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <p class="kicker" id="s2-kicker"><i class="kbar" style="--k:var(--soft)"></i>한눈에 보기</p>
+    <div class="status-rail" aria-label="이 장면 숫자의 근거 표시"><span class="st st-claim on">주장</span><span class="st st-demo on">시연</span><span class="st st-ver">검증</span><span class="st st-rep">보도</span></div>
+    <div class="scene-content" id="s2-content">
+      <h2 class="title " id="s2-title" style="top:128px;left:96px"><span class="ln" id="s2-l1">약속은 2020년, 시연은 <span class="c-demo">2026년</span>,</span><span class="ln" id="s2-l2">다음 약속은 <span class="c-claim">2028년</span></span></h2>
+      <svg class="diagram" id="s2-diagram" style="left:0;top:0" width="1920" height="1080" viewBox="0 0 1920 1080" aria-hidden="true">
+        <defs>
+          <mask id="s2-dashmask" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="1080">
+            <path id="s2-dashreveal" d="M960 432 L1590 432" stroke="#fff" stroke-width="16" fill="none" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+          </mask>
+        </defs>
+        <line class="post" x1="330" y1="432" x2="330" y2="476"/>
+        <line class="post" x1="960" y1="432" x2="960" y2="476"/>
+        <line class="post post-dash" x1="1590" y1="432" x2="1590" y2="476"/>
+        <path id="s2-road" class="road-solid" d="M330 432 L960 432" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+        <path class="road-dash" d="M960 432 L1590 432" mask="url(#s2-dashmask)"/>
+        <circle class="road-dot" id="s2-d1" cx="330" cy="432" r="9"/>
+        <circle class="road-dot dot-demo" id="s2-d2" cx="960" cy="432" r="11"/>
+        <circle class="road-dot dot-open" id="s2-d3" cx="1590" cy="432" r="9"/>
+        <path id="s2-brace" class="brace" d="M330 790 L330 812 L1590 812 L1590 790" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+      </svg>
+      <div class="node" id="s2-n1" style="left:130px;top:476px;width:400px;height:262px"><p class="node-lab">2017년에 한 약속</p><p class="node-big c-claim">2020년</p><p class="node-sub">출시 예정<span class="tag t-claim">주장</span></p></div><div class="node" id="s2-n2" style="left:760px;top:476px;width:400px;height:262px"><p class="node-lab">실제로 보여준 해</p><p class="node-big c-demo">2026년</p><p class="node-sub">10월 15일 생중계<span class="tag t-demo">시연</span></p></div><div class="node node-future" id="s2-n3" style="left:1390px;top:476px;width:400px;height:262px"><p class="node-lab">새로 한 약속</p><p class="node-big c-claim">2028년</p><p class="node-sub">생산 시작<span class="tag t-claim">주장</span></p></div>
+      <svg class="car " id="s2-car" viewBox="0 0 300 100" width="132" height="44" style="left:894px;top:387.3px" aria-hidden="true"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></svg>
+      <p class="brace-label" id="s2-brace-label" style="left:410px;top:832px;width:1100px">약속한 출시 연도 차이 <span class="c-claim">8년</span> (2020 → 2028)<span class="tag t-calc">계산</span></p>
+    </div>
+    <p class="src" id="s2-src"><b>Details:</b> 2020년 출시 약속 — CNBC(2017년 보도) · 2026-10-15 시연 — Tesla YouTube 녹화본 · 2028년 생산 — Reuters(무대 발언) · 8년은 두 약속 연도의 차이</p>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const s2T = { nodeA: 1.25, drive: 1.65, nodeB: 2.95, dash: 3.25, nodeC: 4.0, brace: 4.6 };
+      const s2Tl = gsap.timeline({ paused: true });
+      s2Tl.from("#s2-kicker", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, .12);
+      s2Tl.from("#s2-root .status-rail", { opacity: 0, duration: .5, ease: "power1.out" }, .2);
+      s2Tl.from("#s2-src", { opacity: 0, duration: .6, ease: "power1.out" }, 2.40);
+      s2Tl.from("#s2-l1", { y: 46, opacity: 0, duration: .6, ease: "power3.out" }, 0.30);
+      s2Tl.from("#s2-l2", { y: 46, opacity: 0, duration: .6, ease: "power3.out" }, 0.72);
+      s2Tl.from("#s2-n1", { y: 34, opacity: 0, duration: .5, ease: "power3.out" }, s2T.nodeA);
+      s2Tl.from("#s2-d1", { scale: 0, transformOrigin: "50% 50%", duration: .35, ease: "back.out(2)" }, s2T.nodeA + .2);
+      s2Tl.from("#s2-root .post", { scaleY: 0, transformOrigin: "50% 0%", duration: .4, ease: "power2.out", stagger: .9 }, s2T.nodeA + .1);
+      s2Tl.fromTo("#s2-road", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: 1.25, ease: "power2.inOut" }, s2T.drive);
+      s2Tl.fromTo("#s2-car", { x: -630, opacity: 0 }, { x: 0, opacity: 1, duration: 1.25, ease: "power2.inOut" }, s2T.drive);
+      s2Tl.from("#s2-d2", { scale: 0, transformOrigin: "50% 50%", duration: .4, ease: "back.out(2.4)" }, s2T.nodeB - .1);
+      s2Tl.from("#s2-n2", { y: 34, opacity: 0, duration: .5, ease: "power3.out" }, s2T.nodeB);
+      s2Tl.fromTo("#s2-dashreveal", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: .9, ease: "power1.inOut" }, s2T.dash);
+      s2Tl.from("#s2-d3", { scale: 0, transformOrigin: "50% 50%", duration: .35, ease: "back.out(2)" }, s2T.nodeC - .15);
+      s2Tl.from("#s2-n3", { y: 34, opacity: 0, duration: .5, ease: "power3.out" }, s2T.nodeC);
+      s2Tl.fromTo("#s2-brace", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: .8, ease: "power2.inOut" }, s2T.brace);
+      s2Tl.from("#s2-brace-label", { y: 16, opacity: 0, duration: .45, ease: "power2.out" }, s2T.brace + .55);
+      s2Tl.set("#s2-src", { opacity: 1 }, 8);
+      window.__timelines["scene-2"] = s2Tl;
+    </script>
+  </div>
+</template>

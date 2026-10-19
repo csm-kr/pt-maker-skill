@@ -1,0 +1,2339 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="pt-maker-output" content="animated-presentation">
+  <title>Tesla Roadster 발표, 비공식 정리 · 발표용</title>
+  <style>
+@font-face {
+      font-family: "Pretendard Local";
+      src: local("Pretendard"), local("Pretendard Variable"), local("Apple SD Gothic Neo"), local("Noto Sans KR");
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: block;
+    }
+
+    :root {
+      /* dark taste profile: near-black stage, warm-white ink, five meaning colours */
+      --paper: #0b0d12;          /* presenter shell reads this as the slide background */
+      --bg: #0b0d12;
+      --ink: #f3f1ec;
+      --soft: #c3c9d5;
+      --muted: #8f98aa;
+      --hair: rgba(255, 255, 255, .1);
+      --claim: #ffb547;          /* 주장: Tesla or Musk said it */
+      --demo: #35d4c7;           /* 시연: shown live */
+      --ver: #a7e15b;            /* 검증: independently recorded or measured */
+      --rep: #8db0ff;            /* 보도: outlet reporting */
+      --alert: #ff6b5d;          /* still missing, still a promise */
+      --safe-x: 96px;
+      --safe-y: 84px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    body {
+      background: #050608;
+      color: var(--ink);
+      font-family: "Pretendard Local", system-ui, sans-serif;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .scene { position: absolute; inset: 0; overflow: hidden; }
+
+    .comp {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      color: var(--ink);
+      font-family: "Pretendard Local", system-ui, sans-serif;
+      word-break: keep-all;
+      font-variant-numeric: tabular-nums;
+    }
+    .comp p { margin: 0; }
+
+    .stage-bg {
+      position: absolute;
+      inset: 0;
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse 58% 52% at 80% 18%, rgba(53, 212, 199, .075), transparent 72%),
+        radial-gradient(ellipse 46% 46% at 6% 96%, rgba(255, 181, 71, .05), transparent 72%),
+        linear-gradient(rgba(255, 255, 255, .038) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .038) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+      background-position: 0 0, 0 0, 0 -1px, -1px 0;
+    }
+
+    .scene-content { position: absolute; inset: 0; }
+
+    /* persistent frame: same coordinates in every scene */
+    .kicker {
+      position: absolute;
+      left: 96px;
+      top: 62px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: var(--soft);
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: .03em;
+      line-height: 1.2;
+    }
+    .kbar { display: block; width: 40px; height: 4px; border-radius: 2px; background: var(--k, var(--soft)); }
+    .pill-alert {
+      padding: 8px 18px 7px;
+      border: 2px solid var(--alert);
+      border-radius: 999px;
+      color: var(--alert);
+      background: rgba(255, 107, 93, .1);
+      font-weight: 800;
+      letter-spacing: .02em;
+    }
+    .status-rail {
+      position: absolute;
+      right: 96px;
+      top: 56px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .rail-label { margin-right: 8px; color: var(--muted); font-size: 26px; font-weight: 600; }
+    .st {
+      padding: 9px 17px 8px;
+      border: 2px solid rgba(255, 255, 255, .2);
+      border-radius: 999px;
+      color: rgba(255, 255, 255, .44);
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .st.on.st-claim { color: var(--claim); border-color: var(--claim); background: rgba(255, 181, 71, .12); }
+    .st.on.st-demo { color: var(--demo); border-color: var(--demo); background: rgba(53, 212, 199, .12); }
+    .st.on.st-ver { color: var(--ver); border-color: var(--ver); background: rgba(167, 225, 91, .12); }
+    .st.on.st-rep { color: var(--rep); border-color: var(--rep); background: rgba(141, 176, 255, .12); }
+
+    .src {
+      position: absolute;
+      left: 96px;
+      right: 96px;
+      bottom: 92px;
+      color: var(--muted);
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.42;
+    }
+    .src b { color: var(--soft); font-weight: 700; }
+
+    /* type */
+    .title {
+      position: absolute;
+      margin: 0;
+      color: var(--ink);
+      font-size: 70px;
+      font-weight: 800;
+      line-height: 1.16;
+      letter-spacing: -.025em;
+    }
+    .title .ln { display: block; white-space: nowrap; }
+    .cover-title { font-weight: 850; letter-spacing: -.035em; line-height: 1.12; }
+    .dek {
+      position: absolute;
+      left: 96px;
+      color: var(--soft);
+      font-size: 32px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .dek-quote { color: var(--muted); font-style: normal; }
+    .factline {
+      position: absolute;
+      left: 96px;
+      color: var(--ink);
+      font-size: 34px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .c-claim { color: var(--claim); }
+    .c-demo { color: var(--demo); }
+    .c-ver { color: var(--ver); }
+    .c-rep { color: var(--rep); }
+    .c-alert { color: var(--alert); }
+    .nw { white-space: nowrap; }
+
+    .tag {
+      display: inline-block;
+      position: relative;
+      top: -.12em;
+      margin-left: 12px;
+      padding: 5px 11px 4px;
+      border: 2px solid currentColor;
+      border-radius: 999px;
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+    .t-claim { color: var(--claim); background: rgba(255, 181, 71, .1); }
+    .t-demo { color: var(--demo); background: rgba(53, 212, 199, .1); }
+    .t-ver { color: var(--ver); background: rgba(167, 225, 91, .1); }
+    .t-rep { color: var(--rep); background: rgba(141, 176, 255, .1); }
+    .t-calc { color: var(--muted); background: rgba(255, 255, 255, .05); }
+
+    /* the roadster */
+    .car { position: absolute; overflow: visible; }
+    .car .cs, .carg .cs { fill: rgba(255, 255, 255, .07); }
+    .car .cb, .carg .cb { fill: #1c2231; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+    .car .cg, .carg .cg { fill: rgba(53, 212, 199, .24); stroke: var(--ink); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+    .car .cw, .carg .cw { fill: #0b0d12; stroke: var(--ink); stroke-width: 2.5; vector-effect: non-scaling-stroke; }
+    .car .ch, .carg .ch { fill: var(--soft); }
+    .car .cl, .carg .cl { fill: var(--demo); }
+    .car .ct, .carg .ct { fill: var(--alert); }
+    .ghost .cb, .ghost .cw {
+      fill: none;
+      stroke: rgba(243, 241, 236, .55);
+      stroke-width: 2;
+      stroke-dasharray: 9 7;
+    }
+    .ghost-solid .cb, .ghost-solid .cw { stroke: rgba(243, 241, 236, .7); stroke-width: 2.5; stroke-dasharray: none; }
+    .car.dim { opacity: .55; }
+    .ghost .cg, .ghost .ch, .ghost .cl, .ghost .ct, .ghost .cs { display: none; }
+    .puff { fill: var(--demo); opacity: 0; }
+    .jet { fill: var(--claim); }
+    .jet-dim { fill: rgba(255, 181, 71, .6); }
+
+    .agenda {
+      position: absolute;
+      display: flex;
+      gap: 34px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: var(--soft);
+      font-size: 28px;
+      font-weight: 650;
+      line-height: 1.3;
+    }
+    .agenda li { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+    .agenda b {
+      display: inline-grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+      font-size: 22px;
+      font-weight: 850;
+    }
+    .road-dash { height: 0 !important; background: none !important; border-top: 3px dashed rgba(243, 241, 236, .35); }
+    .road {
+      position: absolute;
+      height: 3px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, rgba(243, 241, 236, .08), rgba(243, 241, 236, .5) 40%, rgba(243, 241, 236, .2));
+    }
+
+    /* scene 2 */
+    .diagram { position: absolute; overflow: visible; }
+    .road-solid { fill: none; stroke: var(--ink); stroke-width: 5; stroke-linecap: round; }
+    .road-dash { fill: none; stroke: var(--claim); stroke-width: 5; stroke-dasharray: 16 14; stroke-linecap: round; }
+    .road-dot { fill: var(--claim); stroke: var(--bg); stroke-width: 4; }
+    .dot-demo { fill: var(--demo); }
+    .dot-open { fill: var(--bg); stroke: var(--claim); stroke-width: 4; }
+    .post { stroke: rgba(255, 255, 255, .24); stroke-width: 2; }
+    .post-dash { stroke-dasharray: 6 6; }
+    .brace { fill: none; stroke: var(--claim); stroke-width: 3; stroke-linejoin: round; }
+    .node {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 30px 34px;
+      border: 2px solid rgba(255, 255, 255, .14);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .02));
+    }
+    .node-future { border-style: dashed; border-color: rgba(255, 181, 71, .55); }
+    .node-lab { color: var(--muted); font-size: 30px; font-weight: 700; }
+    .node-big { margin-top: 12px; font-size: 76px; font-weight: 850; letter-spacing: -.03em; line-height: 1.05; }
+    .node-sub { margin-top: 16px; color: var(--soft); font-size: 30px; font-weight: 650; }
+    .brace-label {
+      position: absolute;
+      color: var(--soft);
+      font-size: 30px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    /* metric cards (scenes 3, 5) */
+    .mcard {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      padding: 26px 30px;
+      border: 1.5px solid rgba(255, 255, 255, .12);
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .02));
+    }
+    .mcard-lab { color: var(--soft); font-size: 28px; font-weight: 700; line-height: 1.3; }
+    .mcard-big { margin-top: 14px; font-size: 76px; font-weight: 850; letter-spacing: -.03em; line-height: 1.05; }
+    .mcard-note { margin-top: auto; color: var(--muted); font-size: 26px; font-weight: 600; line-height: 1.4; }
+    .mcard-s .mcard-big { margin-top: 12px; font-size: 46px; }
+
+    /* scene 3 photo */
+    .photo {
+      position: absolute;
+      margin: 0;
+      overflow: hidden;
+      border-radius: 18px;
+      background: #000;
+      box-shadow: 0 0 0 1.5px rgba(255, 255, 255, .12);
+    }
+    .photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .photo-cap { position: absolute; color: var(--soft); font-size: 30px; font-weight: 700; line-height: 1.4; }
+    .photo-credit { position: absolute; color: var(--muted); font-size: 24px; font-weight: 500; line-height: 1.4; }
+    .pricebar { position: absolute; color: var(--ink); font-size: 36px; font-weight: 750; line-height: 1.4; }
+
+    /* scene 4 chart */
+    .chart { position: absolute; overflow: visible; }
+    .chart .grid { stroke: rgba(255, 255, 255, .07); stroke-width: 1.5; }
+    .chart .axis { stroke: rgba(255, 255, 255, .35); stroke-width: 2; }
+    .chart .tick { stroke: rgba(255, 255, 255, .35); stroke-width: 2; }
+    .chart .axis-lab { fill: var(--muted); font-size: 24px; font-weight: 600; }
+    .chart .axis-lab-y { fill: var(--claim); font-size: 26px; font-weight: 700; }
+    .chart .axis-title { fill: var(--soft); font-size: 24px; font-weight: 700; }
+    .chart .step { fill: none; stroke: var(--claim); stroke-width: 5; stroke-linejoin: round; stroke-linecap: round; }
+    .chart .line-ext { fill: none; stroke: var(--claim); stroke-width: 4; stroke-dasharray: 8 8; }
+    .chart .pt { fill: var(--claim); stroke: var(--bg); stroke-width: 4; }
+    .chart .range { fill: rgba(255, 181, 71, .35); stroke: var(--claim); stroke-width: 3; }
+    .chart .pt-note { fill: var(--soft); font-size: 24px; font-weight: 600; }
+    .chart .pt-ann { fill: var(--soft); font-size: 26px; font-weight: 700; }
+    .chart .pt-new-lab { fill: var(--alert); font-size: 28px; font-weight: 800; }
+    .side { position: absolute; display: flex; flex-direction: column; gap: 34px; }
+    .side-lab { color: var(--soft); font-size: 28px; font-weight: 700; line-height: 1.3; }
+    .side-big { margin-top: 6px; font-size: 40px; font-weight: 850; letter-spacing: -.02em; line-height: 1.1; white-space: nowrap; }
+    .side-note { margin-top: 8px; color: var(--muted); font-size: 24px; font-weight: 600; }
+    .side-note .tag { margin-left: 0; margin-right: 8px; }
+
+    /* scene 5 timeline */
+    .band { fill: none; stroke: rgba(243, 241, 236, .55); stroke-width: 4; stroke-linecap: round; }
+    .band-dot { fill: var(--rep); stroke: var(--bg); stroke-width: 4; }
+    .dot-alert { fill: var(--alert); }
+    .strike { fill: none; stroke: var(--alert); stroke-width: 5; stroke-linecap: round; }
+    .mk { position: absolute; text-align: center; }
+    .mk-date { color: var(--ink); font-size: 36px; font-weight: 800; line-height: 1.3; }
+    .mk-desc { margin-top: 8px; color: var(--soft); font-size: 28px; font-weight: 600; line-height: 1.4; }
+    .mk.strike .mk-date { color: var(--muted); }
+    .mk.big .mk-date { color: var(--demo); font-size: 40px; }
+    .kst { position: absolute; color: var(--soft); font-size: 30px; font-weight: 700; text-align: right; }
+    .mk-up { text-align: left; }
+    .mk-right { text-align: right; }
+    .day-tick { stroke: rgba(243, 241, 236, .35); stroke-width: 2; }
+    .scale-note { position: absolute; color: var(--muted); font-size: 26px; font-weight: 600; }
+
+    /* scene 6 panels */
+    .panel {
+      position: absolute;
+      border: 1.5px solid rgba(255, 255, 255, .12);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, .015));
+    }
+    .panel-head {
+      position: absolute;
+      left: 26px;
+      top: 26px;
+      display: flex;
+      align-items: center;
+      color: var(--ink);
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+    .panel-num {
+      display: inline-grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      margin-right: 14px;
+      border-radius: 50%;
+      background: var(--demo);
+      color: var(--bg);
+      font-size: 24px;
+      font-weight: 900;
+    }
+    .panel-svg { position: absolute; overflow: visible; }
+    .panel-cap {
+      position: absolute;
+      left: 26px;
+      right: 22px;
+      bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      color: var(--soft);
+      font-size: 30px;
+      font-weight: 650;
+      line-height: 1.42;
+    }
+    .panel-cap2 { color: var(--muted); font-size: 28px; }
+    .ground { stroke: rgba(243, 241, 236, .4); stroke-width: 3; }
+    .ramp { fill: none; stroke: var(--ink); stroke-width: 6; stroke-linecap: round; }
+    .arrowhead { fill: var(--demo); }
+    .traj { fill: none; stroke: var(--demo); stroke-width: 4; stroke-dasharray: 10 10; stroke-linecap: round; }
+    .blk { fill: #232a3a; stroke: rgba(243, 241, 236, .45); stroke-width: 2; }
+    .dg-lab { fill: var(--claim); font-size: 26px; font-weight: 800; }
+    .dial-track { fill: none; stroke: rgba(255, 255, 255, .1); stroke-width: 16; }
+    .dial-arc { fill: none; stroke: var(--demo); stroke-width: 16; stroke-linecap: butt; }
+    .dial-tick { stroke: rgba(255, 255, 255, .3); stroke-width: 3; }
+    .dial-claim { fill: var(--claim) !important; }
+    .dial-val { fill: var(--demo); font-size: 50px; font-weight: 850; letter-spacing: -.02em; }
+    .dial-sub { fill: var(--muted); font-size: 24px; font-weight: 600; }
+
+    /* scene 7 trims */
+    .trim {
+      position: absolute;
+      padding: 28px 30px;
+      border: 1.5px solid rgba(255, 255, 255, .12);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .015));
+    }
+    .trim-hot { border-color: rgba(255, 181, 71, .5); background: linear-gradient(180deg, rgba(255, 181, 71, .09), rgba(255, 255, 255, .015)); }
+    .trim-name { color: var(--ink); font-size: 44px; font-weight: 850; letter-spacing: -.02em; line-height: 1.2; }
+    .trim-sub { margin-top: 8px; color: var(--soft); font-size: 28px; font-weight: 650; }
+    .trows { position: absolute; left: 30px; right: 30px; top: 152px; }
+    .trow {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 15px 0 14px;
+      border-top: 1.5px solid rgba(255, 255, 255, .09);
+    }
+    .trow-lab { color: var(--muted); font-size: 28px; font-weight: 650; }
+    .trow-val { font-size: 34px; font-weight: 800; letter-spacing: -.01em; }
+    .trim-foot { position: absolute; left: 30px; bottom: 26px; color: var(--muted); font-size: 26px; font-weight: 600; }
+    .badge {
+      position: absolute;
+      padding: 10px 20px 9px;
+      border: 2px solid var(--claim);
+      border-radius: 14px;
+      color: var(--claim);
+      background: #1b1710;
+      font-size: 26px;
+      font-weight: 800;
+      transform: rotate(-2deg);
+    }
+
+    /* scene 8 bars */
+    .legend {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--soft);
+      font-size: 26px;
+      font-weight: 650;
+    }
+    .lg { display: inline-block; width: 34px; height: 18px; border-radius: 5px; }
+    .lg-old { border: 2.5px solid var(--claim); }
+    .lg-new { margin-left: 14px; background: var(--claim); }
+    .rowlab { position: absolute; width: 300px; }
+    .rowlab-t { color: var(--ink); font-size: 34px; font-weight: 800; line-height: 1.2; }
+    .rowlab-s { margin-top: 6px; color: var(--muted); font-size: 26px; font-weight: 600; }
+    .bar { position: absolute; height: 34px; border-radius: 8px; }
+    .bar-old { border: 3px solid var(--claim); background: rgba(255, 181, 71, .06); }
+    .bar-new { background: linear-gradient(90deg, rgba(255, 181, 71, .75), var(--claim)); }
+    .bar-empty {
+      display: grid;
+      place-items: center;
+      border: 3px dashed var(--alert);
+      color: var(--alert);
+      font-size: 26px;
+      font-weight: 900;
+    }
+    .cell {
+      position: absolute;
+      display: grid;
+      place-items: center;
+      height: 40px;
+      border-radius: 10px;
+      font-size: 28px;
+      font-weight: 800;
+    }
+    .cell-old { border: 3px solid var(--claim); color: var(--claim); background: rgba(255, 181, 71, .08); }
+    .cell-empty { border: 3px dashed var(--alert); color: var(--alert); }
+    .bval { position: absolute; color: var(--soft); font-size: 30px; font-weight: 750; line-height: 1.45; white-space: nowrap; }
+    .bval-sub { display: block; color: var(--muted); font-size: 26px; font-weight: 600; line-height: 1.3; }
+    .seat {
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      border-radius: 10px 10px 6px 6px;
+    }
+    .seat-old { border: 3px solid var(--claim); }
+    .seat-new { background: var(--claim); }
+
+    /* scene 9 columns */
+    .vcol {
+      position: absolute;
+      padding: 30px 34px;
+      border: 1.5px solid rgba(255, 255, 255, .12);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, .015));
+    }
+    .vcol-demo { border-top: 5px solid var(--demo); }
+    .vcol-alert { border-top: 5px solid var(--alert); }
+    .vhead { font-size: 40px; font-weight: 850; line-height: 1.2; }
+    .vitem {
+      display: grid;
+      grid-template-columns: 190px 1fr;
+      gap: 22px;
+      align-items: start;
+      margin-top: 22px;
+    }
+    .vbig { font-size: 44px; font-weight: 850; letter-spacing: -.02em; line-height: 1.15; white-space: nowrap; }
+    .vdesc { color: var(--soft); font-size: 32px; font-weight: 600; line-height: 1.4; }
+
+    /* scene 10 horizontal bars */
+    .hlab { position: absolute; color: var(--soft); font-size: 30px; font-weight: 650; line-height: 1.3; white-space: nowrap; }
+    .hcond { position: absolute; height: 34px; margin: 0; color: #0b0d12; font-size: 24px; font-weight: 750; line-height: 34px; white-space: nowrap; }
+    .hbar { position: absolute; height: 34px; border-radius: 0 8px 8px 0; }
+    .hb-claim { background: var(--claim); }
+    .hb-demo { background: var(--demo); }
+    .hb-ver { background: var(--ver); }
+    .hb-rep { background: var(--rep); }
+    .hbar.lt { background: linear-gradient(90deg, var(--claim) 70%, rgba(255, 181, 71, .25)); }
+    .hval { position: absolute; font-size: 30px; font-weight: 800; line-height: 1.4; white-space: nowrap; }
+    .vgrid { position: absolute; width: 0; border-left: 1.5px dashed rgba(255, 255, 255, .14); }
+    .vgrid-lab { position: absolute; width: 80px; color: var(--muted); font-size: 24px; font-weight: 600; text-align: center; }
+    .sep { position: absolute; height: 0; border-top: 1.5px solid rgba(255, 255, 255, .14); }
+    .footnote { position: absolute; color: var(--muted); font-size: 26px; font-weight: 600; line-height: 1.4; }
+
+    /* scene 11 checklist */
+    .cbox { position: absolute; overflow: visible; }
+    .cbox rect { fill: none; stroke: var(--alert); stroke-width: 4; }
+    .cbox text { fill: var(--alert); font-size: 40px; font-weight: 900; }
+    .crow { position: absolute; }
+    .crow-head { color: var(--ink); font-size: 44px; font-weight: 850; line-height: 1.25; }
+    .crow-desc { margin-top: 10px; color: var(--soft); font-size: 30px; font-weight: 600; line-height: 1.45; }
+    .ghost-cap { position: absolute; text-align: center; color: var(--muted); font-size: 26px; font-weight: 700; }
+    .quote {
+      position: absolute;
+      padding: 24px 30px 24px 34px;
+      border-left: 6px solid var(--rep);
+      border-radius: 6px 18px 18px 6px;
+      background: rgba(141, 176, 255, .06);
+    }
+    .quote-t { color: var(--ink); font-size: 32px; font-weight: 700; line-height: 1.5; }
+    .quote-a { margin-top: 12px; color: var(--muted); font-size: 26px; font-weight: 600; line-height: 1.4; }
+    .quote-note { display: block; margin-top: 6px; font-size: 24px; color: var(--muted); }
+    .quote-note .tag { font-size: 22px; }
+    .trow-lab .tag { font-size: 22px; margin-left: 10px; }
+    .quote-big .quote-t { font-size: 54px; font-weight: 850; line-height: 1.25; letter-spacing: -.02em; }
+
+    /* scene 12 close */
+    .cta { position: absolute; }
+    .cta-lead { color: var(--soft); font-size: 34px; font-weight: 700; line-height: 1.4; }
+    .cta-chips { display: flex; gap: 18px; margin-top: 22px; }
+    .cta-chip {
+      padding: 14px 28px 13px;
+      border: 3px solid currentColor;
+      border-radius: 999px;
+      font-size: 42px;
+      font-weight: 850;
+      line-height: 1.1;
+    }
+    .watch { position: absolute; color: var(--soft); font-size: 30px; font-weight: 800; }
+    .flag { position: absolute; display: flex; flex-direction: column; align-items: center; }
+    .flag-lab {
+      padding: 10px 20px 9px;
+      border: 2px solid rgba(255, 255, 255, .22);
+      border-radius: 14px;
+      background: #141924;
+      color: var(--ink);
+      font-size: 30px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .flag-pole { display: block; width: 3px; height: 70px; background: rgba(255, 255, 255, .3); }
+
+    /* parent-owned film progress rail (HyperFrames render only) */
+    #progress-clip { position: absolute; inset: 0; }
+    #progress-track {
+      position: absolute;
+      left: 96px;
+      right: 96px;
+      bottom: 40px;
+      height: 6px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, .08);
+      overflow: hidden;
+    }
+    #progress-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--claim), var(--demo), var(--ver));
+      transform-origin: left center;
+    }
+
+    /* presenter shell: neutral transition washes so they never reuse the status colours */
+    #animated-presentation {
+      --show-a: #59606e !important;
+      --show-b: #8f98aa !important;
+      --show-c: #c3c9d5 !important;
+      --show-night: #06070a !important;
+    }
+    #scene-hud { mix-blend-mode: normal !important; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .puff { opacity: 0; }
+    }
+
+    :root {
+      --show-a: #ff78aa;
+      --show-b: #75e7e0;
+      --show-c: #ffd166;
+      --show-night: #090711;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--show-night);
+    }
+    body { overscroll-behavior: none; }
+    #animated-presentation {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 18% 16%, rgba(255,120,170,.22), transparent 36%),
+        radial-gradient(circle at 82% 78%, rgba(117,231,224,.18), transparent 38%),
+        linear-gradient(135deg, #120b19 0%, var(--show-night) 48%, #101321 100%);
+      touch-action: pan-y;
+      user-select: none;
+      isolation: isolate;
+    }
+    .show-lightfield {
+      position: absolute;
+      inset: -15%;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .show-aurora {
+      position: absolute;
+      width: 54vw;
+      height: 54vw;
+      border-radius: 50%;
+      opacity: .26;
+      filter: blur(80px);
+      transform: translate3d(0,0,0);
+      transition:
+        transform 900ms cubic-bezier(.2,.8,.2,1),
+        opacity 700ms ease;
+    }
+    .show-aurora--a {
+      left: -8%;
+      top: -18%;
+      background: #ff78aa;
+    }
+    .show-aurora--b {
+      right: -10%;
+      bottom: -20%;
+      background: #75e7e0;
+    }
+    .show-aurora--c {
+      left: 42%;
+      top: 34%;
+      width: 30vw;
+      height: 30vw;
+      background: #ffd166;
+      opacity: .12;
+    }
+    #animated-presentation[data-phase="1"] .show-aurora--a,
+    #animated-presentation[data-phase="4"] .show-aurora--b {
+      transform: translate3d(11vw, 7vh, 0) scale(1.12);
+    }
+    #animated-presentation[data-phase="2"] .show-aurora--c,
+    #animated-presentation[data-phase="5"] .show-aurora--a {
+      transform: translate3d(-8vw, -5vh, 0) scale(.9);
+    }
+    .show-grain {
+      position: absolute;
+      inset: 0;
+      opacity: .12;
+      background-image:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 5px 5px, 7px 7px;
+      mix-blend-mode: overlay;
+    }
+    .show-beam {
+      position: absolute;
+      left: 50%;
+      top: -30%;
+      width: 12%;
+      height: 160%;
+      opacity: .14;
+      background: linear-gradient(90deg, transparent, #75e7e0, transparent);
+      filter: blur(18px);
+      transform: rotate(24deg);
+      transition: transform 900ms cubic-bezier(.2,.8,.2,1);
+    }
+    #presentation-stage {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 5;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: var(--paper, #fff);
+      transform: translate(-50%, -50%) scale(1);
+      transform-origin: center center;
+      border: 1px solid rgba(255,255,255,.24);
+      box-shadow:
+        0 0 0 1px rgba(255,120,170,.2),
+        0 38px 120px rgba(0,0,0,.64),
+        0 0 90px rgba(255,120,170,.16);
+      perspective: 2600px;
+    }
+    .stage-atmosphere {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .stage-atmosphere::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(115deg, rgba(255,120,170,.09), transparent 28%),
+        linear-gradient(295deg, rgba(117,231,224,.08), transparent 30%);
+      mix-blend-mode: screen;
+    }
+    .stage-atmosphere::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      box-shadow:
+        inset 0 0 150px rgba(7,5,12,.28),
+        inset 0 0 0 2px rgba(255,255,255,.08);
+    }
+    .stage-corner {
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      border-color: #ffe39a;
+      opacity: .72;
+    }
+    .stage-corner--tl {
+      left: 26px;
+      top: 26px;
+      border-left: 2px solid;
+      border-top: 2px solid;
+    }
+    .stage-corner--br {
+      right: 26px;
+      bottom: 26px;
+      border-right: 2px solid;
+      border-bottom: 2px solid;
+    }
+    #slide-track {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      transform-style: preserve-3d;
+      transition: transform .5s cubic-bezier(.2,.78,.22,1);
+      will-change: transform;
+    }
+    .animated-slide {
+      position: absolute;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: var(--paper, #fff);
+      opacity: 1;
+      transform: none;
+      transform-origin: center center;
+      transition:
+        opacity .34s ease,
+        transform .5s cubic-bezier(.2,.78,.22,1);
+      backface-visibility: hidden;
+      contain: layout paint;
+    }
+    .animated-slide.is-current {
+      opacity: 1;
+      transform: translateZ(0) scale(1) rotateY(0);
+    }
+    .animated-slide.is-near {
+      will-change: transform, opacity;
+    }
+    .animated-slide.is-near.is-before {
+      opacity: .68;
+      transform: translate3d(24px,0,-38px) scale(.985) rotateY(1.2deg);
+      transform-origin: right center;
+    }
+    .animated-slide.is-near.is-after {
+      opacity: .68;
+      transform: translate3d(-24px,0,-38px) scale(.985) rotateY(-1.2deg);
+      transform-origin: left center;
+    }
+    #animated-presentation[data-transition-family="curtain"] #slide-track {
+      transition-duration: .56s;
+      transition-timing-function: cubic-bezier(.3,.74,.18,1);
+    }
+    #animated-presentation[data-transition-family="curtain"]
+      .animated-slide.is-near {
+      transition-duration: .56s;
+    }
+    #animated-presentation[data-transition-family="curtain"]
+      .animated-slide.is-near.is-before {
+      opacity: .5;
+      transform: translate3d(0,-68px,-54px) scale(.975) rotateX(-2.2deg);
+      transform-origin: center bottom;
+    }
+    #animated-presentation[data-transition-family="curtain"]
+      .animated-slide.is-near.is-after {
+      opacity: .5;
+      transform: translate3d(0,68px,-54px) scale(.975) rotateX(2.2deg);
+      transform-origin: center top;
+    }
+    #animated-presentation[data-transition-family="aperture"] #slide-track {
+      transition-duration: .52s;
+      transition-timing-function: cubic-bezier(.18,.82,.18,1);
+    }
+    #animated-presentation[data-transition-family="aperture"]
+      .animated-slide.is-near {
+      transition-duration: .52s;
+    }
+    #animated-presentation[data-transition-family="aperture"]
+      .animated-slide.is-near.is-before {
+      opacity: .42;
+      transform: translate3d(0,0,-120px) scale(.92) rotateZ(-.32deg);
+      transform-origin: center center;
+    }
+    #animated-presentation[data-transition-family="aperture"]
+      .animated-slide.is-near.is-after {
+      opacity: .42;
+      transform: translate3d(0,0,-120px) scale(1.075) rotateZ(.32deg);
+      transform-origin: center center;
+    }
+    .animated-slide[aria-hidden="true"] { pointer-events: none; }
+    #transition-fx {
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      overflow: hidden;
+      pointer-events: none;
+      contain: paint;
+    }
+    #transition-fx > i {
+      backface-visibility: hidden;
+      will-change: transform, opacity;
+    }
+    .fx-blade {
+      position: absolute;
+      top: -18%;
+      width: 32%;
+      height: 136%;
+      opacity: 0;
+      transform: skewX(-13deg);
+    }
+    #fx-blade-a {
+      left: -42%;
+      background: linear-gradient(90deg, transparent, var(--show-a) 38%, white 52%, transparent 100%);
+    }
+    #fx-blade-b {
+      right: -42%;
+      background: linear-gradient(90deg, transparent, white 42%, var(--show-b) 60%, transparent 100%);
+    }
+    #fx-flare {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 42%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      opacity: 0;
+      background:
+        radial-gradient(circle, white 0 2%, var(--show-c) 6%, var(--show-a) 18%, transparent 62%);
+      transform: translate(-50%,-50%) scale(.2);
+    }
+    #fx-prism {
+      position: absolute;
+      inset: -12%;
+      opacity: 0;
+      background:
+        linear-gradient(96deg,
+          transparent 24%,
+          color-mix(in srgb, var(--show-a) 72%, transparent) 42%,
+          rgba(255,255,255,.72) 50%,
+          color-mix(in srgb, var(--show-b) 72%, transparent) 58%,
+          transparent 76%);
+    }
+    .fx-curtain {
+      position: absolute;
+      left: -4%;
+      width: 108%;
+      height: 54%;
+      opacity: 0;
+      border-color: rgba(255,255,255,.7);
+      background:
+        linear-gradient(118deg,
+          color-mix(in srgb, var(--show-night) 88%, black),
+          color-mix(in srgb, var(--show-a) 64%, var(--show-night)) 48%,
+          color-mix(in srgb, var(--show-b) 58%, var(--show-night)));
+      box-shadow: 0 0 0 1px rgba(255,255,255,.18);
+    }
+    #fx-curtain-top {
+      top: 0;
+      border-bottom: 3px solid;
+    }
+    #fx-curtain-bottom {
+      bottom: 0;
+      border-top: 3px solid;
+    }
+    .fx-ring {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 30%;
+      aspect-ratio: 1;
+      border: 5px solid rgba(255,255,255,.82);
+      border-radius: 50%;
+      opacity: 0;
+      box-shadow:
+        0 0 0 12px color-mix(in srgb, var(--show-a) 42%, transparent),
+        0 0 0 26px color-mix(in srgb, var(--show-b) 24%, transparent);
+      transform: translate(-50%,-50%) scale(.18);
+    }
+    #fx-ring-b {
+      width: 19%;
+      border-color: var(--show-c);
+      box-shadow:
+        0 0 0 8px color-mix(in srgb, var(--show-c) 34%, transparent),
+        0 0 0 22px color-mix(in srgb, var(--show-a) 22%, transparent);
+    }
+    #scene-hud {
+      position: absolute;
+      left: 42px;
+      right: 42px;
+      bottom: 28px;
+      z-index: 34;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      color: rgba(255,255,255,.94);
+      pointer-events: none;
+      text-shadow: 0 2px 16px rgba(0,0,0,.56);
+      mix-blend-mode: difference;
+    }
+    .scene-hud__chapter {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font: 800 17px/1 "Pretendard Local", system-ui, sans-serif;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    .scene-hud__chapter:empty { display: none; }
+    .scene-hud__chapter::before {
+      content: "";
+      width: 54px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--show-a), var(--show-c));
+      box-shadow: 0 0 12px var(--show-a);
+    }
+    #scene-hud-number {
+      font: 900 44px/.78 "Pretendard Local", system-ui, sans-serif;
+      letter-spacing: -.05em;
+    }
+    #scene-hud-total {
+      margin-left: 6px;
+      opacity: .52;
+      font-size: 16px;
+      letter-spacing: .1em;
+    }
+    .presenter-progress {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 50;
+      height: 6px;
+      background: rgba(255,255,255,.1);
+      pointer-events: none;
+      box-shadow: 0 -1px 20px rgba(0,0,0,.28);
+    }
+    #presenter-progress-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--show-a), var(--show-b), var(--show-c));
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform .36s ease;
+      box-shadow: 0 0 24px var(--show-a);
+    }
+    .presenter-controls {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px;
+      border: 1px solid color-mix(in srgb, var(--show-a) 44%, rgba(255,255,255,.2));
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(25,16,35,.78), rgba(8,12,22,.72));
+      backdrop-filter: blur(20px) saturate(1.35);
+      box-shadow:
+        0 16px 46px rgba(0,0,0,.42),
+        inset 0 1px rgba(255,255,255,.14),
+        0 0 28px color-mix(in srgb, var(--show-a) 14%, transparent);
+      opacity: 0;
+      transform: translateY(10px);
+      transition:
+        opacity 180ms ease,
+        transform 180ms ease,
+        border-color 500ms ease,
+        box-shadow 500ms ease;
+    }
+    .presenter-controls:hover,
+    .presenter-controls:focus-within {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .presenter-controls button {
+      min-width: 42px;
+      height: 42px;
+      padding: 0 13px;
+      border: 0;
+      border-radius: 999px;
+      color: #fff;
+      background: linear-gradient(145deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
+      font: 750 15px/1 "Pretendard Local", system-ui, sans-serif;
+      cursor: pointer;
+      box-shadow: inset 0 1px rgba(255,255,255,.12);
+      transition: transform 160ms ease, background 160ms ease;
+    }
+    .presenter-controls button:hover,
+    .presenter-controls button:focus-visible {
+      outline: 2px solid var(--show-a);
+      outline-offset: 2px;
+      background: rgba(255,255,255,.18);
+      transform: translateY(-2px);
+    }
+    .presenter-controls button:disabled {
+      opacity: .36;
+      cursor: default;
+    }
+    #presenter-count {
+      min-width: 72px;
+      color: rgba(255,255,255,.86);
+      text-align: center;
+      font: 760 14px/1 "Pretendard Local", system-ui, sans-serif;
+      letter-spacing: .06em;
+    }
+    #presenter-error {
+      position: fixed;
+      left: 50%;
+      top: 24px;
+      z-index: 80;
+      display: none;
+      transform: translateX(-50%);
+      padding: 12px 18px;
+      border-radius: 12px;
+      color: #fff;
+      background: #b42318;
+      font: 700 15px/1.4 system-ui, sans-serif;
+    }
+    #animated-presentation[data-runtime-error="true"] #presenter-error {
+      display: block;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #slide-track,
+      .animated-slide,
+      .show-aurora,
+      .show-beam,
+      #presenter-progress-fill {
+        transition: none !important;
+      }
+      #transition-fx { display: none; }
+    }
+    @media print {
+      .presenter-controls,
+      .presenter-progress,
+      #presenter-error,
+      .show-lightfield,
+      #transition-fx,
+      #scene-hud {
+        display: none !important;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <main
+    id="animated-presentation"
+    data-animated-presentation="true"
+    data-slide-count="12"
+    data-runtime-error="false"
+    data-theme="default"
+    aria-label="Tesla Roadster 발표, 비공식 정리 발표자료"
+  >
+    <div class="show-lightfield" aria-hidden="true">
+      <i class="show-aurora show-aurora--a"></i>
+      <i class="show-aurora show-aurora--b"></i>
+      <i class="show-aurora show-aurora--c"></i>
+      <i class="show-beam"></i>
+      <i class="show-grain"></i>
+    </div>
+    <div id="presentation-stage">
+      <div class="stage-atmosphere" aria-hidden="true">
+        <i class="stage-corner stage-corner--tl"></i>
+        <i class="stage-corner stage-corner--br"></i>
+      </div>
+      <div id="slide-track">
+      <section
+        class="animated-slide"
+        data-scene-id="scene-1"
+        aria-label="슬라이드 1 / 12"
+        aria-hidden="false"
+        style="left:0px"
+      >
+<div data-composition-id="scene-1" data-width="1920" data-height="1080" class="comp" id="s1-root">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <p class="kicker cover-kicker" id="s1-kicker"><span class="pill-alert">비공식 정리</span>Tesla와 제휴·승인 관계가 없는 개인 요약 · v2, 2026-10-19 기준</p>
+    <div class="status-rail" aria-label="이 장면 숫자의 근거 표시"><span class="rail-label">숫자마다 붙인 표시</span><span class="st st-claim on">주장</span><span class="st st-demo on">시연</span><span class="st st-ver on">검증</span><span class="st st-rep on">보도</span></div>
+    <div class="scene-content" id="s1-content">
+      <h2 class="title cover-title" id="s1-title" style="top:236px;left:96px;font-size:104px"><span class="ln" id="s1-l1">Roadster, 다시 나타나다</span><span class="ln" id="s1-l2"><span class="c-demo">날았지만</span>, 아직 <span class="c-alert">살 수는 없다</span></span></h2>
+      <p class="dek" id="s1-dek" style="top:500px">무엇을 약속했고, 무엇을 보여줬고, 무엇이 확인됐는지 정리합니다</p>
+      <p class="factline" id="s1-fact" style="top:566px">2017-11-16 시제품 공개 → 2026-10-15 발표 <span class="c-ver">= 3,255일 (약 8.9년)</span><span class="tag t-calc">계산</span></p>
+      <ol class="agenda" id="s1-agenda" style="left:96px;top:716px">
+        <li><b class="c-claim">기</b>2017년의 약속</li><li><b class="c-demo">승</b>2026년의 시연</li><li><b class="c-ver">전</b>숫자 검증</li><li><b class="c-alert">결</b>남은 약속</li>
+      </ol>
+      <div class="road" id="s1-road" style="left:96px;top:878px;width:1728px"></div>
+      <svg class="car " id="s1-car" viewBox="0 0 300 100" width="540" height="180" style="left:1220px;top:703.4px" aria-hidden="true"><circle class="puff" id="s1-puff1" cx="-6" cy="70" r="9"/><circle class="puff" id="s1-puff2" cx="-26" cy="80" r="7"/><circle class="puff" id="s1-puff3" cx="-42" cy="88" r="5"/><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></svg>
+    </div>
+    <p class="src" id="s1-src"><b>Details:</b> 공개일 2017-11-16 — NPR · 행사일 2026-10-15 — Tesla YouTube 녹화본 기록, Reuters · 3,255일은 두 날짜로 계산</p>
+    
+  </div>
+      </section>
+      <section
+        class="animated-slide"
+        data-scene-id="scene-2"
+        aria-label="슬라이드 2 / 12"
+        aria-hidden="true"
+        style="left:1920px"
+      >
+<div data-composition-id="scene-2" data-width="1920" data-height="1080" class="comp" id="s2-root">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <p class="kicker" id="s2-kicker"><i class="kbar" style="--k:var(--soft)"></i>한눈에 보기</p>
+    <div class="status-rail" aria-label="이 장면 숫자의 근거 표시"><span class="st st-claim on">주장</span><span class="st st-demo on">시연</span><span class="st st-ver">검증</span><span class="st st-rep">보도</span></div>
+    <div class="scene-content" id="s2-content">
+      <h2 class="title " id="s2-title" style="top:128px;left:96px"><span class="ln" id="s2-l1">약속은 2020년, 시연은 <span class="c-demo">2026년</span>,</span><span class="ln" id="s2-l2">다음 약속은 <span class="c-claim">2028년</span></span></h2>
+      <svg class="diagram" id="s2-diagram" style="left:0;top:0" width="1920" height="1080" viewBox="0 0 1920 1080" aria-hidden="true">
+        <defs>
+          <mask id="s2-dashmask" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="1080">
+            <path id="s2-dashreveal" d="M960 432 L1590 432" stroke="#fff" stroke-width="16" fill="none" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+          </mask>
+        </defs>
+        <line class="post" x1="330" y1="432" x2="330" y2="476"/>
+        <line class="post" x1="960" y1="432" x2="960" y2="476"/>
+        <line class="post post-dash" x1="1590" y1="432" x2="1590" y2="476"/>
+        <path id="s2-road" class="road-solid" d="M330 432 L960 432" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+        <path class="road-dash" d="M960 432 L1590 432" mask="url(#s2-dashmask)"/>
+        <circle class="road-dot" id="s2-d1" cx="330" cy="432" r="9"/>
+        <circle class="road-dot dot-demo" id="s2-d2" cx="960" cy="432" r="11"/>
+        <circle class="road-dot dot-open" id="s2-d3" cx="1590" cy="432" r="9"/>
+        <path id="s2-brace" class="brace" d="M330 790 L330 812 L1590 812 L1590 790" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+      </svg>
+      <div class="node" id="s2-n1" style="left:130px;top:476px;width:400px;height:262px"><p class="node-lab">2017년에 한 약속</p><p class="node-big c-claim">2020년</p><p class="node-sub">출시 예정<span class="tag t-claim">주장</span></p></div><div class="node" id="s2-n2" style="left:760px;top:476px;width:400px;height:262px"><p class="node-lab">실제로 보여준 해</p><p class="node-big c-demo">2026년</p><p class="node-sub">10월 15일 생중계<span class="tag t-demo">시연</span></p></div><div class="node node-future" id="s2-n3" style="left:1390px;top:476px;width:400px;height:262px"><p class="node-lab">새로 한 약속</p><p class="node-big c-claim">2028년</p><p class="node-sub">생산 시작<span class="tag t-claim">주장</span></p></div>
+      <svg class="car " id="s2-car" viewBox="0 0 300 100" width="132" height="44" style="left:894px;top:387.3px" aria-hidden="true"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></svg>
+      <p class="brace-label" id="s2-brace-label" style="left:410px;top:832px;width:1100px">약속한 출시 연도 차이 <span class="c-claim">8년</span> (2020 → 2028)<span class="tag t-calc">계산</span></p>
+    </div>
+    <p class="src" id="s2-src"><b>Details:</b> 2020년 출시 약속 — CNBC(2017년 보도) · 2026-10-15 시연 — Tesla YouTube 녹화본 · 2028년 생산 — Reuters(무대 발언) · 8년은 두 약속 연도의 차이</p>
+    
+  </div>
+      </section>
+      <section
+        class="animated-slide"
+        data-scene-id="scene-3"
+        aria-label="슬라이드 3 / 12"
+        aria-hidden="true"
+        style="left:3840px"
+      >
+<div data-composition-id="scene-3" data-width="1920" data-height="1080" class="comp" id="s3-root">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <p class="kicker" id="s3-kicker"><i class="kbar" style="--k:var(--claim)"></i>2017년의 약속</p>
+    <div class="status-rail" aria-label="이 장면 숫자의 근거 표시"><span class="st st-claim on">주장</span><span class="st st-demo">시연</span><span class="st st-ver">검증</span><span class="st st-rep">보도</span></div>
+    <div class="scene-content" id="s3-content">
+      <h2 class="title " id="s3-title" style="top:128px;left:96px"><span class="ln" id="s3-l1">2017년 테슬라의 <span class="c-claim">약속</span>:</span><span class="ln" id="s3-l2">1.9초, 620마일, 4인승, 2020년 출시</span></h2>
+      <figure class="photo" id="s3-photo" style="left:96px;top:360px;width:840px;height:347px">
+        <img id="s3-img" src="assets/roadster-2017-prototype-side.jpg" alt="빨간색 2017년 Roadster 시제품의 옆모습" width="840" height="347">
+      </figure>
+      <p class="photo-cap" id="s3-cap" style="left:96px;top:724px;width:840px">2017년 시제품, 2019년 촬영 · 2026년 차가 아님</p>
+      <p class="photo-credit" id="s3-credit" style="left:96px;top:766px;width:840px">Photo: Editor928111, CC BY-SA 4.0, via Wikimedia Commons</p>
+      <p class="pricebar" id="s3-price" style="left:96px;top:830px">기본가 <span class="c-claim">$200,000</span> · 예약금 <span class="c-claim">$50,000</span><span class="tag t-claim">주장</span></p>
+      <div class="mcard" id="s3-c1" style="left:984px;top:360px;width:408px;height:248px"><p class="mcard-lab">0-60 mph<span class="tag t-claim">주장</span></p><p class="mcard-big c-claim">1.9초</p><p class="mcard-note">정지 → 시속 60마일까지의 시간<br>시속 60마일 = 약 97 km</p></div><div class="mcard" id="s3-c2" style="left:1416px;top:360px;width:408px;height:248px"><p class="mcard-lab">주행거리<span class="tag t-claim">주장</span></p><p class="mcard-big c-claim">620마일</p><p class="mcard-note">약 998 km</p></div><div class="mcard" id="s3-c3" style="left:984px;top:632px;width:408px;height:248px"><p class="mcard-lab">좌석<span class="tag t-claim">주장</span></p><p class="mcard-big c-claim">4석</p><p class="mcard-note">2+2, 네 바퀴 굴림</p></div><div class="mcard" id="s3-c4" style="left:1416px;top:632px;width:408px;height:248px"><p class="mcard-lab">출시 예정<span class="tag t-claim">주장</span></p><p class="mcard-big c-claim">2020년</p><p class="mcard-note">2017년 11월 공개 때 밝힌 시점</p></div>
+    </div>
+    <p class="src" id="s3-src"><b>Details:</b> Tesla Roadster 페이지 2017-11-17 보관본(0-60·주행거리·좌석·가격·예약금) · CNBC(2020년 출시 예정) · 97 km·998 km는 단위 환산</p>
+    
+  </div>
+      </section>
+      <section
+        class="animated-slide"
+        data-scene-id="scene-4"
+        aria-label="슬라이드 4 / 12"
+        aria-hidden="true"
+        style="left:5760px"
+      >
+<div data-composition-id="scene-4" data-width="1920" data-height="1080" class="comp" id="s4-root">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <p class="kicker" id="s4-kicker"><i class="kbar" style="--k:var(--alert)"></i>지연의 역사</p>
+    <div class="status-rail" aria-label="이 장면 숫자의 근거 표시"><span class="st st-claim on">주장</span><span class="st st-demo">시연</span><span class="st st-ver">검증</span><span class="st st-rep on">보도</span></div>
+    <div class="scene-content" id="s4-content">
+      <h2 class="title " id="s4-title" style="top:128px;left:96px"><span class="ln" id="s4-l1">약속한 연도는 2020년에서</span><span class="ln" id="s4-l2">2028년까지 <span class="c-alert">계속 밀렸다</span></span></h2>
+      <p class="dek dek-quote" id="s4-dek" style="top:306px">“2017년부터 5만 달러 예약금을 받았지만, 목표 인도일을 모두 놓쳤다.” — CNBC (번역)</p>
+      <svg class="chart" id="s4-chart" style="left:96px;top:392px" width="1440" height="520" viewBox="0 0 1440 520" role="img" aria-label="약속을 말한 날짜별로 약속한 출시 연도가 2020년에서 2028년까지 올라간 계단 차트">
+        <g id="s4-grid"><line class="grid" x1="150" y1="429.3" x2="1300" y2="429.3"/><text class="axis-lab-y" x="130" y="438.3" text-anchor="end">2020</text><line class="grid" x1="150" y1="384" x2="1300" y2="384"/><text class="axis-lab-y" x="130" y="393" text-anchor="end">2021</text><line class="grid" x1="150" y1="338.7" x2="1300" y2="338.7"/><text class="axis-lab-y" x="130" y="347.7" text-anchor="end">2022</text><line class="grid" x1="150" y1="293.3" x2="1300" y2="293.3"/><text class="axis-lab-y" x="130" y="302.3" text-anchor="end">2023</text><line class="grid" x1="150" y1="248" x2="1300" y2="248"/><text class="axis-lab-y" x="130" y="257" text-anchor="end">2024</text><line class="grid" x1="150" y1="202.7" x2="1300" y2="202.7"/><text class="axis-lab-y" x="130" y="211.7" text-anchor="end">2025</text><line class="grid" x1="150" y1="157.3" x2="1300" y2="157.3"/><text class="axis-lab-y" x="130" y="166.3" text-anchor="end">2026</text><line class="grid" x1="150" y1="112" x2="1300" y2="112"/><text class="axis-lab-y" x="130" y="121" text-anchor="end">2027</text><line class="grid" x1="150" y1="66.7" x2="1300" y2="66.7"/><text class="axis-lab-y" x="130" y="75.7" text-anchor="end">2028</text><line class="tick" x1="210.5" y1="452" x2="210.5" y2="462"/><text class="axis-lab" x="210.5" y="492" text-anchor="middle">2018</text><line class="tick" x1="331.6" y1="452" x2="331.6" y2="462"/><text class="axis-lab" x="331.6" y="492" text-anchor="middle">2019</text><line class="tick" x1="452.6" y1="452" x2="452.6" y2="462"/><text class="axis-lab" x="452.6" y="492" text-anchor="middle">2020</text><line class="tick" x1="573.7" y1="452" x2="573.7" y2="462"/><text class="axis-lab" x="573.7" y="492" text-anchor="middle">2021</text><line class="tick" x1="694.7" y1="452" x2="694.7" y2="462"/><text class="axis-lab" x="694.7" y="492" text-anchor="middle">2022</text><line class="tick" x1="815.8" y1="452" x2="815.8" y2="462"/><text class="axis-lab" x="815.8" y="492" text-anchor="middle">2023</text><line class="tick" x1="936.8" y1="452" x2="936.8" y2="462"/><text class="axis-lab" x="936.8" y="492" text-anchor="middle">2024</text><line class="tick" x1="1057.9" y1="452" x2="1057.9" y2="462"/><text class="axis-lab" x="1057.9" y="492" text-anchor="middle">2025</text><line class="tick" x1="1178.9" y1="452" x2="1178.9" y2="462"/><text class="axis-lab" x="1178.9" y="492" text-anchor="middle">2026</text><line class="tick" x1="1300" y1="452" x2="1300" y2="462"/><text class="axis-lab" x="1300" y="492" text-anchor="middle">2027</text><line class="axis" x1="150" y1="452" x2="1300" y2="452"/><text class="axis-title" x="130" y="22" text-anchor="end">약속한 연도</text><text class="axis-title" x="1346" y="492" text-anchor="start">말한 날짜</text></g>
+        <path id="s4-line" class="step" d="M195.3 429.3 L520 429.3 L520 361.3 L582.6 361.3 L582.6 338.7 L654.3 338.7 L654.3 293.3 L860.6 293.3 L860.6 248 L956.1 248 L956.1 202.7 L1160.4 202.7 L1160.4 89.3 L1274.1 89.3 L1274.1 66.7" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+        <circle class="pt" id="s4-p1" cx="195.3" cy="429.3" r="9"/><rect class="range" id="s4-p2" x="511" y="338.7" width="18" height="45.3" rx="9"/><circle class="pt" id="s4-p3" cx="582.6" cy="338.7" r="9"/><circle class="pt" id="s4-p4" cx="654.3" cy="293.3" r="9"/><circle class="pt" id="s4-p5" cx="860.6" cy="248" r="9"/><circle class="pt" id="s4-p6" cx="956.1" cy="202.7" r="9"/><rect class="range" id="s4-p7" x="1151.4" y="66.7" width="18" height="45.3" rx="9"/><circle class="pt" id="s4-p8" cx="1274.1" cy="66.7" r="9"/>
+        <text class="pt-ann" id="s4-a1" x="199.3" y="385.3">2017년 첫 약속</text><text class="pt-note" id="s4-a5" x="878.6" y="288">‘약속은 아님’</text><text class="pt-new-lab" id="s4-a8" x="1324.1" y="76.7">새 약속</text>
+      </svg>
+      <svg class="car " id="s4-car" viewBox="0 0 300 100" width="76" height="25.3" style="left:1332.1px;top:431.1px" aria-hidden="true"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></svg>
+      <div class="side" id="s4-side" style="left:1560px;top:410px;width:264px">
+        <div class="side-item" id="s4-s1"><p class="side-lab">약속한 연도</p><p class="side-big c-claim">2020→2028</p><p class="side-note"><span class="tag t-claim">주장</span></p></div>
+        <div class="side-item" id="s4-s2"><p class="side-lab">생산 일정이 밀린 횟수</p><p class="side-big c-alert">최소 6번</p><p class="side-note"><span class="tag t-rep">보도</span>Electrek 집계</p></div>
+        <div class="side-item" id="s4-s3"><p class="side-lab">공개·시연 날짜 발표</p><p class="side-big">7번</p><p class="side-note"><span class="tag t-rep">보도</span>Electrek 집계</p></div>
+      </div>
+    </div>
+    <p class="src" id="s4-src"><b>Details:</b> 2020 — CNBC · 2021~22, 2024 — InsideEVs · 2022, 2023, 2025, 2027~28 — Electrek · 2028 — Reuters · 밀린 횟수(생산 기준) — Electrek 집계</p>
+    
+  </div>
+      </section>
+      <section
+        class="animated-slide"
+        data-scene-id="scene-5"
+        aria-label="슬라이드 5 / 12"
+        aria-hidden="true"
+        style="left:7680px"
+      >
+<div data-composition-id="scene-5" data-width="1920" data-height="1080" class="comp" id="s5-root">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <p class="kicker" id="s5-kicker"><i class="kbar" style="--k:var(--ver)"></i>행사 개요</p>
+    <div class="status-rail" aria-label="이 장면 숫자의 근거 표시"><span class="st st-claim on">주장</span><span class="st st-demo">시연</span><span class="st st-ver on">검증</span><span class="st st-rep on">보도</span></div>
+    <div class="scene-content" id="s5-content">
+      <h2 class="title " id="s5-title" style="top:128px;left:96px"><span class="ln" id="s5-l1">2026년 10월 15일, SpaceX 로켓 시험장에서</span><span class="ln" id="s5-l2"><span class="c-ver">23분짜리 생중계</span>가 열렸다</span></h2>
+      <svg class="diagram" id="s5-band" style="left:0;top:0" width="1920" height="1080" viewBox="0 0 1920 1080" aria-hidden="true">
+        <path id="s5-line" class="band" d="M140 466 L1800 466" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+        <g id="s5-ticks"><line class="day-tick" x1="180" y1="474" x2="180" y2="486"/><line class="day-tick" x1="268" y1="474" x2="268" y2="486"/><line class="day-tick" x1="356" y1="474" x2="356" y2="486"/><line class="day-tick" x1="444" y1="474" x2="444" y2="486"/><line class="day-tick" x1="532" y1="474" x2="532" y2="486"/><line class="day-tick" x1="620" y1="474" x2="620" y2="486"/><line class="day-tick" x1="708" y1="474" x2="708" y2="486"/><line class="day-tick" x1="796" y1="474" x2="796" y2="486"/><line class="day-tick" x1="884" y1="474" x2="884" y2="486"/><line class="day-tick" x1="972" y1="474" x2="972" y2="486"/><line class="day-tick" x1="1060" y1="474" x2="1060" y2="486"/><line class="day-tick" x1="1148" y1="474" x2="1148" y2="486"/><line class="day-tick" x1="1236" y1="474" x2="1236" y2="486"/><line class="day-tick" x1="1324" y1="474" x2="1324" y2="486"/><line class="day-tick" x1="1412" y1="474" x2="1412" y2="486"/><line class="day-tick" x1="1500" y1="474" x2="1500" y2="486"/><line class="day-tick" x1="1588" y1="474" x2="1588" y2="486"/><line class="day-tick" x1="1676" y1="474" x2="1676" y2="486"/><line class="day-tick" x1="1764" y1="474" x2="1764" y2="486"/></g>
+        <circle class="band-dot" id="s5-d1" cx="180" cy="466" r="10"/>
+        <circle class="band-dot dot-alert" id="s5-d2" cx="444" cy="466" r="10"/>
+        <circle class="band-dot dot-demo" id="s5-d3" cx="1676" cy="466" r="13"/>
+        <path id="s5-strike" class="strike" d="M360 526 L528 526" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/>
+      </svg>
+      <p class="scale-note" id="s5-scale" style="left:664px;top:496px">눈금 하나 = 하루</p>
+      <div class="mk mk-up" id="s5-m1" style="left:146px;top:316px;width:420px"><p class="mk-date">9월 28일</p><p class="mk-desc">연기 발표 · 날씨<span class="tag t-rep">보도</span></p></div><div class="mk strike" id="s5-m2" style="left:274px;top:500px;width:340px"><p class="mk-date">10월 1일</p><p class="mk-desc">원래 행사일<span class="tag t-rep">보도</span></p></div><div class="mk big mk-right" id="s5-m3" style="right:96px;top:500px;width:560px"><p class="mk-date">10월 15일 19:55 (미국 중부)</p><p class="mk-desc">CNBC 보도 시각<span class="tag t-rep">보도</span></p></div>
+      <p class="kst" id="s5-kst" style="right:96px;top:616px;width:620px">= 한국 시각 <span class="c-ver">10월 16일 09:55</span><span class="tag t-calc">계산</span></p>
+      <svg class="car " id="s5-car" viewBox="0 0 300 100" width="128" height="42.7" style="left:1612px;top:420.6px" aria-hidden="true"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></svg>
+      <div class="mcard mcard-s" id="s5-c1" style="left:96px;top:682px;width:408px;height:216px"><p class="mcard-lab">녹화본 길이<span class="tag t-ver">검증</span></p><p class="mcard-big c-ver">23분 21초</p><p class="mcard-note">Tesla YouTube 공식 녹화본</p></div><div class="mcard mcard-s" id="s5-c2" style="left:536px;top:682px;width:408px;height:216px"><p class="mcard-lab">시험장 넓이<span class="tag t-claim">주장</span></p><p class="mcard-big c-claim">4,000에이커</p><p class="mcard-note">텍사스 McGregor<br>무대 발언 기준</p></div><div class="mcard mcard-s" id="s5-c3" style="left:976px;top:682px;width:408px;height:216px"><p class="mcard-lab">발표자<span class="tag t-rep">보도</span></p><p class="mcard-big c-rep">3명</p><p class="mcard-note">Musk (CEO)<br>von Holzhausen · Moravy</p></div><div class="mcard mcard-s" id="s5-c4" style="left:1416px;top:682px;width:408px;height:216px"><p class="mcard-lab">조회수 (10/19 확인)<span class="tag t-ver">검증</span></p><p class="mcard-big c-ver">11,889,760회</p><p class="mcard-note">X 생중계 기준<br>YouTube 녹화본 7,142,928회</p></div>
+    </div>
+    <p class="src" id="s5-src"><b>Details:</b> Tesla YouTube 녹화본(길이·조회수) · Tesla X(조회수), 10/19 확인 · CNBC(시각·발표자) · Electrek(연기) · 생중계 00:00:32(넓이) · KST는 UTC+9 계산</p>
+    
+  </div>
+      </section>
+      <section
+        class="animated-slide"
+        data-scene-id="scene-6"
+        aria-label="슬라이드 6 / 12"
+        aria-hidden="true"
+        style="left:9600px"
+      >
+<div data-composition-id="scene-6" data-width="1920" data-height="1080" class="comp" id="s6-root">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <p class="kicker" id="s6-kicker"><i class="kbar" style="--k:var(--demo)"></i>현장에서 보여준 것</p>
+    <div class="status-rail" aria-label="이 장면 숫자의 근거 표시"><span class="st st-claim on">주장</span><span class="st st-demo on">시연</span><span class="st st-ver">검증</span><span class="st st-rep on">보도</span></div>
+    <div class="scene-content" id="s6-content">
+      <h2 class="title " id="s6-title" style="top:128px;left:96px"><span class="ln" id="s6-l1"><span class="c-demo">관객 앞 시연</span>은 네 가지,</span><span class="ln" id="s6-l2">그중 세 장면: 매달리기, 차 5대 넘기, 0-60 질주</span></h2>
+      <p class="dek" id="s6-dek" style="top:306px">네 번째는 수직 이륙 뒤 코르크스크루 (생중계 00:21:28 · Gizmodo) · 시연 차에 사람은 없었다 (Electrek·CNN)</p>
+      <div class="panel" id="s6-p1" style="left:96px;top:360px;width:544px;height:520px"><p class="panel-head"><span class="panel-num">1</span>거꾸로 매달린 뒤 착지<span class="tag t-demo">시연</span></p><svg class="panel-svg" id="s6-svg1" style="left:22px;top:92px" width="500" height="300" viewBox="0 0 500 300" aria-hidden="true"><line class="ground" x1="8" y1="286" x2="492" y2="286"/><path class="ramp" id="s6-ramp" d="M190 286 C330 286 452 240 452 150 C452 62 384 24 292 24 L232 24" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/><defs><marker id="s6-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto"><path class="arrowhead" d="M0 0 L10 5 L0 10 Z"/></marker></defs><mask id="s6-m1" maskUnits="userSpaceOnUse" x="0" y="0" width="500" height="300"><path id="s6-m1p" d="M150 270 C230 270 300 262 360 230" stroke="#fff" stroke-width="16" fill="none" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/><path id="s6-m1q" d="M236 46 C178 70 132 150 112 262" stroke="#fff" stroke-width="16" fill="none" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/></mask><g mask="url(#s6-m1)"><path class="traj" d="M150 270 C230 270 300 262 360 230" marker-end="url(#s6-arrow)"/><path class="traj" d="M236 46 C178 70 132 150 112 262" marker-end="url(#s6-arrow)"/></g><g class="carg ghost ghost-solid" id="s6-g1" transform="translate(445 168) rotate(-90) scale(0.3200) translate(-150 -97)"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></g><g class="carg ghost ghost-solid" id="s6-g2" transform="translate(330 28) rotate(180) scale(0.3200) translate(-150 -97)"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></g><g class="carg ghost ghost-solid" id="s6-g3" transform="translate(160 140) rotate(-150) scale(0.3200) translate(-150 -97)"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></g><g class="carg " id="s6-k1" transform="translate(92 286) rotate(0) scale(0.3667) translate(-150 -97)"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></g><text class="dg-lab" id="s6-2g" x="372" y="118" text-anchor="end">2G 흡입</text></svg><p class="panel-cap" id="s6-cap1"><span>흡입 팬: 차 바닥 공기를 빨아 노면에 붙임</span><span class="panel-cap2">최대 2G는 테슬라 주장<span class="tag t-claim">주장</span></span></p></div><div class="panel" id="s6-p2" style="left:688px;top:360px;width:544px;height:520px"><p class="panel-head"><span class="panel-num">2</span>차 5대 위로 점프<span class="tag t-demo">시연</span></p><svg class="panel-svg" id="s6-svg2" style="left:22px;top:92px" width="500" height="300" viewBox="0 0 500 300" aria-hidden="true"><line class="ground" x1="8" y1="286" x2="492" y2="286"/><g id="s6-blocks"><rect class="blk" x="59" y="252" width="58" height="34" rx="8"/><rect class="blk" x="125" y="252" width="58" height="34" rx="8"/><rect class="blk" x="191" y="252" width="58" height="34" rx="8"/><rect class="blk" x="257" y="252" width="58" height="34" rx="8"/><rect class="blk" x="323" y="252" width="58" height="34" rx="8"/></g><mask id="s6-m2" maskUnits="userSpaceOnUse" x="0" y="0" width="500" height="300"><path id="s6-m2p" d="M14 286 Q225 -46 436 286" stroke="#fff" stroke-width="16" fill="none" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/></mask><g mask="url(#s6-m2)"><path class="traj" d="M14 286 Q225 -46 436 286" marker-end="url(#s6-arrow2)"/></g><defs><marker id="s6-arrow2" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto"><path class="arrowhead" d="M0 0 L10 5 L0 10 Z"/></marker></defs><g class="carg ghost ghost-solid" id="s6-g4" transform="translate(141 150) rotate(-24) scale(0.3000) translate(-150 -97)"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></g><g class="carg ghost ghost-solid" id="s6-g5" transform="translate(225 122) rotate(-180) scale(0.3000) translate(-150 -97)"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></g><g class="carg ghost ghost-solid" id="s6-g6" transform="translate(309 150) rotate(-336) scale(0.3000) translate(-150 -97)"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></g><g class="carg " id="s6-k2" transform="translate(442 286) rotate(0) scale(0.3200) translate(-150 -97)"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></g></svg><p class="panel-cap" id="s6-cap2"><span>테슬라 차 5대 위로 비틀며 넘음</span><span class="panel-cap2">현장 시연 · The Verge 보도<span class="tag t-demo">시연</span></span></p></div><div class="panel" id="s6-p3" style="left:1280px;top:360px;width:544px;height:520px"><p class="panel-head"><span class="panel-num">3</span>0-60 mph 질주<span class="tag t-demo">시연</span></p><svg class="panel-svg" id="s6-svg3" style="left:22px;top:92px" width="500" height="300" viewBox="0 0 500 300" aria-hidden="true"><line class="dial-tick" x1="250" y1="24" x2="250" y2="12"/><line class="dial-tick" x1="318.2" y1="46.2" x2="325.2" y2="36.4"/><line class="dial-tick" x1="360.3" y1="104.2" x2="371.7" y2="100.4"/><line class="dial-tick" x1="360.3" y1="175.8" x2="371.7" y2="179.6"/><line class="dial-tick" x1="318.2" y1="233.8" x2="325.2" y2="243.6"/><line class="dial-tick" x1="250" y1="256" x2="250" y2="268"/><line class="dial-tick" x1="181.8" y1="233.8" x2="174.8" y2="243.6"/><line class="dial-tick" x1="139.7" y1="175.8" x2="128.3" y2="179.6"/><line class="dial-tick" x1="139.7" y1="104.2" x2="128.3" y2="100.4"/><line class="dial-tick" x1="181.8" y1="46.2" x2="174.8" y2="36.4"/><circle class="dial-track" cx="250" cy="140" r="104"/><path id="s6-dial" class="dial-arc" d="M250 36 A104 104 0 1 1 249.99 36" pathLength="1" stroke-dasharray="0.81 1" stroke-dashoffset="0"/><text class="dial-val dial-claim" id="s6-dval" x="250" y="150" text-anchor="middle">0.81초</text><text class="dial-sub" id="s6-dsub" x="250" y="190" text-anchor="middle">한 바퀴 = 1초</text></svg><p class="panel-cap" id="s6-cap3"><span>질주는 시연, 0.81초는 테슬라 타이머 값</span><span class="panel-cap2">NBC·The Verge 보도<span class="tag t-claim">주장</span></span></p></div>
+    </div>
+    <p class="src" id="s6-src"><b>Details:</b> Reuters(경사로·뒤집기·착지) · The Verge(차 5대) · NBC·The Verge(0.81초는 테슬라 계측) · Tesla 생중계 00:08:14(2G), 00:21:28(네 번째) · Electrek·CNN(무인)</p>
+    
+  </div>
+      </section>
+      <section
+        class="animated-slide"
+        data-scene-id="scene-7"
+        aria-label="슬라이드 7 / 12"
+        aria-hidden="true"
+        style="left:11520px"
+      >
+<div data-composition-id="scene-7" data-width="1920" data-height="1080" class="comp" id="s7-root">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <p class="kicker" id="s7-kicker"><i class="kbar" style="--k:var(--claim)"></i>새 Roadster 3종</p>
+    <div class="status-rail" aria-label="이 장면 숫자의 근거 표시"><span class="st st-claim on">주장</span><span class="st st-demo">시연</span><span class="st st-ver">검증</span><span class="st st-rep on">보도</span></div>
+    <div class="scene-content" id="s7-content">
+      <h2 class="title " id="s7-title" style="top:128px;left:96px"><span class="ln" id="s7-l1">세 버전 중 ‘날 수 있다’는 것은</span><span class="ln" id="s7-l2">초대받은 <span class="c-claim">1인승 Rocket</span>뿐이다</span></h2>
+      <p class="dek" id="s7-dek" style="top:306px">콜드 가스 추진기: 불을 붙이지 않고 압축 공기를 뿜어 차를 미는 장치</p>
+      <div class="trim" id="s7-c1" style="left:96px;top:356px;width:544px;height:524px"><p class="trim-name">Performance</p><p class="trim-sub">도로용 · 예약 판매</p><div class="trows"><div class="trow"><span class="trow-lab">좌석<span class="tag t-claim">주장</span></span><span class="trow-val c-claim">2석</span></div><div class="trow"><span class="trow-lab">0-60 mph<span class="tag t-claim">주장</span></span><span class="trow-val c-claim">1.6초 미만</span></div><div class="trow"><span class="trow-lab">추진기<span class="tag t-claim">주장</span></span><span class="trow-val c-claim">없음</span></div><div class="trow"><span class="trow-lab">예약금<span class="tag t-rep">보도</span></span><span class="trow-val c-rep">$50,000</span></div></div><p class="trim-foot">Tesla 표기: ‘By Reservation’</p></div><svg class="car dim" viewBox="0 0 300 100" width="184" height="61.3" style="left:428px;top:408.5px" aria-hidden="true"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></svg><div class="trim" id="s7-c2" style="left:688px;top:356px;width:544px;height:524px"><p class="trim-name">Thrust</p><p class="trim-sub">트랙용 · 한정 판매</p><div class="trows"><div class="trow"><span class="trow-lab">좌석<span class="tag t-claim">주장</span></span><span class="trow-val c-claim">2석</span></div><div class="trow"><span class="trow-lab">0-60 mph<span class="tag t-claim">주장</span></span><span class="trow-val c-claim">0.9초 미만</span></div><div class="trow"><span class="trow-lab">추진기<span class="tag t-claim">주장</span></span><span class="trow-val c-claim">뒤쪽 콜드 가스</span></div><div class="trow"><span class="trow-lab">예약금<span class="tag t-rep">보도</span></span><span class="trow-val c-rep">$250,000</span></div></div><p class="trim-foot">Tesla 표기: ‘Limited Release’</p></div><svg class="car dim" viewBox="0 0 300 100" width="184" height="61.3" style="left:1020px;top:408.5px" aria-hidden="true"><circle class="jet" cx="10" cy="70" r="5"/><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></svg><div class="trim trim-hot" id="s7-c3" style="left:1280px;top:356px;width:544px;height:524px"><p class="trim-name">Rocket</p><p class="trim-sub">공중용 · 초대제</p><div class="trows"><div class="trow"><span class="trow-lab">좌석<span class="tag t-claim">주장</span></span><span class="trow-val c-claim">1석</span></div><div class="trow"><span class="trow-lab">0-60 mph<span class="tag t-claim">주장</span></span><span class="trow-val c-claim">0.59초 미만</span></div><div class="trow"><span class="trow-lab">추진기<span class="tag t-claim">주장</span></span><span class="trow-val c-claim">차체 둘레</span></div><div class="trow"><span class="trow-lab">예약금<span class="tag t-rep">보도</span></span><span class="trow-val c-rep">초대제 · 금액 없음</span></div></div><p class="trim-foot">Tesla 표기: ‘Invite Only’</p></div><svg class="car " id="s7-car" viewBox="0 0 300 100" width="184" height="61.3" style="left:1612px;top:408.5px" aria-hidden="true"><g class="jets"><circle class="jet" cx="20" cy="84" r="5"/><circle class="jet" cx="110" cy="80" r="5"/><circle class="jet" cx="196" cy="80" r="5"/><circle class="jet" cx="282" cy="80" r="5"/></g><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></svg>
+      <p class="badge" id="s7-badge" style="right:96px;top:318px">“So...yes, it can fly” — Tesla X</p>
+    </div>
+    <p class="src" id="s7-src"><b>Details:</b> 주장 — Tesla X 게시물·Roadster 페이지(2026-10-16 보관본) · 예약금(보도) — Electrek($50,000), Reuters($250,000) · Rocket 예약금은 공개되지 않음</p>
+    
+  </div>
+      </section>
+      <section
+        class="animated-slide"
+        data-scene-id="scene-8"
+        aria-label="슬라이드 8 / 12"
+        aria-hidden="true"
+        style="left:13440px"
+      >
+<div data-composition-id="scene-8" data-width="1920" data-height="1080" class="comp" id="s8-root">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <p class="kicker" id="s8-kicker"><i class="kbar" style="--k:var(--claim)"></i>2017 vs 2026</p>
+    <div class="status-rail" aria-label="이 장면 숫자의 근거 표시"><span class="st st-claim on">주장</span><span class="st st-demo">시연</span><span class="st st-ver">검증</span><span class="st st-rep on">보도</span></div>
+    <div class="scene-content" id="s8-content">
+      <h2 class="title " id="s8-title" style="top:128px;left:96px"><span class="ln" id="s8-l1">2017년 약속과 비교하면</span><span class="ln" id="s8-l2">주행거리·좌석은 절반 수준, <span class="c-alert">가격은 아직 없다</span></span></h2>
+      <p class="legend" id="s8-legend" style="right:96px;top:316px"><i class="lg lg-old"></i>2017 약속 <i class="lg lg-new"></i>2026 발표 · 모두 테슬라 주장<span class="tag t-claim">주장</span></p>
+      <div class="rowlab" style="left:96px;top:376px"><p class="rowlab-t">주행거리</p><p class="rowlab-s">한 번 충전</p></div>
+      <div class="bar bar-old" id="s8-b1o" style="left:420px;top:382px;width:900px"></div>
+      <p class="bval" id="s8-v1o" style="left:1340px;top:376px">620마일 · 약 998 km</p>
+      <div class="bar bar-new" id="s8-b1n" style="left:420px;top:426px;width:435.5px"></div>
+      <svg class="car " id="s8-car" viewBox="0 0 300 100" width="104" height="34.7" style="left:859.5px;top:428.4px" aria-hidden="true"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></svg>
+      <p class="bval c-claim" id="s8-v1n" style="left:979.5px;top:420px">300마일 이상 · 약 480 km</p>
+      <div class="rowlab" style="left:96px;top:504px"><p class="rowlab-t">최고 속도</p><p class="rowlab-s">mph</p></div>
+      <div class="bar bar-old" id="s8-b2o" style="left:420px;top:510px;width:900px"></div>
+      <p class="bval" id="s8-v2o" style="left:1340px;top:504px">250 mph 이상</p>
+      <div class="bar bar-new" id="s8-b2n" style="left:420px;top:554px;width:828px"></div>
+      <p class="bval c-claim" id="s8-v2n" style="left:1268px;top:548px">230 mph 이상 (Rocket)<span class="bval-sub">엔지니어: “지금은 214” · Top Gear<span class="tag t-claim">주장</span></span></p>
+      <div class="rowlab" style="left:96px;top:640px"><p class="rowlab-t">좌석</p><p class="rowlab-s">자리 수</p></div>
+      <div id="s8-seats-old"><div class="seat seat-old" style="left:420px;top:644px"></div><div class="seat seat-old" style="left:478px;top:644px"></div><div class="seat seat-old" style="left:536px;top:644px"></div><div class="seat seat-old" style="left:594px;top:644px"></div></div>
+      <p class="bval" id="s8-v3o" style="left:664px;top:640px">4석 (2+2)</p>
+      <div id="s8-seats-new"><div class="seat seat-new" style="left:420px;top:700px"></div><div class="seat seat-new" style="left:478px;top:700px"></div></div>
+      <p class="bval c-claim" id="s8-v3n" style="left:548px;top:696px">2석 · Rocket은 1석</p>
+      <div class="rowlab" style="left:96px;top:782px"><p class="rowlab-t">가격</p><p class="rowlab-s">기본 가격</p></div>
+      <div class="cell cell-old" id="s8-b4o" style="left:420px;top:782px;width:330px">$200,000부터</div>
+      <p class="bval" id="s8-v4o" style="left:770px;top:784px">2017년 기본가</p>
+      <div class="cell cell-empty" id="s8-b4n" style="left:420px;top:832px;width:330px">?</div>
+      <p class="bval c-alert" id="s8-v4n" style="left:770px;top:834px">2026년 가격 발표 없음<span class="tag t-rep">보도</span></p>
+    </div>
+    <p class="src" id="s8-src"><b>Details:</b> 2017 — Tesla 페이지 2017-11-17 보관본 · 2026 — Tesla X·페이지 2026-10-16 보관본 · 214 mph — Top Gear · 가격 미발표 — NBC · km는 단위 환산</p>
+    
+  </div>
+      </section>
+      <section
+        class="animated-slide"
+        data-scene-id="scene-9"
+        aria-label="슬라이드 9 / 12"
+        aria-hidden="true"
+        style="left:15360px"
+      >
+<div data-composition-id="scene-9" data-width="1920" data-height="1080" class="comp" id="s9-root">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <p class="kicker" id="s9-kicker"><i class="kbar" style="--k:var(--alert)"></i>검증</p>
+    <div class="status-rail" aria-label="이 장면 숫자의 근거 표시"><span class="st st-claim on">주장</span><span class="st st-demo on">시연</span><span class="st st-ver">검증</span><span class="st st-rep on">보도</span></div>
+    <div class="scene-content" id="s9-content">
+      <h2 class="title " id="s9-title" style="top:128px;left:96px"><span class="ln" id="s9-l1">0.81초는 <span class="c-claim">테슬라 타이머</span>의 기록이고</span><span class="ln" id="s9-l2"><span class="c-alert">독립 측정은 아직 없다</span></span></h2>
+      <div class="vcol vcol-demo" id="s9-left" style="left:96px;top:330px;width:840px;height:580px">
+        <p class="vhead c-demo">보여 준 것</p><div class="vitem" id="s9-a1"><p class="vbig c-claim">0.81초</p><p class="vdesc">생중계 질주의 기록. 숫자는 테슬라 타이머 값<span class="tag t-claim">주장</span></p></div><div class="vitem" id="s9-a2"><p class="vbig c-claim">약 1초</p><p class="vdesc">무대에서 튼 사전 녹화 시험 영상 (Electrek)<span class="tag t-claim">주장</span></p></div><div class="vitem" id="s9-a3"><p class="vbig c-demo">점프</p><p class="vdesc">짧게 떠올라 착지. 오래 나는 비행은 없음 (CNN)<span class="tag t-rep">보도</span></p></div><div class="vitem" id="s9-a4"><p class="vbig c-demo">관객</p><p class="vdesc">팬과 투자자가 현장에서 직접 봤다 (CNN)<span class="tag t-demo">시연</span></p></div>
+      </div>
+      <div class="vcol vcol-alert" id="s9-right" style="left:984px;top:330px;width:840px;height:580px">
+        <p class="vhead c-alert">확인 안 된 것</p><div class="vitem" id="s9-b1"><p class="vbig c-alert">0건</p><p class="vdesc">2026년 수치의 독립 계측을 찾지 못함 <span class="nw">(The Verge 등)</span><span class="tag t-rep">보도</span></p></div><div class="vitem" id="s9-b2"><p class="vbig c-alert">1피트</p><p class="vdesc">뒤에 나온 0.55초 주장은 <span class="nw">첫 1피트를 뺀 기록</span> (Electrek)<span class="tag t-rep">보도</span></p></div><div class="vitem" id="s9-b3"><p class="vbig c-claim">약 5초</p><p class="vdesc">Thrust 버전, 공기 한 번으로 쿼터마일 추진 (Top Gear)<span class="tag t-claim">주장</span></p></div><div class="vitem" id="s9-b4"><p class="vbig c-alert">시승</p><p class="vdesc">관객·기자 시승 보도를 찾지 못함 <span class="nw">(10/19 검색)</span></p></div>
+      </div>
+    </div>
+    <p class="src" id="s9-src"><b>Details:</b> NBC·The Verge(0.81초, 테슬라 계측) · Electrek(녹화 영상, 0.55초 rollout) · CNN(비행·관객) · Top Gear(Thrust 약 5초) · 검색 10/19</p>
+    
+  </div>
+      </section>
+      <section
+        class="animated-slide"
+        data-scene-id="scene-10"
+        aria-label="슬라이드 10 / 12"
+        aria-hidden="true"
+        style="left:17280px"
+      >
+<div data-composition-id="scene-10" data-width="1920" data-height="1080" class="comp" id="s10-root">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <p class="kicker" id="s10-kicker"><i class="kbar" style="--k:var(--ver)"></i>0-60 mph 비교</p>
+    <div class="status-rail" aria-label="이 장면 숫자의 근거 표시"><span class="st st-claim on">주장</span><span class="st st-demo">시연</span><span class="st st-ver on">검증</span><span class="st st-rep">보도</span></div>
+    <div class="scene-content" id="s10-content">
+      <h2 class="title " id="s10-title" style="top:128px;left:96px;font-size:66px"><span class="ln" id="s10-l1">0-60 주장은 1.9초에서 0.59초 미만으로 줄었지만</span><span class="ln" id="s10-l2"><span class="c-ver">측정된 기록</span>은 아직 다른 차의 것이다</span></h2>
+      <div id="s10-axis"><div class="vgrid" style="left:640px;top:340px;height:516px"></div><p class="vgrid-lab" style="left:600px;top:306px">0초</p><div class="vgrid" style="left:1080px;top:340px;height:516px"></div><p class="vgrid-lab" style="left:1040px;top:306px">1초</p><div class="vgrid" style="left:1520px;top:340px;height:516px"></div><p class="vgrid-lab" style="left:1480px;top:306px">2초</p></div>
+      <div class="sep" id="s10-sep" style="left:96px;top:666px;width:1728px"></div>
+      <p class="hlab" style="left:96px;top:370px;width:530px">Roadster · 2017 주장</p><div class="hbar hb-claim" id="s10-b1" style="left:640px;top:372px;width:836px"></div><p class="hval c-claim" id="s10-v1" style="left:1494px;top:368px">1.9초<span class="tag t-claim">주장</span></p><p class="hlab" style="left:96px;top:428px;width:530px">Roadster · 2024 머스크 주장</p><div class="hbar hb-claim lt" id="s10-b2" style="left:640px;top:430px;width:440px"></div><p class="hval c-claim" id="s10-v2" style="left:1098px;top:426px">1초 미만<span class="tag t-claim">주장</span></p><p class="hlab" style="left:96px;top:486px;width:530px">Roadster · 2026 녹화 영상</p><div class="hbar hb-claim" id="s10-b3" style="left:640px;top:488px;width:440px"></div><p class="hval c-claim" id="s10-v3" style="left:1098px;top:484px">약 1.0초<span class="tag t-claim">주장</span></p><p class="hlab" style="left:96px;top:544px;width:530px">Roadster · 2026 생중계 질주</p><div class="hbar hb-claim" id="s10-b4" style="left:640px;top:546px;width:356.4px"></div><p class="hval c-claim" id="s10-v4" style="left:1124.4px;top:542px">0.81초 · 테슬라 타이머<span class="tag t-claim">주장</span></p><p class="hlab" style="left:96px;top:602px;width:530px">Rocket · 2026 주장</p><div class="hbar hb-claim lt" id="s10-b5" style="left:640px;top:604px;width:259.6px"></div><p class="hval c-claim" id="s10-v5" style="left:917.6px;top:600px">0.59초 미만<span class="tag t-claim">주장</span></p><p class="hlab" style="left:96px;top:686px;width:530px">Model S Plaid · MotorTrend 측정</p><div class="hbar hb-ver" id="s10-b6" style="left:640px;top:688px;width:871.2px"></div><p class="hcond" id="s10-c6" style="left:656px;top:688px">1-ft rollout · 처리(VHT) 노면</p><p class="hval c-ver" id="s10-v6" style="left:1529.2px;top:684px">1.98초<span class="tag t-ver">검증</span></p><p class="hlab" style="left:96px;top:748px;width:530px">McMurtry Spéirling · Carwow 측정</p><div class="hbar hb-ver" id="s10-b7" style="left:640px;top:750px;width:616px"></div><p class="hcond" id="s10-c7" style="left:656px;top:750px">시제품 · rollout 표기 없음</p><p class="hval c-ver" id="s10-v7" style="left:1274px;top:746px">1.4초<span class="tag t-ver">검증</span></p><p class="hlab" style="left:96px;top:810px;width:530px">Rimac Nevera · 기록 주행</p><div class="hbar hb-ver" id="s10-b8" style="left:640px;top:812px;width:765.6px"></div><p class="hcond" id="s10-c8" style="left:656px;top:812px">Dewesoft·Racelogic 계측 · 1-ft rollout</p><p class="hval c-ver" id="s10-v8" style="left:1423.6px;top:808px">1.74초<span class="tag t-ver">검증</span></p>
+      <svg class="car " id="s10-car" viewBox="0 0 300 100" width="104" height="34.7" style="left:1000.4px;top:550.4px" aria-hidden="true"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></svg>
+      <p class="footnote" id="s10-foot" style="left:96px;top:878px">※ 측정 조건이 서로 다른 값입니다 (초록 막대 안 글씨). 막대 색: 주황 = 주장, 초록 = 독립 측정(검증)</p>
+    </div>
+    <p class="src" id="s10-src"><b>Details:</b> Tesla 2017 · Musk X 2024 · Electrek(녹화) · NBC(0.81초) · Tesla X(Rocket) · InsideEVs/MotorTrend(Plaid) · Motor1/Carwow(McMurtry) · Rimac(Nevera)</p>
+    
+  </div>
+      </section>
+      <section
+        class="animated-slide"
+        data-scene-id="scene-11"
+        aria-label="슬라이드 11 / 12"
+        aria-hidden="true"
+        style="left:19200px"
+      >
+<div data-composition-id="scene-11" data-width="1920" data-height="1080" class="comp" id="s11-root">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <p class="kicker" id="s11-kicker"><i class="kbar" style="--k:var(--alert)"></i>아직 빈칸인 것</p>
+    <div class="status-rail" aria-label="이 장면 숫자의 근거 표시"><span class="st st-claim on">주장</span><span class="st st-demo">시연</span><span class="st st-ver">검증</span><span class="st st-rep on">보도</span></div>
+    <div class="scene-content" id="s11-content">
+      <h2 class="title " id="s11-title" style="top:128px;left:96px"><span class="ln" id="s11-l1">2028년 생산, 가격, 도로 주행:</span><span class="ln" id="s11-l2">세 가지 모두 <span class="c-alert">아직 빈칸</span>이다</span></h2>
+      <svg class="cbox" id="s11-box1" style="left:96px;top:368px" width="68" height="68" viewBox="0 0 68 68" aria-hidden="true"><rect id="s11-r1" x="4" y="4" width="60" height="60" rx="12" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/><text id="s11-q1" x="34" y="48" text-anchor="middle">?</text></svg><div class="crow" id="s11-row1" style="left:196px;top:364px;width:640px"><p class="crow-head">생산 시작 <span class="c-claim">2028년</span><span class="tag t-claim">주장</span></p><p class="crow-desc">무대 발언. 인도일은 말하지 않았다 (Reuters)</p></div><svg class="cbox" id="s11-box2" style="left:96px;top:544px" width="68" height="68" viewBox="0 0 68 68" aria-hidden="true"><rect id="s11-r2" x="4" y="4" width="60" height="60" rx="12" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/><text id="s11-q2" x="34" y="48" text-anchor="middle">?</text></svg><div class="crow" id="s11-row2" style="left:196px;top:540px;width:860px"><p class="crow-head">가격<span class="tag t-rep">보도</span></p><p class="crow-desc">세 버전 모두 발표 없음 (NBC). 2026년 기준 $50,000·$250,000은 차값이 아니라 예약금(줄을 서려고 먼저 내는 돈)</p></div><svg class="cbox" id="s11-box3" style="left:96px;top:720px" width="68" height="68" viewBox="0 0 68 68" aria-hidden="true"><rect id="s11-r3" x="4" y="4" width="60" height="60" rx="12" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/><text id="s11-q3" x="34" y="48" text-anchor="middle">?</text></svg><div class="crow" id="s11-row3" style="left:196px;top:716px;width:860px"><p class="crow-head">공공도로 주행<span class="tag t-claim">주장</span></p><p class="crow-desc">Rocket은 ‘공공도로 주행 승인 없음’ (Tesla Roadster 페이지)</p></div>
+      <svg class="car ghost" id="s11-ghost" viewBox="0 0 300 100" width="176" height="58.7" style="left:862px;top:385.1px" aria-hidden="true"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></svg>
+      <svg class="car " id="s11-car" viewBox="0 0 300 100" width="176" height="58.7" style="left:862px;top:385.1px" aria-hidden="true"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></svg>
+      <div class="road road-dash" id="s11-road" style="left:836px;top:444px;width:228px"></div>
+      <p class="ghost-cap" id="s11-ghostcap" style="left:800px;top:458px;width:300px">아직 생산 전 · 2028년 예정</p>
+      <div class="quote" id="s11-q1card" style="left:1150px;top:366px;width:674px">
+        <p class="quote-t">“기존 완성차 업체를 무안하게 만든 것 말고는 상업적 가치가 없는 엔지니어링 과시였다.”</p>
+        <p class="quote-a">Gene Munster (Deepwater) · Reuters 인용, 번역<span class="tag t-rep">보도</span></p>
+      </div>
+      <div class="quote" id="s11-q2card" style="left:1150px;top:622px;width:674px">
+        <p class="quote-t">“제품으로는 전혀 쓸모없다. 하지만 30분짜리 엔지니어링 과시로는 정말 볼 만했다.”</p>
+        <p class="quote-a">Andrew J. Hawkins · The Verge, 번역<span class="tag t-rep">보도</span><span class="quote-note">녹화본 길이는 23분 21초<span class="tag t-ver">검증</span></span></p>
+      </div>
+    </div>
+    <p class="src" id="s11-src"><b>Details:</b> Reuters(2028년 생산, Munster 인용) · NBC(가격·인도일 미발표) · Tesla Roadster 페이지 2026-10-16 보관본(Rocket 도로 주행) · The Verge(Hawkins)</p>
+    
+  </div>
+      </section>
+      <section
+        class="animated-slide"
+        data-scene-id="scene-12"
+        aria-label="슬라이드 12 / 12"
+        aria-hidden="true"
+        style="left:21120px"
+      >
+<div data-composition-id="scene-12" data-width="1920" data-height="1080" class="comp" id="s12-root">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <p class="kicker" id="s12-kicker"><i class="kbar" style="--k:var(--demo)"></i>마무리</p>
+    <div class="status-rail" aria-label="이 장면 숫자의 근거 표시"><span class="st st-claim on">주장</span><span class="st st-demo on">시연</span><span class="st st-ver on">검증</span><span class="st st-rep on">보도</span></div>
+    <div class="scene-content" id="s12-content">
+      <div class="quote quote-big" id="s12-quote" style="left:96px;top:290px;width:640px">
+        <p class="quote-t">“엔지니어링은 진짜다.”</p>
+        <p class="quote-a">Fred Lambert, Electrek · Roadster 예약자 (번역)<span class="tag t-rep">보도</span></p>
+      </div>
+      <h2 class="title " id="s12-title" style="top:150px;left:800px;font-size:76px"><span class="ln" id="s12-l1">보여준 묘기는 <span class="c-demo">진짜</span>였고</span><span class="ln" id="s12-l2">이제 확인할 것은</span><span class="ln" id="s12-l3"><span class="c-alert">가격·수치·날짜</span>다</span></h2>
+      <div class="cta" id="s12-cta" style="left:800px;top:478px;width:1024px">
+        <p class="cta-lead">발표 숫자를 들으면 이렇게 물어보세요</p>
+        <div class="cta-chips" id="s12-chips"><span class="cta-chip t-claim" id="s12-k1">주장인가?</span><span class="cta-chip t-demo" id="s12-k2">시연인가?</span><span class="cta-chip t-ver" id="s12-k3">검증인가?</span></div>
+      </div>
+      <p class="watch" id="s12-watch" style="left:96px;top:676px">지켜볼 3가지 · 숫자가 확인되는 순간</p>
+      <div class="road road-12" id="s12-road" style="left:96px;top:872px;width:1728px"></div>
+      <div class="flag" id="s12-f1" style="left:670px;top:744px;width:300px"><p class="flag-lab">가격 발표</p><i class="flag-pole"></i></div><div class="flag" id="s12-f2" style="left:1070px;top:744px;width:300px"><p class="flag-lab">수치 독립 계측</p><i class="flag-pole"></i></div><div class="flag" id="s12-f3" style="left:1470px;top:744px;width:300px"><p class="flag-lab"><span class="c-claim">2028년</span> 생산 시작</p><i class="flag-pole"></i></div>
+      <svg class="car " id="s12-car" viewBox="0 0 300 100" width="420" height="140" style="left:120px;top:736.2px" aria-hidden="true"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></svg>
+    </div>
+    <p class="src" id="s12-src"><b>Details:</b> Reuters(2028년 생산) · Electrek(Fred Lambert 인용) · 가격 발표와 독립 계측은 2026-10-19 기준 찾지 못함</p>
+    
+  </div>
+      </section>
+      </div>
+      <div id="transition-fx" aria-hidden="true">
+        <i id="fx-blade-a" class="fx-blade"></i>
+        <i id="fx-blade-b" class="fx-blade"></i>
+        <i id="fx-prism"></i>
+        <i id="fx-flare"></i>
+        <i id="fx-curtain-top" class="fx-curtain"></i>
+        <i id="fx-curtain-bottom" class="fx-curtain"></i>
+        <i id="fx-ring-a" class="fx-ring"></i>
+        <i id="fx-ring-b" class="fx-ring"></i>
+      </div>
+      <div id="scene-hud" aria-hidden="true">
+        <span id="scene-hud-chapter" class="scene-hud__chapter">기 · 2017년의 약속</span>
+        <span>
+          <strong id="scene-hud-number">01</strong>
+          <small id="scene-hud-total">/ 12</small>
+        </span>
+      </div>
+    </div>
+    <div class="presenter-progress" aria-hidden="true">
+      <div id="presenter-progress-fill"></div>
+    </div>
+    <nav class="presenter-controls" aria-label="발표 탐색">
+      <button id="presenter-previous" type="button" aria-label="이전 슬라이드">←</button>
+      <span id="presenter-count" aria-live="polite">01 / 12</span>
+      <button id="presenter-replay" type="button" aria-label="현재 애니메이션 다시 재생">다시</button>
+      <button id="presenter-next" type="button" aria-label="다음 슬라이드">→</button>
+    </nav>
+    <div id="presenter-error" role="alert"></div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    window.__timelines = window.__timelines || {};
+    {
+      // scene-1
+window.__timelines = window.__timelines || {};
+      const s1T = { road: 1.15, car: 2.1, hop: 3.45, land: 3.95 };
+      const s1Tl = gsap.timeline({ paused: true });
+      s1Tl.from("#s1-kicker", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, .12);
+      s1Tl.from("#s1-root .status-rail", { opacity: 0, duration: .5, ease: "power1.out" }, .2);
+      s1Tl.from("#s1-src", { opacity: 0, duration: .6, ease: "power1.out" }, 2.60);
+      s1Tl.fromTo("#s1-l1", { clipPath: "inset(-12% 100% -12% 0%)" }, { clipPath: "inset(-12% 0% -12% 0%)", duration: .62, ease: "power2.inOut" }, 0.32);
+      s1Tl.fromTo("#s1-l2", { clipPath: "inset(-12% 100% -12% 0%)" }, { clipPath: "inset(-12% 0% -12% 0%)", duration: .62, ease: "power2.inOut" }, 0.74);
+      s1Tl.from("#s1-dek", { y: 22, opacity: 0, duration: .5, ease: "power2.out" }, 1.45);
+      s1Tl.from("#s1-fact", { x: -24, opacity: 0, duration: .5, ease: "power2.out" }, 1.8);
+      s1Tl.from("#s1-agenda li", { y: 14, opacity: 0, duration: .35, ease: "power2.out", stagger: .12 }, 2.3);
+      s1Tl.from("#s1-road", { scaleX: 0, transformOrigin: "0% 50%", duration: 1.1, ease: "power2.inOut" }, s1T.road);
+      s1Tl.fromTo("#s1-car", { x: -1820 }, { x: 0, duration: 1.3, ease: "power3.out" }, s1T.car);
+      s1Tl.fromTo("#s1-car", { opacity: 0 }, { opacity: 1, duration: .25, ease: "power1.out" }, s1T.car);
+      s1Tl.to("#s1-car", { keyframes: [
+        { y: -96, rotation: -5, duration: .5, ease: "power2.out" },
+        { y: 0, rotation: 0, duration: .48, ease: "power2.in" },
+        { y: 5, duration: .08, ease: "power1.out" },
+        { y: 0, duration: .14, ease: "power1.out" }
+      ], transformOrigin: "50% 97%" }, s1T.hop);
+      s1Tl.fromTo("#s1-root .puff", { opacity: 0, scale: .3, transformOrigin: "50% 50%" }, { opacity: .9, scale: 1.25, duration: .28, ease: "power2.out", stagger: .05 }, s1T.hop - .05);
+      s1Tl.to("#s1-root .puff", { opacity: 0, scale: 1.8, duration: .42, ease: "power1.in", stagger: .05 }, s1T.hop + .3);
+      s1Tl.set("#s1-src", { opacity: 1 }, 7);
+      window.__timelines["scene-1"] = s1Tl;
+    }
+    {
+      // scene-2
+window.__timelines = window.__timelines || {};
+      const s2T = { nodeA: 1.25, drive: 1.65, nodeB: 2.95, dash: 3.25, nodeC: 4.0, brace: 4.6 };
+      const s2Tl = gsap.timeline({ paused: true });
+      s2Tl.from("#s2-kicker", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, .12);
+      s2Tl.from("#s2-root .status-rail", { opacity: 0, duration: .5, ease: "power1.out" }, .2);
+      s2Tl.from("#s2-src", { opacity: 0, duration: .6, ease: "power1.out" }, 2.40);
+      s2Tl.from("#s2-l1", { y: 46, opacity: 0, duration: .6, ease: "power3.out" }, 0.30);
+      s2Tl.from("#s2-l2", { y: 46, opacity: 0, duration: .6, ease: "power3.out" }, 0.72);
+      s2Tl.from("#s2-n1", { y: 34, opacity: 0, duration: .5, ease: "power3.out" }, s2T.nodeA);
+      s2Tl.from("#s2-d1", { scale: 0, transformOrigin: "50% 50%", duration: .35, ease: "back.out(2)" }, s2T.nodeA + .2);
+      s2Tl.from("#s2-root .post", { scaleY: 0, transformOrigin: "50% 0%", duration: .4, ease: "power2.out", stagger: .9 }, s2T.nodeA + .1);
+      s2Tl.fromTo("#s2-road", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: 1.25, ease: "power2.inOut" }, s2T.drive);
+      s2Tl.fromTo("#s2-car", { x: -630, opacity: 0 }, { x: 0, opacity: 1, duration: 1.25, ease: "power2.inOut" }, s2T.drive);
+      s2Tl.from("#s2-d2", { scale: 0, transformOrigin: "50% 50%", duration: .4, ease: "back.out(2.4)" }, s2T.nodeB - .1);
+      s2Tl.from("#s2-n2", { y: 34, opacity: 0, duration: .5, ease: "power3.out" }, s2T.nodeB);
+      s2Tl.fromTo("#s2-dashreveal", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: .9, ease: "power1.inOut" }, s2T.dash);
+      s2Tl.from("#s2-d3", { scale: 0, transformOrigin: "50% 50%", duration: .35, ease: "back.out(2)" }, s2T.nodeC - .15);
+      s2Tl.from("#s2-n3", { y: 34, opacity: 0, duration: .5, ease: "power3.out" }, s2T.nodeC);
+      s2Tl.fromTo("#s2-brace", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: .8, ease: "power2.inOut" }, s2T.brace);
+      s2Tl.from("#s2-brace-label", { y: 16, opacity: 0, duration: .45, ease: "power2.out" }, s2T.brace + .55);
+      s2Tl.set("#s2-src", { opacity: 1 }, 8);
+      window.__timelines["scene-2"] = s2Tl;
+    }
+    {
+      // scene-3
+window.__timelines = window.__timelines || {};
+      const s3T = { photo: 1.25, cap: 2.25, cards: 2.75, price: 4.35 };
+      const s3Tl = gsap.timeline({ paused: true });
+      s3Tl.from("#s3-kicker", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, .12);
+      s3Tl.from("#s3-root .status-rail", { opacity: 0, duration: .5, ease: "power1.out" }, .2);
+      s3Tl.from("#s3-src", { opacity: 0, duration: .6, ease: "power1.out" }, 2.60);
+      s3Tl.fromTo("#s3-l1", { clipPath: "inset(-12% 0% 100% 0%)", y: 34 }, { clipPath: "inset(-12% 0% -12% 0%)", y: 0, duration: .58, ease: "power3.out" }, 0.30);
+      s3Tl.fromTo("#s3-l2", { clipPath: "inset(-12% 0% 100% 0%)", y: 34 }, { clipPath: "inset(-12% 0% -12% 0%)", y: 0, duration: .58, ease: "power3.out" }, 0.72);
+      s3Tl.fromTo("#s3-photo", { clipPath: "inset(0% 100% 0% 0% round 18px)" }, { clipPath: "inset(0% 0% 0% 0% round 18px)", duration: 1.1, ease: "power3.inOut" }, s3T.photo);
+      s3Tl.fromTo("#s3-img", { scale: 1.12, x: -40 }, { scale: 1, x: 0, duration: 1.7, ease: "power2.out" }, s3T.photo);
+      s3Tl.from("#s3-cap", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, s3T.cap);
+      s3Tl.from("#s3-credit", { opacity: 0, duration: .45, ease: "power1.out" }, s3T.cap + .2);
+      s3Tl.from("#s3-root .mcard", { scale: 1.08, opacity: 0, transformOrigin: "50% 50%", duration: .42, ease: "back.out(1.6)", stagger: .32 }, s3T.cards);
+      s3Tl.from("#s3-price", { x: -24, opacity: 0, duration: .5, ease: "power2.out" }, s3T.price);
+      s3Tl.set("#s3-src", { opacity: 1 }, 10);
+      window.__timelines["scene-3"] = s3Tl;
+    }
+    {
+      // scene-4
+window.__timelines = window.__timelines || {};
+      const s4T = { grid: 1.3, line: 1.75, lineDur: 3.6, end: 5.45, side: 5.80 };
+      const s4Tl = gsap.timeline({ paused: true });
+      s4Tl.from("#s4-kicker", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, .12);
+      s4Tl.from("#s4-root .status-rail", { opacity: 0, duration: .5, ease: "power1.out" }, .2);
+      s4Tl.from("#s4-src", { opacity: 0, duration: .6, ease: "power1.out" }, 3.00);
+      s4Tl.from("#s4-l1", { y: 46, opacity: 0, duration: .6, ease: "power3.out" }, 0.30);
+      s4Tl.from("#s4-l2", { y: 46, opacity: 0, duration: .6, ease: "power3.out" }, 0.72);
+      s4Tl.from("#s4-dek", { opacity: 0, y: 12, duration: .5, ease: "power2.out" }, 1.15);
+      s4Tl.from("#s4-grid", { opacity: 0, duration: .6, ease: "power1.out" }, s4T.grid);
+      s4Tl.fromTo("#s4-line", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: s4T.lineDur, ease: "none" }, s4T.line);
+      s4Tl.set("#s4-car", { x: -1078.9, y: 362.7 }, 0);
+      s4Tl.from("#s4-car", { opacity: 0, duration: .3, ease: "power1.out" }, s4T.line - .3);
+      s4Tl.to("#s4-car", { keyframes: [{ x: -754.2, y: 362.7, duration: 0.811, ease: "none" }, { x: -754.2, y: 294.7, duration: 0.170, ease: "none" }, { x: -691.5, y: 294.7, duration: 0.157, ease: "none" }, { x: -691.5, y: 272, duration: 0.057, ease: "none" }, { x: -619.9, y: 272, duration: 0.179, ease: "none" }, { x: -619.9, y: 226.7, duration: 0.113, ease: "none" }, { x: -413.6, y: 226.7, duration: 0.515, ease: "none" }, { x: -413.6, y: 181.3, duration: 0.113, ease: "none" }, { x: -318.1, y: 181.3, duration: 0.239, ease: "none" }, { x: -318.1, y: 136, duration: 0.113, ease: "none" }, { x: -113.8, y: 136, duration: 0.510, ease: "none" }, { x: -113.8, y: 22.7, duration: 0.283, ease: "none" }, { x: 0, y: 22.7, duration: 0.284, ease: "none" }, { x: 0, y: 0, duration: 0.057, ease: "none" }] }, s4T.line);
+      s4Tl.from("#s4-p1", { scale: 0, transformOrigin: "50% 50%", duration: .3, ease: "back.out(2.2)" }, 1.75);
+      s4Tl.from("#s4-p2", { scale: 0, transformOrigin: "50% 50%", duration: .3, ease: "back.out(2.2)" }, 2.73);
+      s4Tl.from("#s4-p3", { scale: 0, transformOrigin: "50% 50%", duration: .3, ease: "back.out(2.2)" }, 2.94);
+      s4Tl.from("#s4-p4", { scale: 0, transformOrigin: "50% 50%", duration: .3, ease: "back.out(2.2)" }, 3.24);
+      s4Tl.from("#s4-p5", { scale: 0, transformOrigin: "50% 50%", duration: .3, ease: "back.out(2.2)" }, 3.86);
+      s4Tl.from("#s4-p6", { scale: 0, transformOrigin: "50% 50%", duration: .3, ease: "back.out(2.2)" }, 4.22);
+      s4Tl.from("#s4-p7", { scale: 0, transformOrigin: "50% 50%", duration: .3, ease: "back.out(2.2)" }, 5.01);
+      s4Tl.from("#s4-p8", { scale: 0, transformOrigin: "50% 50%", duration: .3, ease: "back.out(2.2)" }, 5.35);
+      s4Tl.from("#s4-a1", { opacity: 0, y: 8, duration: .35 }, 2.20);
+      s4Tl.from("#s4-a5", { opacity: 0, duration: .35 }, 4.06);
+      s4Tl.from("#s4-a8", { opacity: 0, x: -12, duration: .4, ease: "power2.out" }, s4T.end);
+      s4Tl.from("#s4-root .side-item", { x: 30, opacity: 0, duration: .45, ease: "power3.out", stagger: .35 }, s4T.side);
+      s4Tl.set("#s4-src", { opacity: 1 }, 10);
+      window.__timelines["scene-4"] = s4Tl;
+    }
+    {
+      // scene-5
+window.__timelines = window.__timelines || {};
+      const s5T = { line: 1.25, car: 1.45, m1: 1.6, m2: 1.85, strike: 2.15, m3: 3.05, cards: 3.7 };
+      const s5Tl = gsap.timeline({ paused: true });
+      s5Tl.from("#s5-kicker", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, .12);
+      s5Tl.from("#s5-root .status-rail", { opacity: 0, duration: .5, ease: "power1.out" }, .2);
+      s5Tl.from("#s5-src", { opacity: 0, duration: .6, ease: "power1.out" }, 3.00);
+      s5Tl.fromTo("#s5-l1", { clipPath: "inset(-12% 100% -12% 0%)" }, { clipPath: "inset(-12% 0% -12% 0%)", duration: .62, ease: "power2.inOut" }, 0.30);
+      s5Tl.fromTo("#s5-l2", { clipPath: "inset(-12% 100% -12% 0%)" }, { clipPath: "inset(-12% 0% -12% 0%)", duration: .62, ease: "power2.inOut" }, 0.72);
+      s5Tl.fromTo("#s5-line", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: 1.1, ease: "power2.out" }, s5T.line);
+      s5Tl.from("#s5-ticks line", { scaleY: 0, transformOrigin: "50% 0%", duration: .2, ease: "power1.out", stagger: .04 }, s5T.line + .1);
+      s5Tl.from("#s5-scale", { opacity: 0, duration: .4 }, s5T.line + .8);
+      s5Tl.fromTo("#s5-car", { x: -1596, opacity: 0 }, { x: 0, opacity: 1, duration: 1.75, ease: "power2.inOut" }, s5T.car);
+      s5Tl.from("#s5-d1", { scale: 0, transformOrigin: "50% 50%", duration: .3, ease: "back.out(2)" }, s5T.m1);
+      s5Tl.from("#s5-m1", { y: -12, opacity: 0, duration: .4, ease: "power2.out" }, s5T.m1 + .05);
+      s5Tl.from("#s5-d2", { scale: 0, transformOrigin: "50% 50%", duration: .3, ease: "back.out(2)" }, s5T.m2);
+      s5Tl.from("#s5-m2", { y: 14, opacity: 0, duration: .4, ease: "power2.out" }, s5T.m2 + .05);
+      s5Tl.fromTo("#s5-strike", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: .35, ease: "power2.out" }, s5T.strike);
+      s5Tl.from("#s5-d3", { scale: 0, transformOrigin: "50% 50%", duration: .4, ease: "back.out(2.4)" }, s5T.m3);
+      s5Tl.from("#s5-m3", { y: 14, opacity: 0, duration: .4, ease: "power2.out" }, s5T.m3 + .05);
+      s5Tl.from("#s5-kst", { y: 10, opacity: 0, duration: .4, ease: "power2.out" }, s5T.m3 + .35);
+      s5Tl.from("#s5-root .mcard", { y: 26, opacity: 0, duration: .4, ease: "power3.out", stagger: .35 }, s5T.cards);
+      s5Tl.from("#s5-root .mcard-big", { scale: 1.22, transformOrigin: "0% 60%", duration: .45, ease: "back.out(1.8)", stagger: .35 }, s5T.cards + .12);
+      s5Tl.set("#s5-src", { opacity: 1 }, 10);
+      window.__timelines["scene-5"] = s5Tl;
+    }
+    {
+      // scene-6
+window.__timelines = window.__timelines || {};
+      const s6T = { panels: 1.45, p1: 2.0, p2: 4.0, p3: 5.75 };
+      const s6Tl = gsap.timeline({ paused: true });
+      s6Tl.from("#s6-kicker", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, .12);
+      s6Tl.from("#s6-root .status-rail", { opacity: 0, duration: .5, ease: "power1.out" }, .2);
+      s6Tl.from("#s6-src", { opacity: 0, duration: .6, ease: "power1.out" }, 3.00);
+      s6Tl.fromTo("#s6-l1", { clipPath: "inset(-12% 0% 100% 0%)", y: 34 }, { clipPath: "inset(-12% 0% -12% 0%)", y: 0, duration: .58, ease: "power3.out" }, 0.30);
+      s6Tl.fromTo("#s6-l2", { clipPath: "inset(-12% 0% 100% 0%)", y: 34 }, { clipPath: "inset(-12% 0% -12% 0%)", y: 0, duration: .58, ease: "power3.out" }, 0.72);
+      s6Tl.from("#s6-dek", { opacity: 0, y: 12, duration: .5, ease: "power2.out" }, 1.2);
+      s6Tl.from("#s6-root .panel", { y: 40, opacity: 0, duration: .55, ease: "power3.out", stagger: .14 }, s6T.panels);
+      s6Tl.fromTo("#s6-ramp", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: .8, ease: "power2.inOut" }, s6T.p1);
+      s6Tl.fromTo("#s6-m1p", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: .45, ease: "power1.inOut" }, s6T.p1 + .5);
+      s6Tl.from("#s6-g1", { opacity: 0, duration: .25 }, s6T.p1 + .75);
+      s6Tl.from("#s6-2g", { opacity: 0, scale: .7, transformOrigin: "50% 50%", duration: .3, ease: "back.out(2)" }, s6T.p1 + .85);
+      s6Tl.from("#s6-g2", { opacity: 0, duration: .25 }, s6T.p1 + 1.0);
+      s6Tl.fromTo("#s6-m1q", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: .55, ease: "power1.in" }, s6T.p1 + 1.15);
+      s6Tl.from("#s6-g3", { opacity: 0, duration: .25 }, s6T.p1 + 1.35);
+      s6Tl.from("#s6-k1", { opacity: 0, y: -40, duration: .4, ease: "bounce.out" }, s6T.p1 + 1.6);
+      s6Tl.from("#s6-cap1", { opacity: 0, y: 10, duration: .4, ease: "power2.out" }, s6T.p1 + 1.8);
+      s6Tl.from("#s6-blocks rect", { scaleY: 0, transformOrigin: "50% 100%", duration: .28, ease: "back.out(2)", stagger: .07 }, s6T.p2);
+      s6Tl.fromTo("#s6-m2p", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: .85, ease: "power1.inOut" }, s6T.p2 + .4);
+      s6Tl.from("#s6-g4", { opacity: 0, duration: .2 }, s6T.p2 + .62);
+      s6Tl.from("#s6-g5", { opacity: 0, duration: .2 }, s6T.p2 + .84);
+      s6Tl.from("#s6-g6", { opacity: 0, duration: .2 }, s6T.p2 + 1.06);
+      s6Tl.from("#s6-k2", { opacity: 0, y: -40, duration: .4, ease: "bounce.out" }, s6T.p2 + 1.25);
+      s6Tl.from("#s6-cap2", { opacity: 0, y: 10, duration: .4, ease: "power2.out" }, s6T.p2 + 1.45);
+      s6Tl.from("#s6-svg3 .dial-tick, #s6-svg3 .dial-track, #s6-dsub", { opacity: 0, duration: .35 }, s6T.p3);
+      s6Tl.fromTo("#s6-dial", { attr: { "stroke-dashoffset": .81 } }, { attr: { "stroke-dashoffset": 0 }, duration: .81, ease: "power2.in" }, s6T.p3 + .2);
+      s6Tl.from("#s6-dval", { scale: 1.35, opacity: 0, transformOrigin: "50% 50%", duration: .4, ease: "back.out(2)" }, s6T.p3 + 1.0);
+      s6Tl.from("#s6-cap3", { opacity: 0, y: 10, duration: .4, ease: "power2.out" }, s6T.p3 + 1.2);
+      s6Tl.set("#s6-src", { opacity: 1 }, 11);
+      window.__timelines["scene-6"] = s6Tl;
+    }
+    {
+      // scene-7
+window.__timelines = window.__timelines || {};
+      const s7T = { cards: 1.5, rows: 2.2, hot: 3.4, car: 3.55, jets: 4.3, badge: 4.65 };
+      const s7Tl = gsap.timeline({ paused: true });
+      s7Tl.from("#s7-kicker", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, .12);
+      s7Tl.from("#s7-root .status-rail", { opacity: 0, duration: .5, ease: "power1.out" }, .2);
+      s7Tl.from("#s7-src", { opacity: 0, duration: .6, ease: "power1.out" }, 3.00);
+      s7Tl.from("#s7-l1", { y: 46, opacity: 0, duration: .6, ease: "power3.out" }, 0.30);
+      s7Tl.from("#s7-l2", { y: 46, opacity: 0, duration: .6, ease: "power3.out" }, 0.72);
+      s7Tl.from("#s7-dek", { opacity: 0, y: 12, duration: .5, ease: "power2.out" }, 1.2);
+      s7Tl.from("#s7-root .trim", { y: 90, opacity: 0, duration: .6, ease: "power3.out", stagger: .22 }, s7T.cards);
+      s7Tl.from("#s7-root .car.dim", { opacity: 0, x: -30, duration: .45, ease: "power2.out", stagger: .22 }, s7T.cards + .35);
+      s7Tl.from("#s7-root .trow", { x: -18, opacity: 0, duration: .3, ease: "power2.out", stagger: .07 }, s7T.rows);
+      s7Tl.from("#s7-root .trim-foot", { opacity: 0, duration: .4, stagger: .1 }, s7T.rows + .9);
+      s7Tl.fromTo("#s7-c3", { boxShadow: "0 0 0 0px rgba(255,181,71,0)" }, { boxShadow: "0 0 0 3px rgba(255,181,71,.85)", duration: .5, ease: "power2.out" }, s7T.hot);
+      s7Tl.fromTo("#s7-car", { x: -260, y: 0, opacity: 0 }, { keyframes: [
+        { x: -130, y: -70, opacity: 1, duration: .35, ease: "power2.out" },
+        { x: 0, y: 0, duration: .4, ease: "power2.in" }
+      ] }, s7T.car);
+      s7Tl.fromTo("#s7-root .jet", { opacity: 0, scale: .4, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: .25, ease: "back.out(2)", stagger: .06 }, s7T.jets);
+      s7Tl.from("#s7-badge", { scale: 1.35, opacity: 0, rotation: -8, transformOrigin: "50% 50%", duration: .45, ease: "back.out(1.8)" }, s7T.badge);
+      s7Tl.set("#s7-src", { opacity: 1 }, 9);
+      window.__timelines["scene-7"] = s7Tl;
+    }
+    {
+      // scene-8
+window.__timelines = window.__timelines || {};
+      const s8T = { legend: 1.2, r1: 1.55, r2: 3.3, r3: 4.7, r4: 5.9 };
+      const s8Tl = gsap.timeline({ paused: true });
+      s8Tl.from("#s8-kicker", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, .12);
+      s8Tl.from("#s8-root .status-rail", { opacity: 0, duration: .5, ease: "power1.out" }, .2);
+      s8Tl.from("#s8-src", { opacity: 0, duration: .6, ease: "power1.out" }, 3.00);
+      s8Tl.fromTo("#s8-l1", { clipPath: "inset(-12% 100% -12% 0%)" }, { clipPath: "inset(-12% 0% -12% 0%)", duration: .62, ease: "power2.inOut" }, 0.30);
+      s8Tl.fromTo("#s8-l2", { clipPath: "inset(-12% 100% -12% 0%)" }, { clipPath: "inset(-12% 0% -12% 0%)", duration: .62, ease: "power2.inOut" }, 0.72);
+      s8Tl.from("#s8-legend", { opacity: 0, duration: .5 }, s8T.legend);
+      s8Tl.from("#s8-root .rowlab", { opacity: 0, x: -16, duration: .4, ease: "power2.out", stagger: .2 }, s8T.r1 - .2);
+      s8Tl.from("#s8-b1o", { scaleX: 0, transformOrigin: "0% 50%", duration: .75, ease: "power2.out" }, s8T.r1);
+      s8Tl.from("#s8-v1o", { opacity: 0, x: -10, duration: .3 }, s8T.r1 + .65);
+      s8Tl.from("#s8-b1n", { scaleX: 0, transformOrigin: "0% 50%", duration: 1.0, ease: "power2.out" }, s8T.r1 + .75);
+      s8Tl.fromTo("#s8-car", { x: -435.5, opacity: 0 }, { x: 0, opacity: 1, duration: 1.0, ease: "power2.out" }, s8T.r1 + .75);
+      s8Tl.from("#s8-v1n", { opacity: 0, x: -10, duration: .3 }, s8T.r1 + 1.7);
+      s8Tl.from("#s8-b2o", { scaleX: 0, transformOrigin: "0% 50%", duration: .7, ease: "power2.out" }, s8T.r2);
+      s8Tl.from("#s8-v2o", { opacity: 0, x: -10, duration: .3 }, s8T.r2 + .6);
+      s8Tl.from("#s8-b2n", { scaleX: 0, transformOrigin: "0% 50%", duration: .8, ease: "power2.out" }, s8T.r2 + .5);
+      s8Tl.from("#s8-v2n", { opacity: 0, x: -10, duration: .3 }, s8T.r2 + 1.25);
+      s8Tl.from("#s8-seats-old .seat", { scale: 0, transformOrigin: "50% 100%", duration: .25, ease: "back.out(2)", stagger: .08 }, s8T.r3);
+      s8Tl.from("#s8-v3o", { opacity: 0, x: -10, duration: .3 }, s8T.r3 + .4);
+      s8Tl.from("#s8-seats-new .seat", { scale: 0, transformOrigin: "50% 100%", duration: .25, ease: "back.out(2)", stagger: .08 }, s8T.r3 + .55);
+      s8Tl.from("#s8-v3n", { opacity: 0, x: -10, duration: .3 }, s8T.r3 + .85);
+      s8Tl.from("#s8-b4o", { opacity: 0, x: -20, duration: .45, ease: "power2.out" }, s8T.r4);
+      s8Tl.from("#s8-v4o", { opacity: 0, x: -10, duration: .3 }, s8T.r4 + .5);
+      s8Tl.from("#s8-b4n", { opacity: 0, duration: .4 }, s8T.r4 + .65);
+      s8Tl.from("#s8-v4n", { scale: 1.35, opacity: 0, transformOrigin: "0% 50%", duration: .4, ease: "back.out(2)" }, s8T.r4 + .95);
+      s8Tl.set("#s8-src", { opacity: 1 }, 10);
+      window.__timelines["scene-8"] = s8Tl;
+    }
+    {
+      // scene-9
+window.__timelines = window.__timelines || {};
+      const s9T = { cols: 1.45, left: 2.15, right: 3.35 };
+      const s9Tl = gsap.timeline({ paused: true });
+      s9Tl.from("#s9-kicker", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, .12);
+      s9Tl.from("#s9-root .status-rail", { opacity: 0, duration: .5, ease: "power1.out" }, .2);
+      s9Tl.from("#s9-src", { opacity: 0, duration: .6, ease: "power1.out" }, 3.00);
+      s9Tl.fromTo("#s9-l1", { clipPath: "inset(-12% 0% 100% 0%)", y: 34 }, { clipPath: "inset(-12% 0% -12% 0%)", y: 0, duration: .58, ease: "power3.out" }, 0.30);
+      s9Tl.fromTo("#s9-l2", { clipPath: "inset(-12% 0% 100% 0%)", y: 34 }, { clipPath: "inset(-12% 0% -12% 0%)", y: 0, duration: .58, ease: "power3.out" }, 0.72);
+      s9Tl.from("#s9-left", { x: -140, opacity: 0, duration: .65, ease: "power3.out" }, s9T.cols);
+      s9Tl.from("#s9-right", { x: 140, opacity: 0, duration: .65, ease: "power3.out" }, s9T.cols + .18);
+      s9Tl.from("#s9-left .vitem", { x: -36, opacity: 0, duration: .4, ease: "power2.out", stagger: .34 }, s9T.left);
+      s9Tl.from("#s9-right .vitem", { x: 36, opacity: 0, duration: .4, ease: "power2.out", stagger: .34 }, s9T.right);
+      s9Tl.from("#s9-b1 .vbig", { scale: 1.5, transformOrigin: "0% 50%", duration: .45, ease: "back.out(2.2)" }, s9T.right + .1);
+      s9Tl.set("#s9-src", { opacity: 1 }, 11);
+      window.__timelines["scene-9"] = s9Tl;
+    }
+    {
+      // scene-10
+window.__timelines = window.__timelines || {};
+      const s10T = { axis: 1.2, sep: 3.0, foot: 4.9 };
+      const s10Tl = gsap.timeline({ paused: true });
+      s10Tl.from("#s10-kicker", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, .12);
+      s10Tl.from("#s10-root .status-rail", { opacity: 0, duration: .5, ease: "power1.out" }, .2);
+      s10Tl.from("#s10-src", { opacity: 0, duration: .6, ease: "power1.out" }, 3.00);
+      s10Tl.from("#s10-l1", { y: 46, opacity: 0, duration: .6, ease: "power3.out" }, 0.30);
+      s10Tl.from("#s10-l2", { y: 46, opacity: 0, duration: .6, ease: "power3.out" }, 0.72);
+      s10Tl.from("#s10-axis", { opacity: 0, duration: .5 }, s10T.axis);
+      s10Tl.from("#s10-root .hlab", { opacity: 0, x: -14, duration: .35, ease: "power2.out", stagger: .3 }, 1.4);
+      s10Tl.from("#s10-b1", { scaleX: 0, transformOrigin: "0% 50%", duration: .8, ease: "power2.out" }, 1.55);
+      s10Tl.from("#s10-v1", { opacity: 0, x: -12, duration: .3, ease: "power2.out" }, 2.20);
+      s10Tl.from("#s10-b2", { scaleX: 0, transformOrigin: "0% 50%", duration: .8, ease: "power2.out" }, 1.85);
+      s10Tl.from("#s10-v2", { opacity: 0, x: -12, duration: .3, ease: "power2.out" }, 2.50);
+      s10Tl.from("#s10-b3", { scaleX: 0, transformOrigin: "0% 50%", duration: .8, ease: "power2.out" }, 2.15);
+      s10Tl.from("#s10-v3", { opacity: 0, x: -12, duration: .3, ease: "power2.out" }, 2.80);
+      s10Tl.from("#s10-b4", { scaleX: 0, transformOrigin: "0% 50%", duration: .8, ease: "power2.out" }, 2.45);
+      s10Tl.from("#s10-v4", { opacity: 0, x: -12, duration: .3, ease: "power2.out" }, 3.10);
+      s10Tl.fromTo("#s10-car", { x: -356.4, opacity: 0 }, { x: 0, opacity: 1, duration: .8, ease: "power2.out" }, 2.45);
+      s10Tl.from("#s10-b5", { scaleX: 0, transformOrigin: "0% 50%", duration: .8, ease: "power2.out" }, 2.75);
+      s10Tl.from("#s10-v5", { opacity: 0, x: -12, duration: .3, ease: "power2.out" }, 3.40);
+      s10Tl.from("#s10-b6", { scaleX: 0, transformOrigin: "0% 50%", duration: .8, ease: "power2.out" }, 3.30);
+      s10Tl.from("#s10-v6", { opacity: 0, x: -12, duration: .3, ease: "power2.out" }, 3.95);
+      s10Tl.from("#s10-c6", { opacity: 0, duration: .35, ease: "power1.out" }, 4.10);
+      s10Tl.from("#s10-b7", { scaleX: 0, transformOrigin: "0% 50%", duration: .8, ease: "power2.out" }, 3.60);
+      s10Tl.from("#s10-v7", { opacity: 0, x: -12, duration: .3, ease: "power2.out" }, 4.25);
+      s10Tl.from("#s10-c7", { opacity: 0, duration: .35, ease: "power1.out" }, 4.40);
+      s10Tl.from("#s10-b8", { scaleX: 0, transformOrigin: "0% 50%", duration: .8, ease: "power2.out" }, 3.90);
+      s10Tl.from("#s10-v8", { opacity: 0, x: -12, duration: .3, ease: "power2.out" }, 4.55);
+      s10Tl.from("#s10-c8", { opacity: 0, duration: .35, ease: "power1.out" }, 4.70);
+      s10Tl.from("#s10-sep", { scaleX: 0, transformOrigin: "0% 50%", duration: .5, ease: "power2.out" }, s10T.sep);
+      s10Tl.from("#s10-foot", { opacity: 0, duration: .5 }, s10T.foot);
+      s10Tl.set("#s10-src", { opacity: 1 }, 10);
+      window.__timelines["scene-10"] = s10Tl;
+    }
+    {
+      // scene-11
+window.__timelines = window.__timelines || {};
+      const s11T = { car: 1.6, fade: 2.35, quotes: 4.6 };
+      const s11Tl = gsap.timeline({ paused: true });
+      s11Tl.from("#s11-kicker", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, .12);
+      s11Tl.from("#s11-root .status-rail", { opacity: 0, duration: .5, ease: "power1.out" }, .2);
+      s11Tl.from("#s11-src", { opacity: 0, duration: .6, ease: "power1.out" }, 3.00);
+      s11Tl.fromTo("#s11-l1", { clipPath: "inset(-12% 100% -12% 0%)" }, { clipPath: "inset(-12% 0% -12% 0%)", duration: .62, ease: "power2.inOut" }, 0.30);
+      s11Tl.fromTo("#s11-l2", { clipPath: "inset(-12% 100% -12% 0%)" }, { clipPath: "inset(-12% 0% -12% 0%)", duration: .62, ease: "power2.inOut" }, 0.72);
+      s11Tl.fromTo("#s11-r1", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: .5, ease: "power2.inOut" }, 1.45);
+      s11Tl.fromTo("#s11-row1 .crow-head", { clipPath: "inset(-12% 100% -12% 0%)" }, { clipPath: "inset(-12% 0% -12% 0%)", duration: .5, ease: "power2.inOut" }, 1.60);
+      s11Tl.fromTo("#s11-row1 .crow-desc", { clipPath: "inset(-6% 100% -6% 0%)" }, { clipPath: "inset(-6% 0% -6% 0%)", duration: .6, ease: "power2.inOut" }, 1.90);
+      s11Tl.from("#s11-q1", { opacity: 0, scale: .4, transformOrigin: "50% 50%", duration: .35, ease: "back.out(2.4)" }, 2.05);
+      s11Tl.fromTo("#s11-r2", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: .5, ease: "power2.inOut" }, 2.45);
+      s11Tl.fromTo("#s11-row2 .crow-head", { clipPath: "inset(-12% 100% -12% 0%)" }, { clipPath: "inset(-12% 0% -12% 0%)", duration: .5, ease: "power2.inOut" }, 2.60);
+      s11Tl.fromTo("#s11-row2 .crow-desc", { clipPath: "inset(-6% 100% -6% 0%)" }, { clipPath: "inset(-6% 0% -6% 0%)", duration: .6, ease: "power2.inOut" }, 2.90);
+      s11Tl.from("#s11-q2", { opacity: 0, scale: .4, transformOrigin: "50% 50%", duration: .35, ease: "back.out(2.4)" }, 3.05);
+      s11Tl.fromTo("#s11-r3", { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: .5, ease: "power2.inOut" }, 3.45);
+      s11Tl.fromTo("#s11-row3 .crow-head", { clipPath: "inset(-12% 100% -12% 0%)" }, { clipPath: "inset(-12% 0% -12% 0%)", duration: .5, ease: "power2.inOut" }, 3.60);
+      s11Tl.fromTo("#s11-row3 .crow-desc", { clipPath: "inset(-6% 100% -6% 0%)" }, { clipPath: "inset(-6% 0% -6% 0%)", duration: .6, ease: "power2.inOut" }, 3.90);
+      s11Tl.from("#s11-q3", { opacity: 0, scale: .4, transformOrigin: "50% 50%", duration: .35, ease: "back.out(2.4)" }, 4.05);
+      s11Tl.fromTo("#s11-car", { x: -120, opacity: 0 }, { x: 0, opacity: 1, duration: .6, ease: "power2.out" }, s11T.car);
+      s11Tl.to("#s11-car", { opacity: 0, duration: .7, ease: "power1.inOut" }, s11T.fade);
+      s11Tl.from("#s11-ghost", { opacity: 0, duration: .7, ease: "power1.inOut" }, s11T.fade);
+      s11Tl.from("#s11-road", { scaleX: 0, transformOrigin: "0% 50%", duration: .5, ease: "power2.out" }, s11T.car - .2);
+      s11Tl.from("#s11-ghostcap", { opacity: 0, y: 8, duration: .4 }, s11T.fade + .5);
+      s11Tl.from("#s11-q1card", { x: 44, opacity: 0, duration: .55, ease: "power3.out" }, s11T.quotes);
+      s11Tl.from("#s11-q2card", { x: 44, opacity: 0, duration: .55, ease: "power3.out" }, s11T.quotes + .6);
+      s11Tl.set("#s11-src", { opacity: 1 }, 11);
+      window.__timelines["scene-11"] = s11Tl;
+    }
+    {
+      // scene-12
+window.__timelines = window.__timelines || {};
+      const s12T = { road: 1.55, car: 1.8, flags: 2.2, quote: 3.2, cta: 3.8, chips: 4.2, payoff: 5.3 };
+      const s12Tl = gsap.timeline({ paused: true });
+      s12Tl.from("#s12-kicker", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, .12);
+      s12Tl.from("#s12-root .status-rail", { opacity: 0, duration: .5, ease: "power1.out" }, .2);
+      s12Tl.from("#s12-src", { opacity: 0, duration: .6, ease: "power1.out" }, 3.00);
+      s12Tl.fromTo("#s12-l1", { clipPath: "inset(-12% 0% 100% 0%)", y: 34 }, { clipPath: "inset(-12% 0% -12% 0%)", y: 0, duration: .58, ease: "power3.out" }, 0.30);
+      s12Tl.fromTo("#s12-l2", { clipPath: "inset(-12% 0% 100% 0%)", y: 34 }, { clipPath: "inset(-12% 0% -12% 0%)", y: 0, duration: .58, ease: "power3.out" }, 0.72);
+      s12Tl.fromTo("#s12-l3", { clipPath: "inset(-12% 0% 100% 0%)", y: 34 }, { clipPath: "inset(-12% 0% -12% 0%)", y: 0, duration: .58, ease: "power3.out" }, 1.14);
+      s12Tl.from("#s12-road", { scaleX: 0, transformOrigin: "0% 50%", duration: 1.0, ease: "power2.inOut" }, s12T.road);
+      s12Tl.from("#s12-watch", { opacity: 0, x: -16, duration: .45 }, s12T.road + .2);
+      s12Tl.fromTo("#s12-car", { x: -760, opacity: 0 }, { x: 0, opacity: 1, duration: 1.3, ease: "power3.out" }, s12T.car);
+      s12Tl.from("#s12-root .flag", { y: 26, opacity: 0, duration: .4, ease: "back.out(1.8)", stagger: .25 }, s12T.flags);
+      s12Tl.from("#s12-quote", { opacity: 0, y: 18, duration: .5, ease: "power2.out" }, s12T.quote);
+      s12Tl.from("#s12-root .cta-lead", { opacity: 0, y: 12, duration: .45, ease: "power2.out" }, s12T.cta);
+      s12Tl.from("#s12-root .cta-chip", { scale: 1.4, opacity: 0, transformOrigin: "50% 50%", duration: .38, ease: "back.out(2)", stagger: .34 }, s12T.chips);
+      s12Tl.fromTo("#s12-root .status-rail .st", { opacity: .3, scale: .9, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: .35, ease: "back.out(2)", stagger: .1 }, s12T.payoff);
+      s12Tl.set("#s12-src", { opacity: 1 }, 10);
+      window.__timelines["scene-12"] = s12Tl;
+    }
+  </script>
+  <script>
+
+    (() => {
+      const deck = document.getElementById("animated-presentation");
+      const stage = document.getElementById("presentation-stage");
+      const track = document.getElementById("slide-track");
+      const slides = Array.from(document.querySelectorAll(".animated-slide"));
+      const previousButton = document.getElementById("presenter-previous");
+      const nextButton = document.getElementById("presenter-next");
+      const replayButton = document.getElementById("presenter-replay");
+      const countLabel = document.getElementById("presenter-count");
+      const progressFill = document.getElementById("presenter-progress-fill");
+      const chapterLabel = document.getElementById("scene-hud-chapter");
+      const sceneNumber = document.getElementById("scene-hud-number");
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      let current = 0;
+      let touchStartX = null;
+      let transitionTimelines = {};
+      // paper theme: hard (match) cut by default, short paper push on opt-in seams.
+      const paperTheme = deck.dataset.theme === "paper";
+      const paperFamilies = ["cut", "paper"];
+      let paperPush = null;
+
+      const palettes = [
+        ["#ff78aa", "#75e7e0", "#ffd166", "#090711"],
+        ["#ff9ac5", "#9ca6ff", "#8cf0cf", "#100814"],
+        ["#ffcf6e", "#ff7e9f", "#6ee7ff", "#0b0c17"],
+        ["#c995ff", "#ff88b7", "#f7e27a", "#0c0917"],
+        ["#75e7e0", "#ff7fa7", "#ffdc85", "#071113"],
+        ["#ff6c98", "#85a8ff", "#fff0aa", "#0d0712"],
+      ];
+      const chapters = ["기 · 2017년의 약속", "기 · 2017년의 약속", "기 · 2017년의 약속", "기 · 2017년의 약속", "승 · 2026년의 시연", "승 · 2026년의 시연", "승 · 2026년의 시연", "전 · 숫자 검증", "전 · 숫자 검증", "전 · 숫자 검증", "결 · 남은 약속", "결 · 남은 약속"];
+      const transitionFamilies = ["prism", "curtain", "aperture"];
+
+      function clamp(index) {
+        return Math.max(0, Math.min(slides.length - 1, index));
+      }
+
+      function timelineFor(index) {
+        const sceneId = slides[index]?.dataset.sceneId;
+        return sceneId ? window.__timelines?.[sceneId] : null;
+      }
+
+      function resetInactive() {
+        slides.forEach((slide, index) => {
+          if (index === current) return;
+          const timeline = timelineFor(index);
+          if (timeline) timeline.pause(0);
+        });
+      }
+
+      function replayCurrent() {
+        const timeline = timelineFor(current);
+        if (!timeline) {
+          deck.dataset.runtimeError = "true";
+          document.getElementById("presenter-error").textContent =
+            `장면 타임라인을 찾을 수 없습니다: ${slides[current]?.dataset.sceneId || "unknown"}`;
+          return false;
+        }
+        deck.dataset.runtimeError = "false";
+        if (reduceMotion.matches) {
+          timeline.pause(timeline.duration());
+        } else {
+          timeline.restart();
+          const content = slides[current]?.querySelector(".scene-content");
+          if (content && !paperTheme) {
+            window.gsap.fromTo(
+              content,
+              { scale: 1.012 },
+              {
+                scale: 1,
+                duration: .72,
+                ease: "power3.out",
+              }
+            );
+          }
+        }
+        return true;
+      }
+
+      function chapterFor(index) {
+        return chapters[index] || "";
+      }
+
+      function applyPalette(index) {
+        if (paperTheme) return;
+        const palette = palettes[index % palettes.length];
+        deck.style.setProperty("--show-a", palette[0]);
+        deck.style.setProperty("--show-b", palette[1]);
+        deck.style.setProperty("--show-c", palette[2]);
+        deck.style.setProperty("--show-night", palette[3]);
+        deck.dataset.phase = String(index % palettes.length);
+      }
+
+      function transitionFamilyFor(fromIndex, toIndex) {
+        if (paperTheme) {
+          if (Math.abs(toIndex - fromIndex) !== 1) return "cut";
+          const seamOwner = slides[Math.max(fromIndex, toIndex)];
+          return seamOwner?.dataset.transition === "paper" ? "paper" : "cut";
+        }
+        if (Math.abs(toIndex - fromIndex) > 1) return "aperture";
+        const seamIndex = Math.max(0, Math.min(fromIndex, toIndex));
+        return transitionFamilies[seamIndex % transitionFamilies.length];
+      }
+
+      function buildPrismTransition(direction) {
+        const sign = direction < 0 ? -1 : 1;
+        const blade = direction < 0 ? "#fx-blade-b" : "#fx-blade-a";
+        return window.gsap.timeline({ paused: true })
+          .fromTo(
+            blade,
+            { xPercent: 0, opacity: 0 },
+            {
+              xPercent: 470 * sign,
+              opacity: .72,
+              duration: .54,
+              ease: "power3.inOut",
+            },
+            0
+          )
+          .to(
+            blade,
+            { opacity: 0, duration: .18, ease: "power2.out" },
+            .38
+          )
+          .fromTo(
+            "#fx-prism",
+            { xPercent: -52 * sign, opacity: 0 },
+            {
+              xPercent: 52 * sign,
+              opacity: .72,
+              duration: .64,
+              ease: "expo.inOut",
+            },
+            .03
+          )
+          .to("#fx-prism", { opacity: 0, duration: .18 }, .48)
+          .fromTo(
+            "#fx-flare",
+            { xPercent: -38 * sign, scale: .18, opacity: 0 },
+            {
+              xPercent: 34 * sign,
+              scale: 1.34,
+              opacity: .74,
+              duration: .42,
+              ease: "power2.out",
+            },
+            .08
+          )
+          .to(
+            "#fx-flare",
+            { scale: 1.8, opacity: 0, duration: .3, ease: "power3.out" },
+            .38
+          );
+      }
+
+      function buildCurtainTransition(direction) {
+        const sign = direction < 0 ? -1 : 1;
+        return window.gsap.timeline({ paused: true })
+          .fromTo(
+            "#fx-curtain-top",
+            { yPercent: -108, xPercent: -6 * sign, opacity: 0 },
+            {
+              yPercent: -1,
+              xPercent: 0,
+              opacity: .98,
+              duration: .22,
+              ease: "expo.out",
+            },
+            0
+          )
+          .fromTo(
+            "#fx-curtain-bottom",
+            { yPercent: 108, xPercent: 6 * sign, opacity: 0 },
+            {
+              yPercent: 1,
+              xPercent: 0,
+              opacity: .98,
+              duration: .22,
+              ease: "expo.out",
+            },
+            0
+          )
+          .to(
+            "#fx-curtain-top",
+            {
+              yPercent: -108,
+              xPercent: 7 * sign,
+              opacity: 0,
+              duration: .3,
+              ease: "power3.out",
+            },
+            .34
+          )
+          .to(
+            "#fx-curtain-bottom",
+            {
+              yPercent: 108,
+              xPercent: -7 * sign,
+              opacity: 0,
+              duration: .3,
+              ease: "power3.out",
+            },
+            .34
+          )
+          .fromTo(
+            "#fx-flare",
+            { xPercent: 0, scale: .12, opacity: 0 },
+            {
+              xPercent: 0,
+              scale: .72,
+              opacity: .34,
+              duration: .28,
+              ease: "power2.out",
+            },
+            .18
+          )
+          .to(
+            "#fx-flare",
+            { scale: 1.16, opacity: 0, duration: .22, ease: "power3.out" },
+            .38
+          );
+      }
+
+      function buildApertureTransition(direction) {
+        const sign = direction < 0 ? -1 : 1;
+        return window.gsap.timeline({ paused: true })
+          .fromTo(
+            "#fx-ring-a",
+            { scale: .16, rotation: -12 * sign, opacity: .9 },
+            {
+              scale: 1.92,
+              rotation: 20 * sign,
+              opacity: 0,
+              duration: .62,
+              ease: "expo.out",
+            },
+            0
+          )
+          .fromTo(
+            "#fx-ring-b",
+            { scale: .12, rotation: 10 * sign, opacity: .88 },
+            {
+              scale: 2.34,
+              rotation: -24 * sign,
+              opacity: 0,
+              duration: .58,
+              ease: "power3.out",
+            },
+            .1
+          )
+          .fromTo(
+            "#fx-flare",
+            { xPercent: 0, scale: .08, opacity: 0 },
+            {
+              xPercent: 0,
+              scale: .92,
+              opacity: .52,
+              duration: .3,
+              ease: "power2.out",
+            },
+            .06
+          )
+          .to(
+            "#fx-flare",
+            { scale: 1.5, opacity: 0, duration: .3, ease: "power3.out" },
+            .3
+          );
+      }
+
+      function buildTransitionTimelines() {
+        if (paperTheme) return;
+        transitionTimelines = {
+          prism: {
+            forward: buildPrismTransition(1),
+            backward: buildPrismTransition(-1),
+          },
+          curtain: {
+            forward: buildCurtainTransition(1),
+            backward: buildCurtainTransition(-1),
+          },
+          aperture: {
+            forward: buildApertureTransition(1),
+            backward: buildApertureTransition(-1),
+          },
+        };
+      }
+
+      function resetTransitionFx() {
+        if (paperTheme) return;
+        Object.values(transitionTimelines).forEach((pair) => {
+          Object.values(pair).forEach((timeline) => timeline.pause(0));
+        });
+        window.gsap.set("#transition-fx > i", { clearProps: "transform" });
+        window.gsap.set("#transition-fx > i", { opacity: 0 });
+      }
+
+      function finishPaperPush() {
+        if (paperPush) paperPush.progress(1);
+      }
+
+      function playPaperPush(fromIndex, toIndex, family) {
+        if (family !== "paper" || reduceMotion.matches) {
+          resetInactive();
+          return;
+        }
+        const incomingSlide = slides[toIndex];
+        const outgoingSlide = slides[fromIndex];
+        const direction = toIndex > fromIndex ? 1 : -1;
+        // keep the outgoing page under the incoming sheet while it slides in
+        window.gsap.set(outgoingSlide, { x: (toIndex - fromIndex) * 1920, zIndex: 1 });
+        window.gsap.set(incomingSlide, { zIndex: 2 });
+        incomingSlide.classList.add("is-paper-top");
+        paperPush = window.gsap.timeline({
+          onComplete: () => {
+            window.gsap.set([outgoingSlide, incomingSlide], { clearProps: "transform,zIndex" });
+            incomingSlide.classList.remove("is-paper-top");
+            paperPush = null;
+            resetInactive();
+          },
+        }).fromTo(
+          incomingSlide,
+          { x: direction * 1920 * .16 },
+          { x: 0, duration: .3, ease: "power3.out" }
+        );
+      }
+
+      function playTransition(direction, family) {
+        if (reduceMotion.matches) return;
+        resetTransitionFx();
+        const directionKey = direction < 0 ? "backward" : "forward";
+        const timeline = transitionTimelines[family]?.[directionKey];
+        timeline?.restart();
+      }
+
+      function poseTransition(family, direction = 1, progress = .5) {
+        resetTransitionFx();
+        const directionKey = direction < 0 ? "backward" : "forward";
+        const timeline = transitionTimelines[family]?.[directionKey];
+        if (!timeline) return null;
+        deck.dataset.transitionFamily = family;
+        const resolvedProgress = Math.max(0, Math.min(1, Number(progress)));
+        timeline.pause(timeline.duration() * resolvedProgress);
+        return {
+          family,
+          direction: directionKey,
+          progress: resolvedProgress,
+        };
+      }
+
+      function updateUi() {
+        slides.forEach((slide, index) => {
+          const active = index === current;
+          slide.setAttribute("aria-hidden", active ? "false" : "true");
+          slide.classList.toggle("is-current", active);
+          slide.classList.toggle("is-before", index < current);
+          slide.classList.toggle("is-after", index > current);
+          slide.classList.toggle("is-near", Math.abs(index - current) <= 1);
+        });
+        countLabel.textContent = `${String(current + 1).padStart(2, "0")} / 12`;
+        chapterLabel.textContent = chapterFor(current);
+        sceneNumber.textContent = String(current + 1).padStart(2, "0");
+        progressFill.style.transform = `scaleX(${(current + 1) / slides.length})`;
+        previousButton.disabled = current === 0;
+        nextButton.disabled = current === slides.length - 1;
+        applyPalette(current);
+        const hash = `#${current + 1}`;
+        if (location.hash !== hash) history.replaceState(null, "", hash);
+      }
+
+      function go(index, options = {}) {
+        const nextIndex = clamp(Number(index) || 0);
+        if (
+          nextIndex === current
+          && options.replay !== false
+          && options.force !== true
+        ) {
+          replayCurrent();
+          return current;
+        }
+        if (paperTheme) finishPaperPush();
+        const previousIndex = current;
+        const transitionFamily = transitionFamilyFor(previousIndex, nextIndex);
+        const incoming = timelineFor(nextIndex);
+        if (incoming) incoming.pause(0);
+        current = nextIndex;
+        deck.dataset.transitionFamily = transitionFamily;
+        if (options.instant || paperTheme) {
+          track.style.transition = "none";
+        }
+        track.style.transform = `translate3d(${-current * 1920}px, 0, 0)`;
+        updateUi();
+        if (options.replay !== false) {
+          replayCurrent();
+        }
+        if (paperTheme && !options.instant && current !== previousIndex) {
+          playPaperPush(previousIndex, current, transitionFamily);
+        } else if (!options.instant && current !== previousIndex) {
+          playTransition(
+            current > previousIndex ? 1 : -1,
+            transitionFamily
+          );
+        }
+        if (options.instant || reduceMotion.matches) {
+          resetInactive();
+          requestAnimationFrame(() => {
+            track.style.transition = "";
+          });
+        }
+        return current;
+      }
+
+      function next() { return go(current + 1); }
+      function previous() { return go(current - 1); }
+
+      function fitStage() {
+        const scale = Math.min(
+          window.innerWidth / 1920,
+          window.innerHeight / 1080
+        );
+        stage.style.transform =
+          `translate(-50%, -50%) scale(${Math.max(.05, scale)})`;
+      }
+
+      track.addEventListener("transitionend", (event) => {
+        if (event.target !== track || event.propertyName !== "transform") return;
+        resetInactive();
+      });
+      previousButton.addEventListener("click", previous);
+      nextButton.addEventListener("click", next);
+      replayButton.addEventListener("click", replayCurrent);
+      window.addEventListener("resize", fitStage);
+      window.addEventListener("keydown", (event) => {
+        if (event.altKey || event.ctrlKey || event.metaKey) return;
+        if (["ArrowRight", "ArrowDown", "PageDown", " "].includes(event.key)) {
+          event.preventDefault();
+          next();
+        } else if (["ArrowLeft", "ArrowUp", "PageUp"].includes(event.key)) {
+          event.preventDefault();
+          previous();
+        } else if (event.key === "Home") {
+          event.preventDefault();
+          go(0);
+        } else if (event.key === "End") {
+          event.preventDefault();
+          go(slides.length - 1);
+        } else if (event.key.toLowerCase() === "r") {
+          event.preventDefault();
+          replayCurrent();
+        } else if (event.key.toLowerCase() === "f") {
+          event.preventDefault();
+          if (!document.fullscreenElement) deck.requestFullscreen?.();
+          else document.exitFullscreen?.();
+        }
+      });
+      deck.addEventListener("pointerdown", (event) => {
+        if (event.pointerType === "touch" || event.pointerType === "pen") {
+          touchStartX = event.clientX;
+        }
+      });
+      deck.addEventListener("pointerup", (event) => {
+        if (touchStartX === null) return;
+        const delta = event.clientX - touchStartX;
+        touchStartX = null;
+        if (Math.abs(delta) < 72) return;
+        if (delta < 0) next();
+        else previous();
+      });
+      window.addEventListener("hashchange", () => {
+        const target = Number(location.hash.slice(1)) - 1;
+        if (Number.isInteger(target)) go(target);
+      });
+
+      window.__ptMakerPresenter = {
+        ready: false,
+        get index() { return current; },
+        get count() { return slides.length; },
+        go,
+        next,
+        previous,
+        replay: replayCurrent,
+        poseTransition,
+        transitionContract: paperTheme
+          ? { theme: "paper", families: paperFamilies, required: [], jump: "cut" }
+          : {
+            theme: "default",
+            families: transitionFamilies,
+            required: transitionFamilies,
+            jump: "aperture",
+          },
+        state() {
+          const timeline = timelineFor(current);
+          return {
+            index: current,
+            count: slides.length,
+            sceneId: slides[current]?.dataset.sceneId || null,
+            transitionFamily: deck.dataset.transitionFamily || null,
+            timelineProgress: timeline ? timeline.progress() : null,
+            runtimeError: deck.dataset.runtimeError === "true",
+          };
+        },
+      };
+
+      window.addEventListener("load", () => {
+        if (typeof window.gsap === "undefined") {
+          deck.dataset.runtimeError = "true";
+          document.getElementById("presenter-error").textContent =
+            "GSAP을 불러오지 못해 장면 애니메이션을 실행할 수 없습니다.";
+          return;
+        }
+        fitStage();
+        buildTransitionTimelines();
+        resetTransitionFx();
+        const start = clamp((Number(location.hash.slice(1)) || 1) - 1);
+        go(start, { instant: true, replay: true, force: true });
+        window.__ptMakerPresenter.ready = true;
+        document.documentElement.dataset.presenterReady = "true";
+      }, { once: true });
+    })();
+
+  </script>
+</body>
+</html>

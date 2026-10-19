@@ -1,0 +1,93 @@
+{
+  "deck_version": "v2",
+  "pt_qa_result": "pass",
+  "score": 92,
+  "p0_count": 0,
+  "p2_count": 7,
+  "html_guard_result": "pass",
+  "html_guard_p0_count": 0,
+  "media_guard_result": "pass",
+  "media_guard_p0_count": 0,
+  "rendered_pdf": true,
+  "contact_sheet_reviewed": true,
+  "regression_check": "pass",
+  "artifacts": {
+    "html": "TeslaRoadster2026v2.html",
+    "pdf": "TeslaRoadster2026v2.pdf",
+    "contact_sheet": "TeslaRoadster2026v2_contact.png",
+    "full_size_png_dir": "qa/full-size"
+  },
+  "full_size_pages_reviewed": {
+    "cover": [1],
+    "section_openers": [],
+    "person_photo_led": [3],
+    "real_maps": [],
+    "diagrams_svgs_timelines": [2, 4, 6, 10],
+    "activities_quizzes": [],
+    "final": [12],
+    "all_pages": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  },
+  "checklist": {
+    "purpose_audience_context": "pass",
+    "claim_headlines": "pass",
+    "one_idea_per_slide": "pass",
+    "visual_material_relevance": "pass",
+    "visual_hierarchy": "pass",
+    "design_token_consistency": "pass",
+    "text_fit_wrapping": "pass",
+    "korean_line_breaks": "pass",
+    "layout_alignment": "pass",
+    "safe_area_footer": "pass",
+    "diagram_marker_accuracy": "pass",
+    "image_subject_integrity": "pass",
+    "contrast_readability": "pass",
+    "motion_purposeful": "pass",
+    "continuity_seams": "pass",
+    "reduced_motion_accessibility": "pass",
+    "interactive_navigation": "pass",
+    "html_guard_result": "pass",
+    "pdf_export_page_order": "pass",
+    "contact_sheet_regression": "pass"
+  },
+  "errata_compliance": {
+    "E1": "pass (p6 four demos, title and 4-panel drawing; p9 lists all four)",
+    "E2": "pass (0.81 s tagged 주장 on p6, p9, p10; the run stays 시연)",
+    "E3": "pass (p8 'Rocket만 230 mph 이상')",
+    "E4": "pass (Thrust 5 s item removed)",
+    "E5": "pass (no McMurtry bar)",
+    "E6": "pass (p4 2025.11 -> 2027~28)",
+    "E7": "pass (no CBC source; notes cite Electrek and CNN, mention the Starman mannequin)",
+    "E8": "not applicable",
+    "E9": "pass (no $250,000 statement)",
+    "E10": "pass (CNBC 2017-11-17 on p2, p3)",
+    "E11": "pass (Plaid 1.98 s 검증; no Rimac)",
+    "E12": "pass (no rollout attached to 0.59 s)",
+    "E13": "pass (계산 on p1 3,255일, p3 998 km, p5 Korean start time, p8 2017 km values; legend on p2)"
+  },
+  "rubric": {
+    "narrative_audience": {"score": 17, "max": 18, "notes": "Claim titles read as one story; every number carries 주장/시연/검증/계산 matching facts.json after the errata update. -1: 0.81 s and 'no price / 2028' each appear on three slides."},
+    "visual_system": {"score": 13, "max": 14, "notes": "Tokens, status colours, kicker and footer identical on 12 pages; new 계산 chip fits the system. -1: card treatments differ slightly on p7, p9, p11; 시연 tag placement varies between p6 cards."},
+    "layout_typography": {"score": 17, "max": 18, "notes": "Full-size PNGs of all 12 pages of the v2 PDF: no overflow, clipping, overlap or footer collision; no short orphan lines; layout probe lowest content >= 49 px above the footer. -1: p9 lower third light; p11 step indent has little meaning."},
+    "visual_evidence": {"score": 13, "max": 14, "notes": "Credited CC BY-SA photo (p3, captioned as 2017 prototype); p6 redrawn as four labelled explainer panels; p10 bar lengths match values. -1: bystander heads cut by the source photo's top edge (car intact)."},
+    "motion_continuity": {"score": 12, "max": 14, "notes": "Three finite motion families; v2 live check: p4 wipe resolves to opacity 1 with 0 running animations, no infinite animation. -2: no per-seam capture or reverse-direction record."},
+    "interaction_accessibility": {"score": 9, "max": 10, "notes": "Keyboard ArrowRight/ArrowLeft verified on v2; notes 12/12; reduced-motion and print show all content; alt text and aria labels on photo, SVG and chart groups. -1: touch navigation not tested."},
+    "technical_delivery": {"score": 11, "max": 12, "notes": "Guards pass with 0 findings; v2 PDF from export_pdf_shots.py, 12 pages 16:9; contact sheet and full-size PNGs from that exact PDF. -1: faint 1 px raster seam on the p4 staircase in the 2048 px capture."}
+  },
+  "diagram_checks": [
+    {"slide": 2, "name": "flow steps", "full_size_reviewed": true, "connector_endpoints": "pass", "labels_clear": "pass", "no_collisions": "pass", "layout_alignment": "pass"},
+    {"slide": 4, "name": "timeline stairs", "full_size_reviewed": true, "connector_endpoints": "pass", "labels_clear": "pass", "no_collisions": "pass", "layout_alignment": "pass"},
+    {"slide": 6, "name": "demo SVG, 4 panels (ramp flip, jump over 5 cars, 0-60 run on Tesla's timer, vertical launch into a corkscrew)", "full_size_reviewed": true, "connector_endpoints": "pass", "labels_clear": "pass", "no_collisions": "pass", "layout_alignment": "pass"},
+    {"slide": 10, "name": "diagram bars", "full_size_reviewed": true, "connector_endpoints": "pass", "labels_clear": "pass", "no_collisions": "pass", "layout_alignment": "pass"}
+  ],
+  "qa_agent": "v1: independent reviewer 87 -> 91 (pass). v2 (errata): fresh independent reviewer round 1 = 87, P0 1 (p5 Korean start time tagged 검증; facts.json now marks it calculated); fixed with 계산 on p5 plus E13 consistency on p3/p8; round 2 = 92/100, P0 0, all 13 errata pass",
+  "remaining_p2": [
+    "p5 '시작' vs '예정 시각' wording",
+    "p6 시연 tag placement differs between cards (subtitle covers all four)",
+    "p9 lower third light",
+    "p11 step indent has little meaning",
+    "0.81 s and 'no price / 2028' repeated on three slides",
+    "p3 bystander heads cut by the source photo; p10 focal restates title",
+    "p4 faint 1 px raster seam in the 2048 px capture"
+  ],
+  "notes": "Ledger written after inspecting the v2 PDF contact sheet and all 12 full-size PNGs rendered from it. qa_final_review_gate.py needs the owner's review and was not run."
+}

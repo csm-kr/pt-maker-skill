@@ -1,0 +1,36 @@
+<template id="scene-3-template">
+  <div data-composition-id="scene-3" data-width="1920" data-height="1080" class="comp" id="s3-root">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <p class="kicker" id="s3-kicker"><i class="kbar" style="--k:var(--claim)"></i>2017년의 약속</p>
+    <div class="status-rail" aria-label="이 장면 숫자의 근거 표시"><span class="st st-claim on">주장</span><span class="st st-demo">시연</span><span class="st st-ver">검증</span><span class="st st-rep">보도</span></div>
+    <div class="scene-content" id="s3-content">
+      <h2 class="title " id="s3-title" style="top:128px;left:96px"><span class="ln" id="s3-l1">2017년 테슬라의 <span class="c-claim">약속</span>:</span><span class="ln" id="s3-l2">1.9초, 620마일, 4인승, 2020년 출시</span></h2>
+      <figure class="photo" id="s3-photo" style="left:96px;top:360px;width:840px;height:347px">
+        <img id="s3-img" src="assets/roadster-2017-prototype-side.jpg" alt="빨간색 2017년 Roadster 시제품의 옆모습" width="840" height="347">
+      </figure>
+      <p class="photo-cap" id="s3-cap" style="left:96px;top:724px;width:840px">2017년 시제품, 2019년 촬영 · 2026년 차가 아님</p>
+      <p class="photo-credit" id="s3-credit" style="left:96px;top:766px;width:840px">Photo: Editor928111, CC BY-SA 4.0, via Wikimedia Commons</p>
+      <p class="pricebar" id="s3-price" style="left:96px;top:830px">기본가 <span class="c-claim">$200,000</span> · 예약금 <span class="c-claim">$50,000</span><span class="tag t-claim">주장</span></p>
+      <div class="mcard" id="s3-c1" style="left:984px;top:360px;width:408px;height:248px"><p class="mcard-lab">0-60 mph<span class="tag t-claim">주장</span></p><p class="mcard-big c-claim">1.9초</p><p class="mcard-note">정지 → 시속 60마일까지의 시간<br>시속 60마일 = 약 97 km</p></div><div class="mcard" id="s3-c2" style="left:1416px;top:360px;width:408px;height:248px"><p class="mcard-lab">주행거리<span class="tag t-claim">주장</span></p><p class="mcard-big c-claim">620마일</p><p class="mcard-note">약 998 km</p></div><div class="mcard" id="s3-c3" style="left:984px;top:632px;width:408px;height:248px"><p class="mcard-lab">좌석<span class="tag t-claim">주장</span></p><p class="mcard-big c-claim">4석</p><p class="mcard-note">2+2, 네 바퀴 굴림</p></div><div class="mcard" id="s3-c4" style="left:1416px;top:632px;width:408px;height:248px"><p class="mcard-lab">출시 예정<span class="tag t-claim">주장</span></p><p class="mcard-big c-claim">2020년</p><p class="mcard-note">2017년 11월 공개 때 밝힌 시점</p></div>
+    </div>
+    <p class="src" id="s3-src"><b>Details:</b> Tesla Roadster 페이지 2017-11-17 보관본(0-60·주행거리·좌석·가격·예약금) · CNBC(2020년 출시 예정) · 97 km·998 km는 단위 환산</p>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const s3T = { photo: 1.25, cap: 2.25, cards: 2.75, price: 4.35 };
+      const s3Tl = gsap.timeline({ paused: true });
+      s3Tl.from("#s3-kicker", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, .12);
+      s3Tl.from("#s3-root .status-rail", { opacity: 0, duration: .5, ease: "power1.out" }, .2);
+      s3Tl.from("#s3-src", { opacity: 0, duration: .6, ease: "power1.out" }, 2.60);
+      s3Tl.fromTo("#s3-l1", { clipPath: "inset(-12% 0% 100% 0%)", y: 34 }, { clipPath: "inset(-12% 0% -12% 0%)", y: 0, duration: .58, ease: "power3.out" }, 0.30);
+      s3Tl.fromTo("#s3-l2", { clipPath: "inset(-12% 0% 100% 0%)", y: 34 }, { clipPath: "inset(-12% 0% -12% 0%)", y: 0, duration: .58, ease: "power3.out" }, 0.72);
+      s3Tl.fromTo("#s3-photo", { clipPath: "inset(0% 100% 0% 0% round 18px)" }, { clipPath: "inset(0% 0% 0% 0% round 18px)", duration: 1.1, ease: "power3.inOut" }, s3T.photo);
+      s3Tl.fromTo("#s3-img", { scale: 1.12, x: -40 }, { scale: 1, x: 0, duration: 1.7, ease: "power2.out" }, s3T.photo);
+      s3Tl.from("#s3-cap", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, s3T.cap);
+      s3Tl.from("#s3-credit", { opacity: 0, duration: .45, ease: "power1.out" }, s3T.cap + .2);
+      s3Tl.from("#s3-root .mcard", { scale: 1.08, opacity: 0, transformOrigin: "50% 50%", duration: .42, ease: "back.out(1.6)", stagger: .32 }, s3T.cards);
+      s3Tl.from("#s3-price", { x: -24, opacity: 0, duration: .5, ease: "power2.out" }, s3T.price);
+      s3Tl.set("#s3-src", { opacity: 1 }, 10);
+      window.__timelines["scene-3"] = s3Tl;
+    </script>
+  </div>
+</template>

@@ -1,0 +1,7 @@
+# asset | source/generation mode | URL or prompt note | accessed/generated date
+roadster-2017-prototype-side.jpg | Wikimedia Commons photo "NextGenTeslaRoadster (cropped).jpg" by Editor928111, license CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0) | file page https://commons.wikimedia.org/wiki/File:NextGenTeslaRoadster_(cropped).jpg ; the 960x396 Wikimedia thumbnail, saved unmodified. Shows the 2017 prototype, photographed 2019-06-11; the slide caption says it is not the 2026 car. Used on scene 3 with an on-slide credit. | accessed 2026-10-19
+roadster silhouette (all scenes) | own inline SVG drawing | a generic low two-seat roadster in side view, drawn from simple curves; not traced from any Tesla image or design | made 2026-10-19
+charts, timelines, diagrams, checkboxes, seat icons | own inline SVG/CSS | built from research/facts.json values only (see build-notes.md for fact ids) | made 2026-10-19
+no logos, wordmarks, press photos, livestream frames or page screenshots are used | - | - | -
+GSAP 3.14.2 | runtime library loaded at view time from the CDN, as in the pt-maker template (not shipped in this folder); GreenSock Standard 'no charge' license, https://gsap.com/standard-license | https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js | 2026-10-19
+HyperFrames composition contract | template adapted by pt-maker from heygen-com/hyperframes 0.7.70 (Apache-2.0) | https://github.com/heygen-com/hyperframes | 2026-10-19

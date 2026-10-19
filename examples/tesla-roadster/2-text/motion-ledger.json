@@ -1,0 +1,21 @@
+{
+  "mode": "presentation",
+  "production_direction": "text",
+  "dominant_current": "top-to-bottom reading order inside each slide; no cross-slide carrier",
+  "deck_version": "v2",
+  "transition_vocabulary": [
+    "fade (Reveal slide transition, fast)",
+    "rise / fade (in-slide entrance by data-motion-order)",
+    "wipe (staircase on 04 and bar chart on 10)"
+  ],
+  "continuity_contract": {
+    "subject_identity": "none (text-led deck, no image sequence)",
+    "camera": "fixed 1280x720 stage",
+    "environment": "cream ruled paper for content slides; solid ink field for cover (01) and closing (12)",
+    "palette": "ink #20174A, paper #FAF3DE, accent #C73463; status colours claim #8A4B00/#FBE5C2, demo #1B5592/#DCEAF7, verified #1E6542/#D8EEDF",
+    "invariants": ["kicker top-left at the same coordinates", "footer source line left, 'unofficial' + page number right", "every number carries a 주장/시연/검증 tag"]
+  },
+  "seams": [],
+  "image_sequences": [],
+  "static_pose": "prefers-reduced-motion and print show the final pose; PDF built from reduced-motion screenshots (export_pdf_shots.py)"
+}

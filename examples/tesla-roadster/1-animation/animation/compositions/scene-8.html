@@ -1,0 +1,64 @@
+<template id="scene-8-template">
+  <div data-composition-id="scene-8" data-width="1920" data-height="1080" class="comp" id="s8-root">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <p class="kicker" id="s8-kicker"><i class="kbar" style="--k:var(--claim)"></i>2017 vs 2026</p>
+    <div class="status-rail" aria-label="이 장면 숫자의 근거 표시"><span class="st st-claim on">주장</span><span class="st st-demo">시연</span><span class="st st-ver">검증</span><span class="st st-rep on">보도</span></div>
+    <div class="scene-content" id="s8-content">
+      <h2 class="title " id="s8-title" style="top:128px;left:96px"><span class="ln" id="s8-l1">2017년 약속과 비교하면</span><span class="ln" id="s8-l2">주행거리·좌석은 절반 수준, <span class="c-alert">가격은 아직 없다</span></span></h2>
+      <p class="legend" id="s8-legend" style="right:96px;top:316px"><i class="lg lg-old"></i>2017 약속 <i class="lg lg-new"></i>2026 발표 · 모두 테슬라 주장<span class="tag t-claim">주장</span></p>
+      <div class="rowlab" style="left:96px;top:376px"><p class="rowlab-t">주행거리</p><p class="rowlab-s">한 번 충전</p></div>
+      <div class="bar bar-old" id="s8-b1o" style="left:420px;top:382px;width:900px"></div>
+      <p class="bval" id="s8-v1o" style="left:1340px;top:376px">620마일 · 약 998 km</p>
+      <div class="bar bar-new" id="s8-b1n" style="left:420px;top:426px;width:435.5px"></div>
+      <svg class="car " id="s8-car" viewBox="0 0 300 100" width="104" height="34.7" style="left:859.5px;top:428.4px" aria-hidden="true"><ellipse class="cs" cx="150" cy="97" rx="140" ry="5"/><path class="cb" d="M14 76 C10 65 14 57 30 53 L104 47 C124 36 146 30 168 31 C186 32 200 38 214 45 L276 53 C290 56 296 63 294 70 L292 76 L262 76 A24 24 0 0 0 214 76 L92 76 A24 24 0 0 0 44 76 Z"/><path class="cg" d="M124 47 C138 39 152 35 166 36 C180 37 191 41 200 46 L128 49 Z"/><circle class="cw" cx="68" cy="78" r="19"/><circle class="ch" cx="68" cy="78" r="6"/><circle class="cw" cx="238" cy="78" r="19"/><circle class="ch" cx="238" cy="78" r="6"/><circle class="cl" cx="286" cy="61" r="3.5"/><rect class="ct" x="15" y="55" width="6" height="7" rx="2"/></svg>
+      <p class="bval c-claim" id="s8-v1n" style="left:979.5px;top:420px">300마일 이상 · 약 480 km</p>
+      <div class="rowlab" style="left:96px;top:504px"><p class="rowlab-t">최고 속도</p><p class="rowlab-s">mph</p></div>
+      <div class="bar bar-old" id="s8-b2o" style="left:420px;top:510px;width:900px"></div>
+      <p class="bval" id="s8-v2o" style="left:1340px;top:504px">250 mph 이상</p>
+      <div class="bar bar-new" id="s8-b2n" style="left:420px;top:554px;width:828px"></div>
+      <p class="bval c-claim" id="s8-v2n" style="left:1268px;top:548px">230 mph 이상 (Rocket)<span class="bval-sub">엔지니어: “지금은 214” · Top Gear<span class="tag t-claim">주장</span></span></p>
+      <div class="rowlab" style="left:96px;top:640px"><p class="rowlab-t">좌석</p><p class="rowlab-s">자리 수</p></div>
+      <div id="s8-seats-old"><div class="seat seat-old" style="left:420px;top:644px"></div><div class="seat seat-old" style="left:478px;top:644px"></div><div class="seat seat-old" style="left:536px;top:644px"></div><div class="seat seat-old" style="left:594px;top:644px"></div></div>
+      <p class="bval" id="s8-v3o" style="left:664px;top:640px">4석 (2+2)</p>
+      <div id="s8-seats-new"><div class="seat seat-new" style="left:420px;top:700px"></div><div class="seat seat-new" style="left:478px;top:700px"></div></div>
+      <p class="bval c-claim" id="s8-v3n" style="left:548px;top:696px">2석 · Rocket은 1석</p>
+      <div class="rowlab" style="left:96px;top:782px"><p class="rowlab-t">가격</p><p class="rowlab-s">기본 가격</p></div>
+      <div class="cell cell-old" id="s8-b4o" style="left:420px;top:782px;width:330px">$200,000부터</div>
+      <p class="bval" id="s8-v4o" style="left:770px;top:784px">2017년 기본가</p>
+      <div class="cell cell-empty" id="s8-b4n" style="left:420px;top:832px;width:330px">?</div>
+      <p class="bval c-alert" id="s8-v4n" style="left:770px;top:834px">2026년 가격 발표 없음<span class="tag t-rep">보도</span></p>
+    </div>
+    <p class="src" id="s8-src"><b>Details:</b> 2017 — Tesla 페이지 2017-11-17 보관본 · 2026 — Tesla X·페이지 2026-10-16 보관본 · 214 mph — Top Gear · 가격 미발표 — NBC · km는 단위 환산</p>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const s8T = { legend: 1.2, r1: 1.55, r2: 3.3, r3: 4.7, r4: 5.9 };
+      const s8Tl = gsap.timeline({ paused: true });
+      s8Tl.from("#s8-kicker", { y: 14, opacity: 0, duration: .45, ease: "power2.out" }, .12);
+      s8Tl.from("#s8-root .status-rail", { opacity: 0, duration: .5, ease: "power1.out" }, .2);
+      s8Tl.from("#s8-src", { opacity: 0, duration: .6, ease: "power1.out" }, 3.00);
+      s8Tl.fromTo("#s8-l1", { clipPath: "inset(-12% 100% -12% 0%)" }, { clipPath: "inset(-12% 0% -12% 0%)", duration: .62, ease: "power2.inOut" }, 0.30);
+      s8Tl.fromTo("#s8-l2", { clipPath: "inset(-12% 100% -12% 0%)" }, { clipPath: "inset(-12% 0% -12% 0%)", duration: .62, ease: "power2.inOut" }, 0.72);
+      s8Tl.from("#s8-legend", { opacity: 0, duration: .5 }, s8T.legend);
+      s8Tl.from("#s8-root .rowlab", { opacity: 0, x: -16, duration: .4, ease: "power2.out", stagger: .2 }, s8T.r1 - .2);
+      s8Tl.from("#s8-b1o", { scaleX: 0, transformOrigin: "0% 50%", duration: .75, ease: "power2.out" }, s8T.r1);
+      s8Tl.from("#s8-v1o", { opacity: 0, x: -10, duration: .3 }, s8T.r1 + .65);
+      s8Tl.from("#s8-b1n", { scaleX: 0, transformOrigin: "0% 50%", duration: 1.0, ease: "power2.out" }, s8T.r1 + .75);
+      s8Tl.fromTo("#s8-car", { x: -435.5, opacity: 0 }, { x: 0, opacity: 1, duration: 1.0, ease: "power2.out" }, s8T.r1 + .75);
+      s8Tl.from("#s8-v1n", { opacity: 0, x: -10, duration: .3 }, s8T.r1 + 1.7);
+      s8Tl.from("#s8-b2o", { scaleX: 0, transformOrigin: "0% 50%", duration: .7, ease: "power2.out" }, s8T.r2);
+      s8Tl.from("#s8-v2o", { opacity: 0, x: -10, duration: .3 }, s8T.r2 + .6);
+      s8Tl.from("#s8-b2n", { scaleX: 0, transformOrigin: "0% 50%", duration: .8, ease: "power2.out" }, s8T.r2 + .5);
+      s8Tl.from("#s8-v2n", { opacity: 0, x: -10, duration: .3 }, s8T.r2 + 1.25);
+      s8Tl.from("#s8-seats-old .seat", { scale: 0, transformOrigin: "50% 100%", duration: .25, ease: "back.out(2)", stagger: .08 }, s8T.r3);
+      s8Tl.from("#s8-v3o", { opacity: 0, x: -10, duration: .3 }, s8T.r3 + .4);
+      s8Tl.from("#s8-seats-new .seat", { scale: 0, transformOrigin: "50% 100%", duration: .25, ease: "back.out(2)", stagger: .08 }, s8T.r3 + .55);
+      s8Tl.from("#s8-v3n", { opacity: 0, x: -10, duration: .3 }, s8T.r3 + .85);
+      s8Tl.from("#s8-b4o", { opacity: 0, x: -20, duration: .45, ease: "power2.out" }, s8T.r4);
+      s8Tl.from("#s8-v4o", { opacity: 0, x: -10, duration: .3 }, s8T.r4 + .5);
+      s8Tl.from("#s8-b4n", { opacity: 0, duration: .4 }, s8T.r4 + .65);
+      s8Tl.from("#s8-v4n", { scale: 1.35, opacity: 0, transformOrigin: "0% 50%", duration: .4, ease: "back.out(2)" }, s8T.r4 + .95);
+      s8Tl.set("#s8-src", { opacity: 1 }, 10);
+      window.__timelines["scene-8"] = s8Tl;
+    </script>
+  </div>
+</template>
