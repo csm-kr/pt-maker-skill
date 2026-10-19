@@ -1,0 +1,81 @@
+/* pt-maker judged deck: default look.
+   One .slide = one PDF page at the template size. The gates read these names, so keep them:
+     .slide[data-tpl][data-slot][data-main]   .hd .tt h1 .sub   .ft .src .pg   .card .crop
+     .nowc (template words)  .nofact (a number that is not a claim)  .tart (template art, added by the build)
+     .ph (unfilled placeholder)  .fact .dots (from facts.json)  .nw .seg (no-break helpers)  .ic .qr
+   Text starts at 28 px. When a template's smallest size (template.json min_font_px) is larger, raise the
+   small sizes here; the layout gate fails anything below it. */
+:root {
+  --ink: #1C1F23;
+  --text: #3A4048;
+  --muted: #5E6670;
+  --rule: #D5DAE0;
+  --panel: #F2F4F6;
+  --accent: #0E7C66;
+  --accent-soft: #E1F2EE;
+  --alert: #B42318;
+  --alert-soft: #FDECEA;
+  --sans: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --tpl: var(--sans);
+}
+
+@page { size: 1920px 1080px; margin: 0; }
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+body { font-family: var(--sans); color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+@media screen {
+  body { background: #6B7280; padding: 32px 0; }
+  .slide { margin: 0 auto 32px; box-shadow: 0 8px 24px rgba(0, 0, 0, .25); }
+}
+
+.slide {
+  position: relative; width: 1920px; height: 1080px; overflow: hidden; isolation: isolate; background: #FFFFFF;
+  padding: var(--top, 96px) 96px 0 var(--left, 96px);
+  break-after: page; page-break-after: always;
+}
+.slide:last-child { break-after: auto; page-break-after: auto; }
+h1, h2, h3, p, ul, ol, figure, blockquote { margin: 0; }
+a { color: inherit; }
+img { display: block; max-width: 100%; }
+
+/* Header: the template's slot title, then the claim. */
+.hd { margin-bottom: 32px; }
+.tt { font-family: var(--tpl); font-size: var(--tt-size, 40px); font-weight: 500; line-height: 1.2; color: var(--muted); margin-bottom: 16px; }
+.tt.on-art { position: absolute; margin: 0; z-index: 4; }
+.hd h1 { font-size: 56px; font-weight: 750; line-height: 1.12; letter-spacing: -0.012em; max-width: 1680px; text-wrap: balance; }
+.hd .sub { font-size: 32px; line-height: 1.4; color: var(--text); margin-top: 16px; max-width: 1500px; }
+
+/* Body */
+p, li { font-size: 30px; line-height: 1.5; color: var(--text); }
+li + li { margin-top: 12px; }
+.card { background: var(--panel); border-radius: 20px; padding: 32px 40px; }
+.card h3 { font-size: 34px; line-height: 1.25; color: var(--ink); margin-bottom: 12px; }
+.num { font-size: 88px; font-weight: 750; line-height: 1; color: var(--accent); }
+.fact { white-space: nowrap; }
+
+/* Footer: what was measured and where it lives, at most three lines, then the page number. */
+.ft {
+  position: absolute; left: 96px; right: 96px; bottom: var(--ft-bottom, 28px);
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 48px;
+  font-size: 28px; line-height: 1.3; color: var(--muted);
+  border-top: 2px solid var(--rule); padding-top: 12px;
+}
+.ft .src { flex: 1; }
+.ft .pg { white-space: nowrap; color: var(--ink); font-weight: 600; }
+
+/* Build helpers */
+code { font-family: var(--mono); font-size: max(28px, .9em); white-space: nowrap; }
+code:has(.seg) { white-space: normal; }
+.nw, .seg { white-space: nowrap; }
+.ph { font-family: var(--mono); color: var(--alert); background: var(--alert-soft); border-radius: 6px; padding: 0 8px; }
+.ic { width: 1em; height: 1em; vertical-align: -0.125em; }
+.qr { display: block; width: 220px; height: 220px; }
+.dots { display: grid; grid-template-columns: repeat(10, 24px); gap: 6px; }
+.dots i { width: 24px; height: 24px; border-radius: 50%; background: var(--rule); }
+.dots i.on { background: var(--accent); }
+
+/* Real product captures: a .crop frame clips its picture on purpose. */
+.crop { overflow: hidden; border-radius: 16px; border: 2px solid var(--rule); background: var(--panel); }
+.crop img { width: 100%; height: auto; }
+figure figcaption { font-size: 28px; line-height: 1.35; color: var(--muted); margin-top: 12px; }
