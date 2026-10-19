@@ -178,7 +178,7 @@ browser-harness만 씁니다.
 | HTML guard | Reveal 설정 필수 | `data-deck="judged"` 덱은 Reveal 설정 대신 `@page` 크기 검사 |
 | 미감 QA 점수(정적 덱) | 모션·전환·탐색 항목 필수 | 심사용 덱은 그 항목을 빼고 86점을 100점으로 환산 |
 | 숫자 확인 정도 | 없음 | `facts.json` `status` → 꼬리표 주장·시연·검증·보도 |
-| 테스트 | 50개 | 144개 |
+| 테스트 | 50개 | 145개 |
 
 ### `paper-motion-taste` 브랜치
 
