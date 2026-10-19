@@ -26,10 +26,8 @@ python3 -m pip install pymupdf pillow segno   # 선택
 | Codex | `~/.codex/skills/pt-maker` | `<프로젝트>/.codex/skills/pt-maker` |
 | Claude Code | `~/.claude/skills/pt-maker` | `<프로젝트>/.claude/skills/pt-maker` |
 
-4번 심사·제출용 포맷과 예시는 지금 `judged-deck` 브랜치에 있습니다. 이 브랜치를 받으려면 `-b judged-deck`을 붙이세요.
-
 ```bash
-git clone -b judged-deck https://github.com/csm-kr/pt-maker-skill.git
+git clone https://github.com/csm-kr/pt-maker-skill.git
 
 # Codex, 전역
 mkdir -p ~/.codex/skills
@@ -395,7 +393,7 @@ python3 $S/hyperframes_mode.py stop output/NN_topic_date --target all
 
 ## 이전 방식과 달라진 점
 
-### `judged-deck` 브랜치
+### 4번 심사·제출용 포맷 추가
 
 1~3번 포맷의 동작은 그대로입니다.
 
