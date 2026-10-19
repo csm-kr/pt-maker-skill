@@ -54,6 +54,14 @@ li + li { margin-top: 12px; }
 .num { font-size: 88px; font-weight: 750; line-height: 1; color: var(--accent); }
 .fact { white-space: nowrap; }
 
+/* Status labels from facts.json "status": 주장 claimed, 시연 demonstrated, 검증 verified, 보도 reported.
+   Put the label next to the number it qualifies: <span class="chip c-rep">보도</span>. */
+.chip { display: inline-block; font-size: 28px; font-weight: 700; line-height: 1; padding: 6px 14px; border-radius: 999px; vertical-align: 0.08em; white-space: nowrap; }
+.c-claim { color: #8A4B00; background: #FBEEDB; }
+.c-demo { color: #1E4FBF; background: #E4ECFB; }
+.c-ver { color: #0E7C66; background: #E1F2EE; }
+.c-rep { color: #4B5563; background: #ECEEF1; }
+
 /* Footer: what was measured and where it lives, at most three lines, then the page number. */
 .ft {
   position: absolute; left: var(--side, 96px); right: var(--side, 96px); bottom: var(--ft-bottom, 28px);

@@ -45,7 +45,9 @@
 6. **빌드** — `build_judged_deck.py deck.src.html` → `deck.html`.
 7. **검사** — `qa_layout_gate.py`(PNG, 슬라이드 글자, PDF도 만든다) → `qa_facts_gate.py` →
    `qa_html_guard.py`, `qa_media_guard.py` → 렌더 PNG를 직접 읽기 → 기존 90점 미감 QA
-   (`qa_score_gate.py`). contact sheet는 `verify_pdf.py`(pymupdf, pillow 필요)로 만든다.
+   (`qa_score_gate.py`). 심사용 덱은 정적이라 모션·전환·탐색 항목이 빠지고, 나머지 86점을
+   100점으로 환산한다(장부의 `score` = 항목 합 × 100 / 86). contact sheet는
+   `verify_pdf.py`(pymupdf, pillow 필요)로 만든다.
 8. **심사 패널** — [judge-panel.md](judge-panel.md). 기준마다 독립 심사 agent 하나와 사실
    확인 agent 하나. `qa_judge_gate.py judge_ledger.json`이 통과할 때까지 반복한다.
 9. **제출 검사** — `qa_submission_gate.py deck.html <주제>.pdf --config judged.json`.
@@ -66,9 +68,13 @@
   `<span class="fact" data-fact="id">`로 표시하고, `qa_facts_gate.py`는 표시 없는 숫자를
   본편·부록 어디서든 막는다. 장부 값과 같은 숫자를 손으로 쳐도 실패다.
 - 숫자로 세지 않는 곳은 쪽 번호(`.pg`), 템플릿 문구(`.nowc`), 링크 글자, fact 단위 안의
-  숫자("38 of 100", "4.2 per 1,000 beds"), footer 출처 줄의 날짜(YYYY-MM-DD)·연도·쪽/표/그림
-  참조(p. 4, pp. 3–5, Table 2, Fig. 1, 표 2, 그림 1, 12쪽), 그리고 근거가 아닌 번호에 붙인
-  `.nofact`(단계 번호, "slide A3" 같은 참조)뿐이다. `.nofact`는 아껴 쓴다. 심사 패널의 사실 확인이 다시 본다.
+  숫자("38 of 100", "4.2 per 1,000 beds"), 앞뒤가 모두 한글인 숫자("제3자"), footer 출처 줄의
+  날짜(YYYY-MM-DD)·연도·쪽/표/그림 참조(p. 4, pp. 3–5, Table 2, Fig. 1, 표 2, 그림 1, 12쪽)·라이선스
+  이름(CC BY 2.0, CC BY-SA 4.0, CC0)·위키 판 번호(oldid=…), 그리고 근거가 아닌 번호에 붙인
+  `.nofact`뿐이다. `.nofact`는 단계 번호, "slide A3" 같은 참조, 그리고 "0-60 mph"처럼 숫자가 든
+  측정 이름(값이 아니라 무엇을 쟀는지의 이름)에 쓴다. 아껴 쓴다. 심사 패널의 사실 확인이 다시 본다.
+- 장부 값은 적힌 그대로 두고, 빌드가 화면에 천 단위 쉼표를 넣는다(`200000` → `200,000`). 다섯
+  자리 이상은 항상, 네 자리는 1900–2099를 연도로 보고 빼고 넣는다. 쉼표를 직접 적은 값은 그대로다.
 - 같은 결과는 어디서나 같은 문장, 같은 형태로 쓴다. 한 페이지에서 고친 숫자 문장은
   나오는 모든 페이지에서 똑같이 고친다.
 - 서로 다른 실험·조건의 숫자를 더하거나 섞지 않는다. 묶음마다 따로 말한다.
@@ -79,6 +85,16 @@
 - 바깥 숫자(시장, 통계, 가격)는 그날 직접 열어 읽고 `checked` 날짜를 적는다. 숫자를
   옮긴 문장과 원문 문장이 같은 것을 말하는지 확인한다(예: "매장 수"를 "기기 수"로 읽지 않기).
 - 비율 그림 `{{dots:id}}`도 장부의 fact(단위 `%`, `in 100`, `of 100`, `per 100`)에서만 그린다.
+
+### 상태 꼬리표 (주장 · 시연 · 검증 · 보도)
+- 숫자가 얼마나 확인된 것인지 보여 줘야 하는 덱은 `facts.json`의 `status`를 쓴다:
+  `claimed` → **주장**(회사·발표자가 말함), `demonstrated` → **시연**(관객 앞에서 보여 줌),
+  `verified` → **검증**(독립적으로 재거나 확인함), `reported` → **보도**(언론·집계가 전함).
+  다른 값이면 `qa_facts_gate.py`가 실패한다.
+- 슬라이드에는 숫자 옆에 꼬리표를 둔다: `<span class="chip c-rep">보도</span>`(`c-claim`, `c-demo`,
+  `c-ver`, `c-rep`).
+- 보도를 검증으로 올리거나 주장으로 내리지 않는다. 보도를 검증으로 올리면 사실을 부풀리고,
+  주장으로 내리면 말하지 않은 사람의 말이 된다.
 
 ### 피하는 주장
 - `judged.json`의 `facts.banned_phrases`(기본: first, only, any, 100%, 최초, 유일)는
@@ -195,11 +211,11 @@ HTML을 만들므로 `<svg>` 밖에만 쓴다. 빌드는 숫자+단위와 `≤ N
 {"facts": [
   {"id": "survey-share", "value": "38", "unit": "%",
    "claim": "Respondents who said they would use it weekly",
-   "source": "data/survey-results.csv", "checked": "2026-10-12"}
+   "source": "data/survey-results.csv", "checked": "2026-10-12", "status": "verified"}
 ]}
 ```
 
-`value`에는 숫자가 있어야 한다. `source`는 심사위원이나 팀원이 열어 볼 수 있는 파일·URL이다.
+`value`에는 숫자가 있어야 한다. `status`는 선택이며 `claimed`, `demonstrated`, `verified`, `reported` 중 하나다. `source`는 심사위원이나 팀원이 열어 볼 수 있는 파일·URL이다.
 
 ### `shots.json`
 

@@ -334,6 +334,8 @@ archive/                        ← 작업 스크래치 격리
 - `new_deck.py "<slug>" --production-direction judged --template 템플릿.pptx` → `import_template.py`가 `template.json`(슬라이드 크기, 배경, 템플릿 아트 영역, 슬롯 제목과 제목 상자, 최소 글자 px, 글꼴)과 `template-layer.css`, `assets/template/`을 만들고, 읽은 내용과 건너뛴 것(warning)을 출력하고, 슬롯마다 한 페이지씩 `deck.src.html`을 채운다. warning이 있으면 렌더 PNG에서 빠진 아트를 확인한다. 인테이크 답은 `judged.json`에 적는다.
 - 숫자는 모두 `facts.json`에 `id / value / unit / claim / source / checked`로 적고 `{{fact:id}}`로 넣는다. 빌드가 fact를 `data-fact`로 표시하고, `qa_facts_gate.py`는 표시 없는 숫자를 본편·부록 어디서든 막는다(쪽 번호, 템플릿 문구 `.nowc`, `.nofact`, 링크 글자, footer 출처 줄의 날짜·연도만 예외). 링크는 `{{link:NAME}}`(빌드 때 환경 변수), 비율 그림은 `{{dots:fact-id}}`, 아이콘은 `{{icon:name}}`(`assets/icons/`), QR은 `{{qr:url}}`(선택 패키지 `segno`).
 - 빌드와 검사 순서: `build_judged_deck.py deck.src.html` → `qa_layout_gate.py deck.html --pdf <주제>v<N>.pdf`(실제 글줄 기준 글자 크기·가장자리·넘침, 템플릿 아트 겹침, footer, 잘림, 깨진 이미지, 본편 단어 수 + `slides/NN.png` + `slides/text.txt` + 템플릿 실제 쪽 크기의 1:1 PDF) → `qa_facts_gate.py deck.html` → `qa_html_guard.py`·`qa_media_guard.py` → 렌더 PNG 직접 확인 → 기존 90점 미감 QA(`qa_score_gate.py`) → 심사 패널([reference/judge-panel.md](reference/judge-panel.md), `qa_judge_gate.py`) → `qa_submission_gate.py deck.html <주제>v<N>.pdf --config judged.json`.
+- 숫자의 확인 정도를 보여 줄 때는 `facts.json`의 `status`(claimed/demonstrated/verified/reported)를 꼬리표 주장·시연·검증·보도로 보인다. 보도를 검증이나 주장으로 바꿔 쓰지 않는다.
+- 기존 90점 미감 QA(`qa_score_gate.py`)는 `data-deck="judged"` 덱에서 모션·전환·탐색 항목을 빼고 나머지 86점을 100점으로 환산한다.
 - 제출 PDF는 `qa_layout_gate.py`가 만든 PDF다. Reveal용 `export_pdf.py`/`export_pdf_shots.py`는 쓰지 않는다.
 - 패스마다 `CHANGES.md`에 무엇을 왜 바꿨는지와 검사 결과를 남기고, `NOTES.md`에 슬라이드 지도(페이지 ↔ 템플릿 슬롯 ↔ 헤드라인), 직접 채울 항목, 피한 주장을 유지한다.
 

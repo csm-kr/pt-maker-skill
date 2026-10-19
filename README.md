@@ -176,7 +176,9 @@ browser-harness만 씁니다.
 | 심사 리뷰 | 미감 QA agent 1개(90점) | 미감 QA는 그대로 + 채점 기준별 눈가림 심사 agent와 사실 확인 agent, `qa_judge_gate.py`(심사한 `deck.html`과 그 파일이 쓰는 CSS·이미지·글꼴의 해시로 낡은 장부를 막음) |
 | 제출 직전 | 없음 | `qa_submission_gate.py`: 자리표시 잔여, PDF 크기·쪽수, 슬롯 순서·제목, 링크 HTTP 200 |
 | HTML guard | Reveal 설정 필수 | `data-deck="judged"` 덱은 Reveal 설정 대신 `@page` 크기 검사 |
-| 테스트 | 50개 | 136개 |
+| 미감 QA 점수(정적 덱) | 모션·전환·탐색 항목 필수 | 심사용 덱은 그 항목을 빼고 86점을 100점으로 환산 |
+| 숫자 확인 정도 | 없음 | `facts.json` `status` → 꼬리표 주장·시연·검증·보도 |
+| 테스트 | 50개 | 144개 |
 
 ### `paper-motion-taste` 브랜치
 
