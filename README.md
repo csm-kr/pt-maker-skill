@@ -173,10 +173,10 @@ browser-harness만 씁니다.
 | 숫자와 출처 | 출처는 작업 노트·CREDITS에, 슬라이드에는 최소한 | 심사용은 `facts.json` 장부 + `{{fact:id}}`(빌드가 `data-fact`로 표시) + footer 출처 줄. `qa_facts_gate.py`가 모든 슬라이드의 표시 없는 숫자, 출처 없는 슬라이드, 빈 `Details:`, 금지 표현을 막음 |
 | 근거 이미지 | 웹 이미지 또는 생성 일러스트 | 심사용 근거는 실제 캡처(`capture_screens.py`)나 공개 자료만. 생성 이미지는 근거 금지 |
 | 레이아웃 검사 | 렌더 후 사람/agent 검수 | `qa_layout_gate.py`: 실제 글줄 기준 최소 글자(transform 배율 반영)·가장자리·가로 넘침, 템플릿 아트 겹침, footer 줄 수·겹침, 잘림, 깨진 이미지, 본편 단어 수 + PNG + 슬라이드 글자 + 1:1 PDF |
-| 심사 리뷰 | 미감 QA agent 1개(90점) | 미감 QA는 그대로 + 채점 기준별 눈가림 심사 agent와 사실 확인 agent, `qa_judge_gate.py`(심사한 `deck.html`의 해시로 낡은 장부를 막음) |
+| 심사 리뷰 | 미감 QA agent 1개(90점) | 미감 QA는 그대로 + 채점 기준별 눈가림 심사 agent와 사실 확인 agent, `qa_judge_gate.py`(심사한 `deck.html`과 그 파일이 쓰는 CSS·이미지·글꼴의 해시로 낡은 장부를 막음) |
 | 제출 직전 | 없음 | `qa_submission_gate.py`: 자리표시 잔여, PDF 크기·쪽수, 슬롯 순서·제목, 링크 HTTP 200 |
 | HTML guard | Reveal 설정 필수 | `data-deck="judged"` 덱은 Reveal 설정 대신 `@page` 크기 검사 |
-| 테스트 | 50개 | 132개 |
+| 테스트 | 50개 | 136개 |
 
 ### `paper-motion-taste` 브랜치
 

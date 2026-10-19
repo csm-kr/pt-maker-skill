@@ -71,8 +71,9 @@ Return only:
 ## 진행
 
 1. `python3 scripts/qa_judge_gate.py --print-template judged.json > judge_ledger.json`
-   (기준 id·가중치가 `judged.json`에서, 지금 `deck.html`의 sha256이 `artifacts`에 들어간다.
-   빈 장부는 실패 상태다. 심사 뒤 `deck.html`이 바뀌면 장부가 낡은 것으로 실패한다.)
+   (기준 id·가중치가 `judged.json`에서, 지금 `deck.html`과 그 파일이 쓰는 로컬 파일(CSS, 이미지,
+   CSS 안의 글꼴)의 해시가 `artifacts.deck_hash`에 들어간다. 빈 장부는 실패 상태다. 심사 뒤
+   이 파일 중 하나라도 바뀌면 장부가 낡은 것으로 실패한다.)
 2. subagent 도구로 심사 agent N개와 사실 확인 agent 1개를 **동시에** 띄운다. 이름은
    라운드를 붙여 서로 다르게: `judge-<기준id>-r<라운드>`, `fact-check-r<라운드>`.
 3. 각 결과를 장부에 옮긴다: `reviewer`, `blind: true`(위 입력만 줬을 때만), `score`,
