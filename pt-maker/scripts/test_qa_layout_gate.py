@@ -8,6 +8,7 @@ import unittest
 import zlib
 from pathlib import Path
 
+import import_template
 import qa_layout_gate as gate
 from browser_harness_runtime import BrowserHarnessError, ensure_background_runtime
 
@@ -109,15 +110,15 @@ def chrome_available() -> bool:
         return False
 
 
-STYLE = """<style>
-@page { size: 1920px 1080px; margin: 0; }
+# The template layer rules exactly as import_template.py writes them (including pointer-events: none on .tart).
+LAYER_CSS = import_template.layer_css({"source": "test.pptx", "slide_size": {"px": [1920, 1080]}})
+
+STYLE = "<style>\n" + LAYER_CSS + """
 body { margin: 0; font-family: sans-serif; }
 @media screen { body { padding: 24px 0; background: #888; } .slide { margin: 0 auto 24px; } }
 .slide { width: 1920px; height: 1080px; position: relative; overflow: hidden; isolation: isolate; background: #fff; padding: 160px 80px 0; box-sizing: border-box; break-after: page; }
 .slide:last-child { break-after: auto; }
 p, h1 { margin: 0; font-size: 30px; line-height: 1.4; }
-.tart { position: absolute; display: block; z-index: 3; }
-.tart.tbase { z-index: -1; }
 .ft { position: absolute; left: 80px; right: 80px; bottom: 24px; font-size: 28px; line-height: 1.3; display: flex; justify-content: space-between; }
 .box { height: 40px; overflow: hidden; }
 .tt { position: absolute; left: 90px; top: 40px; font-size: 40px; color: #fff; }

@@ -82,6 +82,10 @@ CHECK_JS = r"""
       get height() { return this.bottom - this.top; },
     };
   };
+  // Template art is pointer-events: none, which hides it from elementFromPoint; make it hit-testable while checking.
+  const hit = document.createElement("style");
+  hit.textContent = ".tart, .tart * { pointer-events: auto !important; }";
+  document.head.appendChild(hit);
   const slides = Array.from(document.querySelectorAll(".slide"));
   slides.forEach((slide, i) => {
     window.scrollTo(0, slide.getBoundingClientRect().top + window.scrollY);
@@ -175,6 +179,7 @@ CHECK_JS = r"""
     words.push({ slide: n, count, main });
     texts.push({ slide: n, text: slide.innerText.trim() });
   });
+  hit.remove();
   window.scrollTo(0, 0);
   return { problems: out, words, texts, count: slides.length };
 })
