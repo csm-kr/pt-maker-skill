@@ -9,6 +9,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import build_judged_deck
 import qa_facts_gate as gate
 
 
@@ -20,6 +21,8 @@ FACTS = {
         {"id": "latency", "value": "2,450", "unit": "ms", "claim": "Median response time", "source": "evidence/latency.json", "checked": "2026-10-15"},
         {"id": "ratio", "value": "3 in 10", "unit": "", "claim": "Survey respondents who asked for it", "source": "data/survey.csv", "checked": "2026-10-15"},
         {"id": "adopters", "value": "7", "unit": "in 100", "claim": "Pilot users who kept it on", "source": "data/pilot.csv", "checked": "2026-10-15"},
+        {"id": "weekly", "value": "38", "unit": "of 100", "claim": "Respondents who would use it weekly", "source": "data/survey.csv", "checked": "2026-10-15"},
+        {"id": "faults", "value": "4.2", "unit": "per 1,000 beds", "claim": "Faults reported per bed", "source": "data/survey.csv", "checked": "2026-10-15"},
     ]
 }
 
@@ -59,6 +62,21 @@ class FactsGateTests(unittest.TestCase):
                 f'{fact("ratio", "3 in 10")}</h1>{FOOTER}</section>'
             )
         )
+        self.assertEqual(result["qa_facts_gate"], "pass", result["errors"])
+
+    def test_units_that_contain_numbers_are_part_of_the_fact(self):
+        src = self.root / "deck.src.html"
+        src.write_text(
+            page(
+                '<section class="slide" data-main><h1>{{fact:weekly}} would use it weekly.</h1>'
+                "<p>Faults: {{fact:faults}}.</p>"
+                '<footer class="ft"><div class="src">Survey, 2026-10. Details: data/survey.csv, p. 4, pp. 3–5, Table 2, 표 3, 12쪽</div></footer>'
+                "</section>"
+            ),
+            encoding="utf-8",
+        )
+        (self.root / "deck.html").write_text(build_judged_deck.build(src, env={}).html, encoding="utf-8")
+        result = gate.run_checks(self.root / "deck.html", self.facts, {})
         self.assertEqual(result["qa_facts_gate"], "pass", result["errors"])
 
     def test_untagged_numbers_fail_on_every_slide(self):

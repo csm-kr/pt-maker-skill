@@ -21,7 +21,8 @@ facts.json, judged.json을 생략하면 deck.html 옆의 파일을 쓴다.
 
 숫자로 세지 않는 것 (이유는 test_qa_facts_gate.py에 있다):
   .pg(쪽 번호), .nowc(템플릿 문구), .nofact(근거가 아닌 번호: 단계, 슬라이드 참조), 링크 글자(<a>),
-  footer 출처 줄(.ft .src) 안의 날짜(YYYY-MM-DD, YYYY-MM)와 연도, 영문자 바로 뒤(또는 영문자 + -/_ 뒤)의
+  footer 출처 줄(.ft .src) 안의 날짜(YYYY-MM-DD, YYYY-MM)·연도·쪽/표/그림 참조(p. 4, pp. 3–5, Table 2, Fig. 1,
+  표 2, 그림 1, 12쪽), fact 안의 단위 글자(of 100, per 1,000 beds), 영문자 바로 뒤(또는 영문자 + -/_ 뒤)의
   숫자(A3, CO2, run-7: 이름이지 수량이 아님), .tart, <script>, <style>, <title>, <desc>.
 금지 표현 검사는 .nowc와 .tart를 빼고 footer까지 본다. allowed_phrases 안의 사용은 통과한다.
 
@@ -45,6 +46,8 @@ DEFAULT_SOURCE_LABEL = "Details:"
 REQUIRED_FIELDS = ("id", "value", "claim", "source", "checked")
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 SOURCE_DATE_RE = re.compile(r"^(?:\d{4}-\d{2}(?:-\d{2})?|(?:19|20)\d{2})$")
+# Page, table and figure references in a footer source line point into the source; they are not claims.
+SOURCE_REF_RE = re.compile(r"(?:\bpp?\.\s*|\b(?:Table|Tab\.|Figure|Fig\.)\s*|표\s*|그림\s*)\d+(?:\s*[–-]\s*\d+)?|\d+(?:\s*[–-]\s*\d+)?\s*쪽")
 TOKEN_RE = re.compile(r"(?<![A-Za-z0-9.,])(?<![A-Za-z][-_])(\d{4}-\d{2}(?:-\d{2})?(?![\d-])|\d+(?:[.,]\d+)*)")
 VOID_TAGS = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"}
 SKIP_TAGS = {"script", "style", "title", "desc", "template", "noscript"}
@@ -194,7 +197,11 @@ def run_checks(deck: Path, facts_path: Path, config: dict[str, Any]) -> dict[str
     banned = settings.get("banned_phrases", DEFAULT_BANNED)
     allowed = settings.get("allowed_phrases", [])
     ledger = validate_ledger(facts_path, add)
-    values = {fact_id: {token_key(t) for t in tokens(str(fact.get("value", "")))} for fact_id, fact in ledger.items()}
+    # A fact's rendered text is its value and its unit ("38 of 100", "4.2 per 1,000 beds").
+    values = {
+        fact_id: {token_key(t) for t in tokens(f"{fact.get('value', '')} {fact.get('unit') or ''}")}
+        for fact_id, fact in ledger.items()
+    }
 
     parser = SlideText()
     parser.feed(deck.read_text(encoding="utf-8", errors="ignore"))
@@ -206,6 +213,8 @@ def run_checks(deck: Path, facts_path: Path, config: dict[str, Any]) -> dict[str
             if node is None or skipped(node, NUMBER_SKIP_CLASSES) or any(n.tag == "a" for n in node.chain):
                 continue
             fact_id = nearest_fact(node)
+            if node.in_source and not fact_id:
+                text = SOURCE_REF_RE.sub(" ", text)
             for token in tokens(text):
                 if fact_id:
                     if fact_id not in ledger:
