@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import copy
-import hashlib
 import json
 import subprocess
 import sys
@@ -26,14 +25,16 @@ CONFIG = {
 }
 
 
-DECK = '<html><body><section class="slide"><span class="fact" data-fact="trials">35</span></section></body></html>'
-DECK_SHA = hashlib.sha256(DECK.encode()).hexdigest()
+DECK = (
+    '<html><head><link rel="stylesheet" href="deck.css"></head><body><section class="slide">'
+    '<span class="fact" data-fact="trials">35</span><img src="assets/img/shot.jpg" alt=""></section></body></html>'
+)
 
 
 def ledger() -> dict:
     return {
         "round": 2,
-        "artifacts": {"slides_dir": "slides", "pdf": "deck.pdf", "deck": "deck.html", "deck_sha256": DECK_SHA},
+        "artifacts": {"slides_dir": "slides", "pdf": "deck.pdf", "deck": "deck.html", "deck_hash": ""},
         "criteria": [
             {"id": "impact", "name": "Impact", "weight": 40, "reviewer": "judge-impact-r2", "blind": True, "score": 8.5, "p0": [], "top_fixes": ["Lead with the result"]},
             {"id": "tech", "name": "Use of the required technology", "weight": 40, "reviewer": "judge-tech-r2", "blind": True, "score": 8.0, "p0": [], "top_fixes": []},
@@ -51,12 +52,20 @@ class JudgeGateTests(unittest.TestCase):
         (self.root / "slides" / "01.png").write_bytes(b"png")
         (self.root / "deck.pdf").write_bytes(b"%PDF")
         (self.root / "deck.html").write_text(DECK, encoding="utf-8")
+        (self.root / "deck.css").write_text("@font-face { src: url('assets/fonts/body.woff2'); }", encoding="utf-8")
+        (self.root / "assets" / "img").mkdir(parents=True)
+        (self.root / "assets" / "fonts").mkdir(parents=True)
+        (self.root / "assets" / "img" / "shot.jpg").write_bytes(b"jpg-1")
+        (self.root / "assets" / "fonts" / "body.woff2").write_bytes(b"font-1")
         self.path = self.root / "judge_ledger.json"
+        self.fresh = gate.deck_hash(self.root / "deck.html")
 
     def tearDown(self) -> None:
         self.tmp.cleanup()
 
     def validate(self, data: dict, *, min_score: float | None = None, config: dict | None = None) -> dict:
+        if data.get("artifacts", {}).get("deck_hash") == "":
+            data["artifacts"]["deck_hash"] = self.fresh
         self.path.write_text(json.dumps(data), encoding="utf-8")
         return gate.validate(self.path, min_score=min_score, config=config)
 
@@ -104,9 +113,19 @@ class JudgeGateTests(unittest.TestCase):
         self.assertIn("weighted-below-min", self.codes(self.validate(data)))
         self.assertEqual(self.validate(data, min_score=6.5)["qa_judge_gate"], "pass")
 
-    def test_a_changed_deck_makes_the_ledger_stale(self):
-        (self.root / "deck.html").write_text(DECK.replace("35", "36"), encoding="utf-8")
-        self.assertIn("ledger-stale", self.codes(self.validate(ledger())))
+    def test_a_changed_deck_or_any_file_it_uses_makes_the_ledger_stale(self):
+        self.assertEqual(self.validate(ledger())["qa_judge_gate"], "pass")
+        for path, content in (
+            ("deck.css", "@font-face { src: url('assets/fonts/body.woff2'); } h1 { color: red; }"),
+            ("assets/img/shot.jpg", "jpg-2"),
+            ("assets/fonts/body.woff2", "font-2"),
+            ("deck.html", DECK.replace("35", "36")),
+        ):
+            with self.subTest(path=path):
+                original = (self.root / path).read_text(encoding="utf-8")
+                (self.root / path).write_text(content, encoding="utf-8")
+                self.assertIn("ledger-stale", self.codes(self.validate(ledger())))
+                (self.root / path).write_text(original, encoding="utf-8")
 
     def test_fact_check_may_find_nothing_when_the_deck_has_no_facts(self):
         data = ledger()
@@ -114,7 +133,7 @@ class JudgeGateTests(unittest.TestCase):
         self.assertIn("fact-check-empty", self.codes(self.validate(data)))
         plain = "<html><body><section class=\"slide\"><p>No numbers.</p></section></body></html>"
         (self.root / "deck.html").write_text(plain, encoding="utf-8")
-        data["artifacts"]["deck_sha256"] = hashlib.sha256(plain.encode()).hexdigest()
+        data["artifacts"]["deck_hash"] = gate.deck_hash(self.root / "deck.html")
         self.assertEqual(self.validate(data)["qa_judge_gate"], "pass", self.validate(data)["errors"])
 
     def test_scores_and_artifacts_are_checked(self):
@@ -133,13 +152,15 @@ class JudgeGateTests(unittest.TestCase):
 
     def test_print_template_starts_failing(self):
         template = gate.template_for(CONFIG, self.root / "deck.html")
-        self.assertEqual(template["artifacts"]["deck_sha256"], DECK_SHA)
+        self.assertEqual(template["artifacts"]["deck_hash"], self.fresh)
         self.assertEqual([c["id"] for c in template["criteria"]], ["impact", "tech", "design"])
         self.assertTrue(all(c["score"] == 0 and c["blind"] is False and c["reviewer"] == "" for c in template["criteria"]))
         self.assertEqual(self.validate(template)["qa_judge_gate"], "fail")
 
     def test_cli(self):
-        self.path.write_text(json.dumps(ledger()), encoding="utf-8")
+        data = ledger()
+        data["artifacts"]["deck_hash"] = self.fresh
+        self.path.write_text(json.dumps(data), encoding="utf-8")
         passed = subprocess.run([sys.executable, str(SCRIPT), str(self.path), "--min", "8.0"], capture_output=True, text=True)
         self.assertEqual(passed.returncode, 0, passed.stdout)
         self.assertIn("qa-judge-gate: pass", passed.stdout)

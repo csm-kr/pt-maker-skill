@@ -14,7 +14,8 @@
   - 사실 확인(fact_check) 있음: 다른 심사자, blind=true, 불일치 0, 덱에 fact가 있으면 확인한 숫자 ≥ 1
   - 남은 P0 = 0 (기준별 p0 + fact_check p0 + 불일치)
   - 가중 점수 = Σ(점수 × 가중치) / 100 ≥ --min (없으면 judged.json target, 그것도 없으면 8.0)
-  - artifacts(slides_dir의 PNG, pdf, deck)가 실제로 있고, deck.html이 심사 뒤 바뀌지 않음(deck_sha256)
+  - artifacts(slides_dir의 PNG, pdf, deck)가 실제로 있고, deck.html과 그 파일이 쓰는 로컬 파일(CSS, 이미지,
+    CSS 안의 글꼴 등)이 심사 뒤 바뀌지 않음(deck_hash)
   - judged.json을 쓰면 기준 id와 가중치가 judged.json criteria와 같음 (심사자가 가중치를 못 바꿈)
 """
 
@@ -23,9 +24,11 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
+from urllib.parse import unquote
 
 DEFAULT_MIN = 8.0
 
@@ -43,14 +46,47 @@ def load_json(path: Path | None) -> dict[str, Any]:
     return data if isinstance(data, dict) else {}
 
 
-def sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else ""
+REF_RE = re.compile(r"""(?:\bhref|\bsrc)\s*=\s*["']([^"']+)["']|url\(\s*["']?([^"')]+)["']?\s*\)|@import\s+["']([^"']+)["']""", re.I)
+
+
+def local_refs(path: Path, text: str) -> list[Path]:
+    """Local files an HTML or CSS file points at (links, images, scripts, url(), @import)."""
+    refs = []
+    for match in REF_RE.finditer(text):
+        ref = next(group for group in match.groups() if group).strip()
+        if re.match(r"^(?:[a-z][a-z0-9+.-]*:|//|#)", ref, re.I):
+            continue
+        ref = unquote(ref.split("#")[0].split("?")[0])
+        if ref:
+            refs.append((path.parent / ref).resolve())
+    return sorted(set(refs))
+
+
+def deck_hash(deck: Path) -> str:
+    """sha256 over deck.html and every local file it uses, followed through CSS (fonts, images)."""
+    digest = hashlib.sha256()
+    root = deck.resolve().parent
+    queue, seen = [deck.resolve()], set()
+    while queue:
+        path = queue.pop(0)
+        if path in seen:
+            continue
+        seen.add(path)
+        name = path.relative_to(root).as_posix() if path.is_relative_to(root) else str(path)
+        if not path.is_file():
+            digest.update(f"missing:{name}\n".encode())
+            continue
+        data = path.read_bytes()
+        digest.update(f"{name}\n".encode() + data)
+        if path.suffix.lower() in (".html", ".htm", ".css"):
+            queue.extend(local_refs(path, data.decode("utf-8", errors="ignore")))
+    return digest.hexdigest()
 
 
 def template_for(config: dict[str, Any], deck: Path) -> dict[str, Any]:
     return {
         "round": 1,
-        "artifacts": {"slides_dir": "slides", "pdf": "", "deck": deck.name, "deck_sha256": sha256(deck)},
+        "artifacts": {"slides_dir": "slides", "pdf": "", "deck": deck.name, "deck_hash": deck_hash(deck) if deck.is_file() else ""},
         "criteria": [
             {
                 "id": item.get("id", ""),
@@ -166,8 +202,8 @@ def validate(path: Path, *, min_score: float | None = None, config: dict[str, An
 
     if not deck.is_file():
         add("artifact-missing", f"Deck not found: {deck}", "Point artifacts.deck at the deck.html the reviewers judged.")
-    elif artifacts.get("deck_sha256") != sha256(deck):
-        add("ledger-stale", f"{deck.name} changed after this panel round (sha256 differs).", "Re-render and run a fresh blind round on the current deck.")
+    elif artifacts.get("deck_hash") != deck_hash(deck):
+        add("ledger-stale", f"{deck.name} or a file it uses changed after this panel round.", "Re-render and run a fresh blind round on the current deck.")
     slides_dir = path.parent / str(artifacts.get("slides_dir") or "")
     if not artifacts.get("slides_dir") or not slides_dir.is_dir() or not any(slides_dir.glob("*.png")):
         add("artifact-missing", f"Slide PNGs not found: {slides_dir}", "Point artifacts.slides_dir at the PNGs the reviewers saw.")
